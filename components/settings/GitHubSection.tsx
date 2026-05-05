@@ -42,24 +42,11 @@ export default function GitHubSection({ settings, onRefresh }: GitHubSectionProp
 
   useEffect(() => {
     if (settings.github_token) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       fetchRepos();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [settings.github_token]);
-
-  const fetchRepos = async () => {
-    setLoadingRepos(true);
-    setError(null);
-    try {
-      const res = await fetch('/api/github/repos');
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || 'Failed to fetch repos');
-      setRepos(data);
-    } catch (err: any) {
-      setError(err.message);
-    } finally {
-      setLoadingRepos(false);
-    }
-  };
 
   const handleSaveToken = async () => {
     await saveSettings({ github_token: token });
@@ -101,12 +88,12 @@ export default function GitHubSection({ settings, onRefresh }: GitHubSectionProp
       <div style={{ marginBottom: 40 }}>
         <label className="section-title-premium">Access Credentials</label>
         <div style={{ display: 'flex', gap: 12 }}>
-          <input 
-            type="password" 
-            className="input-premium" 
-            value={token} 
-            onChange={(e) => setToken(e.target.value)} 
-            placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" 
+          <input
+            type="password"
+            className="input-premium"
+            value={token}
+            onChange={(e) => setToken(e.target.value)}
+            placeholder="ghp_xxxxxxxxxxxxxxxxxxxx"
             style={{ fontFamily: 'Geist Mono', fontSize: 13 }}
           />
           <button className="btn-premium" onClick={handleSaveToken} style={{ height: 48, padding: '0 24px' }}>
@@ -114,7 +101,7 @@ export default function GitHubSection({ settings, onRefresh }: GitHubSectionProp
           </button>
         </div>
         <p style={{ marginTop: 12, fontSize: 11, color: '#444', lineHeight: 1.5 }}>
-          Folio uses a Personal Access Token to register webhooks on your behalf. 
+          Folio uses a Personal Access Token to register webhooks on your behalf.
           <a href="https://github.com/settings/tokens" target="_blank" style={{ color: 'var(--green)', marginLeft: 4 }}>Generate one here</a> (select <b>repo</b> scope).
         </p>
       </div>
@@ -139,15 +126,15 @@ export default function GitHubSection({ settings, onRefresh }: GitHubSectionProp
                   <h5 style={{ fontSize: 14, fontWeight: 700, color: 'var(--white)' }}>{repo.name}</h5>
                   <p style={{ fontSize: 11, color: '#444', marginTop: 2 }}>{repo.full_name}</p>
                 </div>
-                
+
                 {isTracked(repo.full_name) ? (
                   <div style={{ display: 'flex', alignItems: 'center', gap: 8, color: 'var(--green)', fontSize: 11, fontWeight: 800 }}>
                     <div style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--green)', boxShadow: '0 0 10px var(--green)' }} />
                     TRACKING
                   </div>
                 ) : (
-                  <button 
-                    className="btn-ghost-premium" 
+                  <button
+                    className="btn-ghost-premium"
                     onClick={() => handleTrackRepo(repo.full_name)}
                     disabled={connectingId === repo.full_name}
                     style={{ height: 32, padding: '0 12px', fontSize: 11, borderColor: '#1A1A1A' }}
@@ -162,10 +149,10 @@ export default function GitHubSection({ settings, onRefresh }: GitHubSectionProp
       )}
 
       <div style={{ marginTop: 32, padding: 16, borderRadius: 12, background: 'rgba(0,255,136,0.03)', border: '1px solid rgba(0,255,136,0.1)', display: 'flex', gap: 12 }}>
-         <ShieldCheck size={20} className="text-green" style={{ flexShrink: 0 }} />
-         <p style={{ fontSize: 11, color: 'var(--green)', lineHeight: 1.5, opacity: 0.8 }}>
-           <b>Security Protocol:</b> Folio verifies every incoming signal using a unique HMAC SHA-256 secret. Your token is stored encrypted in your private studio vault.
-         </p>
+        <ShieldCheck size={20} className="text-green" style={{ flexShrink: 0 }} />
+        <p style={{ fontSize: 11, color: 'var(--green)', lineHeight: 1.5, opacity: 0.8 }}>
+          <b>Security Protocol:</b> Folio verifies every incoming signal using a unique HMAC SHA-256 secret. Your token is stored encrypted in your private studio vault.
+        </p>
       </div>
     </div>
   );

@@ -1,9 +1,8 @@
 'use client';
 import { useState, useEffect } from 'react';
-import Link from 'next/link';
-import { supabase } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
-import { Sparkles, Zap, ChevronRight, Play } from 'lucide-react';
+import Link from 'next/link';
+import { ChevronRight, Play } from 'lucide-react';
 
 export default function LandingNavbar() {
   const router = useRouter();

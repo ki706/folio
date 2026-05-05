@@ -3,7 +3,7 @@ import { useEffect, useState, useCallback } from 'react';
 import { getSettings, saveSettings, Settings } from '@/lib/store';
 import Toggle from '@/components/ui/Toggle';
 import TagInput from '@/components/ui/TagInput';
-import { Eye, EyeOff, ChevronDown, User, Zap, Code, Share2, Terminal } from 'lucide-react';
+import { EyeOff, ChevronDown, User, Zap, Code, Share2, Terminal } from 'lucide-react';
 import GitHubSection from '@/components/settings/GitHubSection';
 
 const GOAL_OPTIONS = [

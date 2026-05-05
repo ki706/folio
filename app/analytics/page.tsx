@@ -61,7 +61,7 @@ export default function AnalyticsPage() {
              {['"Most teams over-engineer their auth..."', '"Stop using Redux for everything."', '"We migrated to Edge computing and..."'].map((hook, i) => (
                 <div key={i} className="p-4 rounded-xl bg-[rgba(255,255,255,0.02)] border border-[rgba(255,255,255,0.05)] flex items-center justify-between">
                   <span className="text-[#ccc] text-sm font-medium">"{hook}</span>
-                  <span className="text-[#00FF88] text-xs font-bold font-mono px-2 py-1 bg-[rgba(0,255,136,0.1)] rounded-md">+{Math.floor(Math.random() * 20 + 5)} Stars</span>
+                  <span className="text-[#00FF88] text-xs font-bold font-mono px-2 py-1 bg-[rgba(0,255,136,0.1)] rounded-md">+{((i * 7) % 20) + 5} Stars</span>
                 </div>
              ))}
           </div>

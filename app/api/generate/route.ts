@@ -5,9 +5,9 @@ import { cookies } from 'next/headers';
 
 export async function POST(req: NextRequest) {
   try {
-    const supabase = createClient();
+    const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
-    const isDemo = cookies().get('folio_demo_mode')?.value === 'true';
+    const isDemo = (await cookies()).get('folio_demo_mode')?.value === 'true';
 
     if (!user && !isDemo) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });

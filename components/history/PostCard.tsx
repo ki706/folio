@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { Post, deletePost, savePost } from '@/lib/store';
 import CopyButton from '@/components/ui/CopyButton';
-import { ChevronDown, ChevronUp, Trash2, Calendar, Share2, MessageSquare } from 'lucide-react';
+import { ChevronDown, ChevronUp, Trash2, Calendar } from 'lucide-react';
 
 interface PostCardProps {
   post: Post;

@@ -1,16 +1,14 @@
 'use client';
 import { useState } from 'react';
 import CopyButton from '@/components/ui/CopyButton';
-import { Share2, MessageSquare, Send, Repeat, Heart, ExternalLink } from 'lucide-react';
+import { MessageSquare, Send, Repeat, Heart } from 'lucide-react';
 
 interface OutputTabsProps {
   linkedin: string;
   xThread: string[];
-  onRegenerate: () => void;
-  generating: boolean;
 }
 
-export default function OutputTabs({ linkedin, xThread, onRegenerate, generating }: OutputTabsProps) {
+export default function OutputTabs({ linkedin, xThread }: OutputTabsProps) {
   const [activeTab, setActiveTab] = useState<'linkedin' | 'x'>('linkedin');
 
   return (

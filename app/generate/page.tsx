@@ -56,26 +56,7 @@ function GenerateContent() {
   const [saved, setSaved] = useState(false);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  const loadInitial = useCallback(async () => {
-    const ps = await getProjects();
-    setProjects(ps);
-    
-    const pid = searchParams.get('project');
-    if (pid && ps.find((p) => p.id === pid)) {
-      setSelectedProject(pid);
-    }
-
-    const initialInput = searchParams.get('input');
-    if (initialInput) {
-      setInput(initialInput);
-      // Wait for projects to be set before generating
-      setTimeout(() => generate(initialInput), 500);
-    }
-
-    fetchSuggestions(ps);
-  }, [searchParams]);
-
-  const fetchSuggestions = async (currentProjects: Project[]) => {
+  const fetchSuggestions = useCallback(async (currentProjects: Project[]) => {
     setLoadingSuggestions(true);
     try {
       const s = await getSettings();
@@ -96,11 +77,7 @@ function GenerateContent() {
     } finally {
       setLoadingSuggestions(false);
     }
-  };
-
-  useEffect(() => {
-    loadInitial();
-  }, [loadInitial]);
+  }, []);
 
   const generate = useCallback(async (forcedInput?: string) => {
     const activeInput = forcedInput || input;
@@ -152,6 +129,30 @@ function GenerateContent() {
       setGenerating(false);
     }
   }, [input, tone, selectedProject, projects]);
+
+  const loadInitial = useCallback(async () => {
+    const ps = await getProjects();
+    setProjects(ps);
+    
+    const pid = searchParams.get('project');
+    if (pid && ps.find((p) => p.id === pid)) {
+      setSelectedProject(pid);
+    }
+
+    const initialInput = searchParams.get('input');
+    if (initialInput) {
+      setInput(initialInput);
+      // Wait for projects to be set before generating
+      setTimeout(() => generate(initialInput), 500);
+    }
+
+    fetchSuggestions(ps);
+  }, [searchParams, fetchSuggestions, generate]);
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    loadInitial();
+  }, [loadInitial]);
 
   const handleSuggestionClick = (hook: string) => {
     setInput(hook);
@@ -270,8 +271,6 @@ function GenerateContent() {
               <OutputTabs
                 linkedin={result.linkedin}
                 xThread={result.x_thread}
-                onRegenerate={() => generate()}
-                generating={generating}
               />
               <div style={{ marginTop: 24, display: 'flex', gap: 16 }}>
                  <button className="btn-premium" style={{ flex: 1, height: 56 }} onClick={async () => {

@@ -1,4 +1,4 @@
-import { createServerClient, type CookieOptions } from '@supabase/ssr';
+import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
 import LandingPage from './landing/page';
 import DashboardPage from './dashboard/page'; // We'll move the old home to here

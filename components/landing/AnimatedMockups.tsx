@@ -20,7 +20,7 @@ export function WebhookMockup() {
       }
     }, 50);
     return () => clearInterval(interval);
-  }, []);
+  }, [payloadStr]);
 
   return (
     <div className="absolute inset-x-8 top-20 bottom-8 rounded-xl border border-[rgba(255,255,255,0.05)] bg-[rgba(0,0,0,0.4)] backdrop-blur-md overflow-hidden font-mono text-xs flex flex-col">

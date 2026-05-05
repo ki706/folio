@@ -1,9 +1,9 @@
 'use client';
 import { useEffect, useState, useCallback } from 'react';
-import { getProjects, Project, deleteProject } from '@/lib/store';
+import { getProjects, Project } from '@/lib/store';
 import ProjectCard from '@/components/projects/ProjectCard';
 import AddProjectSheet from '@/components/projects/AddProjectSheet';
-import { Plus, Briefcase, Filter } from 'lucide-react';
+import { Plus, Briefcase } from 'lucide-react';
 
 export default function ProjectsPage() {
   const [projects, setProjects] = useState<Project[]>([]);

@@ -1,5 +1,5 @@
 'use client';
-import { useState, useEffect, Suspense } from 'react';
+import { useState, useEffect, useCallback, Suspense } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Sparkles, ArrowRight, Terminal, Zap, ShieldCheck, Code } from 'lucide-react';
@@ -10,7 +10,7 @@ function LoginContent() {
   const [status, setStatus] = useState<{ type: 'error' | 'success', message: string } | null>(null);
   const router = useRouter();
 
-  const handleDemoLogin = async () => {
+  const handleDemoLogin = useCallback(async () => {
     setLoading(true);
     setStatus(null);
     try {
@@ -38,13 +38,14 @@ function LoginContent() {
       router.push('/');
       router.refresh();
     }
-  };
+  }, [router]);
 
   useEffect(() => {
     if (searchParams.get('demo') === 'true') {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       handleDemoLogin();
     }
-  }, [searchParams]);
+  }, [searchParams, handleDemoLogin]);
 
   const handleGitHubLogin = async () => {
     setLoading(true);

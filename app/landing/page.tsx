@@ -8,7 +8,7 @@ import { ArrowRight, Zap, Globe, Cpu, Radio, GitMerge, MessageCircle, Briefcase 
 
 const FADE_UP = {
   hidden: { opacity: 0, y: 30 },
-  show: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 50, damping: 10 } }
+  show: { opacity: 1, y: 0, transition: { type: "spring" as const, stiffness: 50, damping: 10 } }
 };
 
 export default function LandingPage() {
