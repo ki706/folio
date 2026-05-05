@@ -100,11 +100,11 @@ export function VoiceMockup() {
         <motion.div
           key={i}
           animate={{
-            height: [10, Math.random() * 40 + 20, 10],
+            height: [10, ((i * 7) % 40) + 20, 10],
             backgroundColor: ['rgba(245,158,11,0.2)', 'rgba(245,158,11,1)', 'rgba(245,158,11,0.2)']
           }}
           transition={{
-            duration: 1 + Math.random(),
+            duration: 1 + ((i * 3) % 10) * 0.1,
             repeat: Infinity,
             ease: "easeInOut",
             delay: i * 0.1

@@ -77,7 +77,7 @@ export default function TrendsPage() {
                 )}
               </div>
               <p className="text-[#ccc] text-sm leading-relaxed border-l-2 border-[rgba(255,255,255,0.1)] pl-4 italic">
-                "{post.post}"
+                &quot;{post.post}&quot;
               </p>
             </motion.div>
           ))}

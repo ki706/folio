@@ -18,6 +18,35 @@ const INACTIVITY_OPTIONS = [
   { value: 7, label: '1 week' },
 ];
 
+const Field = ({ label, hint, children }: { label: string; hint?: string; children: React.ReactNode }) => (
+  <div style={{ marginBottom: 24 }}>
+    <label className="section-title-premium" style={{ marginBottom: 8, display: 'block' }}>
+      {label}
+    </label>
+    {hint && <p style={{ fontSize: 13, color: 'var(--muted)', marginBottom: 12 }}>{hint}</p>}
+    {children}
+  </div>
+);
+
+const Section = ({ title, icon: Icon, children }: { title: string; icon: any; children: React.ReactNode }) => (
+  <div className="glass-card" style={{ marginBottom: 24, padding: 32 }}>
+    <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 32 }}>
+      <div style={{ width: 40, height: 40, borderRadius: 12, background: 'rgba(255,255,255,0.03)', border: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--green)' }}>
+        <Icon size={20} />
+      </div>
+      <h2 style={{ fontSize: 20, fontWeight: 700, color: 'var(--white)', letterSpacing: '-0.02em' }}>{title}</h2>
+    </div>
+    {children}
+  </div>
+);
+
+const ToggleRow = ({ label, value, onChange }: { label: string; value: boolean; onChange: (v: boolean) => void }) => (
+  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 0', borderBottom: '1px solid var(--border)' }}>
+    <span style={{ fontSize: 15, color: 'var(--white)', fontWeight: 500 }}>{label}</span>
+    <Toggle on={value} onChange={onChange} label={label} />
+  </div>
+);
+
 export default function SettingsPage() {
   const [settings, setSettings] = useState<Settings | null>(null);
   const [saved, setSaved] = useState(false);
@@ -75,34 +104,7 @@ ${settings.voice_description}
 
 Writing Samples: ${settings.writing_samples.length} added`;
 
-  const Field = ({ label, hint, children }: { label: string; hint?: string; children: React.ReactNode }) => (
-    <div style={{ marginBottom: 24 }}>
-      <label className="section-title-premium" style={{ marginBottom: 8, display: 'block' }}>
-        {label}
-      </label>
-      {hint && <p style={{ fontSize: 13, color: 'var(--muted)', marginBottom: 12 }}>{hint}</p>}
-      {children}
-    </div>
-  );
 
-  const Section = ({ title, icon: Icon, children }: { title: string; icon: any; children: React.ReactNode }) => (
-    <div className="glass-card" style={{ marginBottom: 24, padding: 32 }}>
-      <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 32 }}>
-        <div style={{ width: 40, height: 40, borderRadius: 12, background: 'rgba(255,255,255,0.03)', border: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--green)' }}>
-          <Icon size={20} />
-        </div>
-        <h2 style={{ fontSize: 20, fontWeight: 700, color: 'var(--white)', letterSpacing: '-0.02em' }}>{title}</h2>
-      </div>
-      {children}
-    </div>
-  );
-
-  const ToggleRow = ({ label, value, onChange }: { label: string; value: boolean; onChange: (v: boolean) => void }) => (
-    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 0', borderBottom: '1px solid var(--border)' }}>
-      <span style={{ fontSize: 15, color: 'var(--white)', fontWeight: 500 }}>{label}</span>
-      <Toggle on={value} onChange={onChange} label={label} />
-    </div>
-  );
 
   return (
     <div style={{ maxWidth: 900, margin: '0 auto' }}>

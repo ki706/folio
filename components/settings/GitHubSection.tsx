@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { Settings, saveSettings } from '@/lib/store';
-import { Code, Zap, Check, RefreshCw, ExternalLink, ShieldCheck } from 'lucide-react';
+import { Code, RefreshCw, ShieldCheck } from 'lucide-react';
 
 interface GitHubSectionProps {
   settings: Settings;
@@ -22,6 +22,23 @@ export default function GitHubSection({ settings, onRefresh }: GitHubSectionProp
   const [loadingRepos, setLoadingRepos] = useState(false);
   const [connectingId, setConnectingId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  const fetchRepos = async () => {
+    setLoadingRepos(true);
+    setError(null);
+    try {
+      const res = await fetch('/api/github/repos', {
+        headers: { Authorization: `Bearer ${settings.github_token}` },
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to fetch repos');
+      setRepos(data.repos || data || []);
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoadingRepos(false);
+    }
+  };
 
   useEffect(() => {
     if (settings.github_token) {
