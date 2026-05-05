@@ -10,28 +10,6 @@ function LoginContent() {
   const [status, setStatus] = useState<{ type: 'error' | 'success', message: string } | null>(null);
   const router = useRouter();
 
-  useEffect(() => {
-    if (searchParams.get('demo') === 'true') {
-      handleDemoLogin();
-    }
-  }, [searchParams]);
-
-  const handleGitHubLogin = async () => {
-    setLoading(true);
-    setStatus(null);
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: 'github',
-      options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
-        scopes: 'repo read:user user:email'
-      }
-    });
-    if (error) {
-      setStatus({ type: 'error', message: error.message });
-      setLoading(false);
-    }
-  };
-
   const handleDemoLogin = async () => {
     setLoading(true);
     setStatus(null);
@@ -62,6 +40,28 @@ function LoginContent() {
     }
   };
 
+  useEffect(() => {
+    if (searchParams.get('demo') === 'true') {
+      handleDemoLogin();
+    }
+  }, [searchParams]);
+
+  const handleGitHubLogin = async () => {
+    setLoading(true);
+    setStatus(null);
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'github',
+      options: {
+        redirectTo: `${window.location.origin}/auth/callback`,
+        scopes: 'repo read:user user:email'
+      }
+    });
+    if (error) {
+      setStatus({ type: 'error', message: error.message });
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-black relative overflow-hidden font-sans">
       {/* Dynamic Background Effects */}
@@ -71,7 +71,7 @@ function LoginContent() {
       <div className="glass-card animate-fade-in w-full max-w-[440px] p-12 relative z-10 text-center shadow-2xl">
         <div className="mb-12">
           <div className="app-logo text-4xl mb-3 tracking-tighter">folio</div>
-          <p className="text-[var(--muted)] text-sm font-medium tracking-tight">The world's first commit-to-content engine.</p>
+          <p className="text-[var(--muted)] text-sm font-medium tracking-tight">The world&apos;s first commit-to-content engine.</p>
         </div>
 
         {status && (

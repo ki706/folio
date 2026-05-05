@@ -60,7 +60,7 @@ export default function OnboardingPage() {
             {step === 1 && (
               <motion.div key="1" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="flex flex-col flex-1">
                 <h2 className="text-3xl font-bold mb-2">Initialize Persona.</h2>
-                <p className="text-[#888] mb-8">Let's define the core identity of your brand engine.</p>
+                <p className="text-[#888] mb-8">Let&apos;s define the core identity of your brand engine.</p>
                 
                 <div className="flex flex-col gap-5 flex-1">
                   <div>

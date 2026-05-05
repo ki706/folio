@@ -59,6 +59,7 @@ export default function SettingsPage() {
   }, []);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     load();
   }, [load]);
 
@@ -182,7 +183,7 @@ Writing Samples: ${settings.writing_samples.length} added`;
               {settings.writing_samples.map((sample, i) => (
                 <div key={i} className="glass-card" style={{ padding: '16px', background: 'rgba(255,255,255,0.02)', position: 'relative' }}>
                   <p style={{ fontSize: 13, color: 'var(--muted)', lineHeight: 1.6, paddingRight: 32 }}>
-                    "{sample.slice(0, 150)}{sample.length > 150 ? '...' : ''}"
+                    &quot;{sample.slice(0, 150)}{sample.length > 150 ? '...' : ''}&quot;
                   </p>
                   <button onClick={() => removeSample(i)} style={{ position: 'absolute', top: 12, right: 12, background: 'none', border: 'none', cursor: 'pointer', color: 'var(--muted-dark)' }}>
                     <EyeOff size={14} />
