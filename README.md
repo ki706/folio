@@ -1,36 +1,85 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Folio: The Personal Broadcast Engine 🚀
 
-## Getting Started
+**Turn Commits into Social Capital.** Folio is a high-performance content synthesis engine designed for engineers who want to build a personal brand without the friction of manual content creation. It listens to your GitHub activity and automatically crafts high-resonance technical narratives for LinkedIn and X (Twitter).
 
-First, run the development server:
+![Folio Hero Mockup](https://raw.githubusercontent.com/ki706/folio/main/public/preview.png) *(Note: Placeholder for your actual project screenshot)*
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## ⚡ Key Features
+
+- **Zero-Config Pipeline**: Connect your GitHub and let Folio handle the rest. No complex setup, just pure commit-to-content automation.
+- **Neural Voice Matching**: Advanced AI that learns your technical vocabulary and syntax to ensure every post sounds exactly like you.
+- **Bento Intelligence Dashboard**: A premium, "deep dark" aesthetic interface providing real-time analytics on your brand resonance and social ROI.
+- **Multi-Channel Synthesis**: Tailors content specifically for the unique algorithms of LinkedIn and X threads from a single source of truth.
+- **Mobile-First Studio**: A fully responsive experience that allows you to approve, edit, and broadcast drafts from any device.
+
+## 🛠️ Technical Architecture
+
+Folio is built with a state-of-the-art stack focused on speed, security, and developer experience:
+
+- **Framework**: [Next.js 15+](https://nextjs.org) with Turbopack & App Router
+- **Runtime**: Node.js 20+
+- **Database & Auth**: [Supabase](https://supabase.com)
+- **AI Intelligence**: [Groq AI](https://groq.com) (Llama-3.3-70b-Versatile)
+- **Styling**: Vanilla CSS with modern Glassmorphism and Mesh Gradients
+- **Animations**: [Framer Motion](https://www.framer.com/motion/)
+- **Icons**: [Lucide React](https://lucide.dev)
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- Node.js 20.x or later
+- A Supabase account and project
+- A Groq API key
+
+### Installation
+
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/yourusername/folio.git
+   cd folio
+   ```
+
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+
+3. **Configure environment variables:**
+   Create a `.env.local` file in the root directory:
+   ```env
+   NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+   GROQ_API_KEY=your_groq_api_key
+   GITHUB_WEBHOOK_SECRET=your_secret_for_hmac
+   ```
+
+4. **Initialize the development server:**
+   ```bash
+   npm run dev
+   ```
+
+## 📐 Platform Structure
+
+```text
+/app         - Next.js App Router (Pages & API Routes)
+/components  - High-fidelity UI components & Interactive Mockups
+/lib         - Core Logic, Store Management & AI Prompt Engineering
+/public      - Static assets & Branding
+/styles      - Global Design System & Animations
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🛡️ Security & Purity
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+Folio adheres to the highest standards of modern web development:
+- **React 19 Ready**: Implements strict render-phase purity and idempotency.
+- **HMAC Verification**: Securely validates GitHub webhooks to prevent spoofing.
+- **Production-Hardened**: Zero linting errors and a fully optimized build pipeline.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 📄 License
 
-## Learn More
+This project is licensed under the MIT License.
 
-To learn more about Next.js, take a look at the following resources:
+---
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+**Built by engineers, for engineers. Broadcast your journey with Folio.**
