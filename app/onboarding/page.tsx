@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getSettings, saveSettings, Settings } from '@/lib/store';
-import { ArrowRight, CheckCircle, Github, Sparkles, Terminal } from 'lucide-react';
+import { ArrowRight, CheckCircle, GitMerge, Sparkles, Terminal } from 'lucide-react';
 import AmbientBackground from '@/components/landing/AmbientBackground';
 
 export default function OnboardingPage() {
@@ -85,13 +85,13 @@ export default function OnboardingPage() {
 
             {step === 2 && (
               <motion.div key="2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="flex flex-col flex-1">
-                <div className="absolute top-0 right-0 p-8 text-[#00CCFF] opacity-20"><Github size={100} /></div>
+                <div className="absolute top-0 right-0 p-8 text-[#00CCFF] opacity-20"><GitMerge size={100} /></div>
                 <h2 className="text-3xl font-bold mb-2">Connect Output.</h2>
                 <p className="text-[#888] mb-8 relative z-10">Where should we route your synthesized content?</p>
                 
                 <div className="flex flex-col gap-5 flex-1 relative z-10">
                   <div>
-                    <label className="text-xs font-bold text-[#888] uppercase tracking-widest mb-2 flex items-center gap-2"><Github size={14}/> GitHub URL</label>
+                    <label className="text-xs font-bold text-[#888] uppercase tracking-widest mb-2 flex items-center gap-2"><GitMerge size={14}/> GitHub URL</label>
                     <input type="text" className="input-premium" placeholder="https://github.com/username" 
                       value={settings.github_url || ''} onChange={e => setSettings({...settings, github_url: e.target.value})} 
                     />

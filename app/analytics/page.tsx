@@ -1,13 +1,13 @@
 'use client';
 import { motion } from 'framer-motion';
-import { TrendingUp, GitCommit, Twitter, ArrowRight, Github } from 'lucide-react';
+import { TrendingUp, GitCommit, MessageCircle, ArrowRight, GitMerge } from 'lucide-react';
 
 export default function AnalyticsPage() {
   const nodes = [
     { id: 'commits', label: 'Commits Analyzed', value: '142', icon: GitCommit, color: '#00FF88' },
     { id: 'posts', label: 'Posts Synthesized', value: '38', icon: TrendingUp, color: '#00CCFF' },
-    { id: 'impressions', label: 'Total Impressions', value: '124.5k', icon: Twitter, color: '#8B5CF6' },
-    { id: 'stars', label: 'GitHub Stars', value: '+412', icon: Github, color: '#F59E0B' },
+    { id: 'impressions', label: 'Total Impressions', value: '124.5k', icon: MessageCircle, color: '#8B5CF6' },
+    { id: 'stars', label: 'GitHub Stars', value: '+412', icon: GitMerge, color: '#F59E0B' },
   ];
 
   return (

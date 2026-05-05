@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import LandingNavbar from '@/components/landing/LandingNavbar';
 import AmbientBackground from '@/components/landing/AmbientBackground';
 import { WebhookMockup, SocialMockup, VoiceMockup } from '@/components/landing/AnimatedMockups';
-import { ArrowRight, Zap, Globe, Cpu, Radio, Github, Twitter, Linkedin } from 'lucide-react';
+import { ArrowRight, Zap, Globe, Cpu, Radio, GitMerge, MessageCircle, Briefcase } from 'lucide-react';
 
 const FADE_UP = {
   hidden: { opacity: 0, y: 30 },
@@ -68,7 +68,7 @@ export default function LandingPage() {
             <span className="text-[11px] font-bold text-[#555] tracking-[0.2em] uppercase">Trusted by engineers at</span>
             <div className="flex gap-8 items-center justify-center opacity-40 grayscale mix-blend-screen">
               {/* Dummy SVGs to look like premium companies */}
-              <div className="flex items-center gap-2 font-bold text-xl"><Github size={24}/> Acme Corp</div>
+              <div className="flex items-center gap-2 font-bold text-xl"><GitMerge size={24}/> Acme Corp</div>
               <div className="flex items-center gap-2 font-bold text-xl"><Zap size={24}/> Linear</div>
               <div className="flex items-center gap-2 font-bold text-xl"><Globe size={24}/> Vercel</div>
             </div>

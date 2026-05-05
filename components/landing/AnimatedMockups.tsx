@@ -1,6 +1,6 @@
 'use client';
 import { motion } from 'framer-motion';
-import { Github, Twitter, Linkedin, Terminal } from 'lucide-react';
+import { GitMerge, MessageCircle, Briefcase, Terminal } from 'lucide-react';
 import { useState, useEffect } from 'react';
 
 // 1. Webhook Visualizer: Types out a JSON payload
@@ -57,7 +57,7 @@ export function SocialMockup() {
           transition={{ duration: 2, repeat: Infinity }}
           className="w-12 h-12 rounded-xl bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.1)] flex items-center justify-center z-10"
         >
-          <Github size={20} className="text-white" />
+          <GitMerge size={20} className="text-white" />
         </motion.div>
 
         {/* Lines */}
@@ -79,10 +79,10 @@ export function SocialMockup() {
         {/* Destinations */}
         <div className="flex flex-col justify-between h-full z-10">
           <div className="w-10 h-10 rounded-lg bg-[rgba(0,204,255,0.1)] border border-[rgba(0,204,255,0.2)] flex items-center justify-center">
-            <Twitter size={16} className="text-[#00CCFF]" />
+            <MessageCircle size={16} className="text-[#00CCFF]" />
           </div>
           <div className="w-10 h-10 rounded-lg bg-[rgba(0,119,181,0.1)] border border-[rgba(0,119,181,0.2)] flex items-center justify-center">
-            <Linkedin size={16} className="text-[#0077b5]" />
+            <Briefcase size={16} className="text-[#0077b5]" />
           </div>
         </div>
       </div>
