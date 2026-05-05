@@ -1,6 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import { Settings, saveSettings } from '@/lib/store';
+import { useToast } from '@/components/ui/Toast';
 import { Code, RefreshCw, ShieldCheck } from 'lucide-react';
 
 interface GitHubSectionProps {
@@ -17,6 +18,7 @@ interface Repo {
 }
 
 export default function GitHubSection({ settings, onRefresh }: GitHubSectionProps) {
+  const { success, error: toastError } = useToast();
   const [token, setToken] = useState(settings.github_token || '');
   const [repos, setRepos] = useState<Repo[]>([]);
   const [loadingRepos, setLoadingRepos] = useState(false);
@@ -34,7 +36,7 @@ export default function GitHubSection({ settings, onRefresh }: GitHubSectionProp
       if (!res.ok) throw new Error(data.error || 'Failed to fetch repos');
       setRepos(data.repos || data || []);
     } catch (err: any) {
-      setError(err.message);
+      toastError(err.message || 'Node sync failed. Discovery offline.');
     } finally {
       setLoadingRepos(false);
     }
@@ -50,6 +52,7 @@ export default function GitHubSection({ settings, onRefresh }: GitHubSectionProp
 
   const handleSaveToken = async () => {
     await saveSettings({ github_token: token });
+    success('Identity link updated.');
     onRefresh();
   };
 
@@ -63,9 +66,10 @@ export default function GitHubSection({ settings, onRefresh }: GitHubSectionProp
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Failed to setup webhook');
+      success(`Successfully tracking ${repoFullName}`);
       onRefresh();
     } catch (err: any) {
-      alert(err.message);
+      toastError(err.message || 'Neural link failed.');
     } finally {
       setConnectingId(null);
     }

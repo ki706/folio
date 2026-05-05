@@ -14,19 +14,19 @@ export default function TrendsPage() {
   };
 
   return (
-    <div className="max-w-[1100px] mx-auto pb-[100px] animate-fade-in">
-      <div className="flex items-end justify-between mb-16">
+    <div className="max-w-[1100px] mx-auto animate-fade-in">
+      <div className="page-header">
         <div>
-          <div className="flex items-center gap-2.5 text-[11px] font-bold tracking-[0.15em] mb-4 text-[#00CCFF]">
-            <Radio size={14} className="animate-pulse" /> TREND ARBITRAGE
+          <div className="flex items-center gap-2.5 text-[11px] font-bold tracking-[0.15em] mb-3 text-[#00CCFF]">
+            <Radio size={13} className="animate-pulse" /> TREND ARBITRAGE
           </div>
-          <h1 className="text-[clamp(44px,6vw,64px)] font-[900] tracking-[-0.06em] leading-none text-white">
+          <h1 style={{ fontSize: 'clamp(32px, 6vw, 60px)', fontWeight: 900, letterSpacing: '-0.055em', lineHeight: 1, color: 'var(--white)' }}>
             Algorithm <span className="text-gradient">Inject.</span>
           </h1>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
         
         {/* Live Trends Sidebar */}
         <div className="lg:col-span-1 flex flex-col gap-4">

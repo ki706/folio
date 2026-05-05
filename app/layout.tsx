@@ -17,11 +17,15 @@ export const metadata: Metadata = {
   },
 };
 
+import { ToastProvider } from '@/components/ui/Toast';
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <body>
-        <MobileLayout>{children}</MobileLayout>
+        <ToastProvider>
+          <MobileLayout>{children}</MobileLayout>
+        </ToastProvider>
       </body>
     </html>
   );

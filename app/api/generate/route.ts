@@ -66,7 +66,7 @@ export async function POST(req: NextRequest) {
     const selectedProject = projectId ? projects.find((p: any) => p.id === projectId) : null;
     const userMessage = `${input.trim()}${selectedProject ? ` [Context: ${selectedProject.name}]` : ''} [Tone: ${tone}]`;
 
-    const response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
+    let response = await fetch('https://api.groq.com/openai/v1/chat/completions', {
       method: 'POST',
       headers: {
         Authorization: `Bearer ${apiKey}`,
@@ -85,9 +85,36 @@ export async function POST(req: NextRequest) {
     });
 
     if (!response.ok) {
-      const err = await response.text();
-      console.error('Groq error:', err);
-      return NextResponse.json({ error: 'AI generation failed' }, { status: 500 });
+      const groqError = await response.text();
+      console.warn('Groq Cluster Limited:', groqError);
+      console.warn('Pivoting to OpenRouter fallback...');
+      
+      const orKey = process.env.OPENROUTER_API_KEY;
+      if (orKey) {
+        response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${orKey}`,
+            'Content-Type': 'application/json',
+            'HTTP-Referer': 'https://folio.dev',
+            'X-Title': 'Folio Broadcast Engine',
+          },
+          body: JSON.stringify({
+            model: 'meta-llama/llama-3.3-70b-instruct:free',
+            messages: [
+              { role: 'system', content: systemPrompt },
+              { role: 'user', content: userMessage },
+            ],
+            temperature: 0.7,
+          }),
+        });
+      }
+    }
+
+    if (!response.ok) {
+      const finalErr = await response.text();
+      console.error('AI Cluster failure (Final):', finalErr);
+      return NextResponse.json({ error: 'AI synthesis nodes are currently unresponsive. Please check network sync.' }, { status: 500 });
     }
 
     const data = await response.json();

@@ -9,6 +9,7 @@ import {
   Project,
   Post,
 } from '@/lib/store';
+import { useToast } from '@/components/ui/Toast';
 import ToneSelector from '@/components/generate/ToneSelector';
 import ContextSelector from '@/components/generate/ContextSelector';
 import OutputTabs from '@/components/generate/OutputTabs';
@@ -44,6 +45,7 @@ function NeuralWave() {
 function GenerateContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const { success, error: toastError, info } = useToast();
   const [input, setInput] = useState('');
   const [tone, setTone] = useState<'builder' | 'hustler' | 'hot_take'>('builder');
   const [selectedProject, setSelectedProject] = useState<string | null>(null);
@@ -74,6 +76,7 @@ function GenerateContent() {
       setSuggestions(data.suggestions || []);
     } catch (err) {
       console.error('Suggestions failed');
+      toastError('Neural nodes are recalibrating. Failed to fetch hooks.');
     } finally {
       setLoadingSuggestions(false);
     }
@@ -123,36 +126,39 @@ function GenerateContent() {
       
       const posts = await getPosts();
       setResult({ linkedin: data.linkedin, x_thread: data.x_thread, postId: posts[0].id });
+      success('Brand asset successfully synthesized.');
     } catch (err) {
+      console.error('Generate error:', err);
+      toastError('Synthesis link severed. Check your network sync.');
       setError('Network sync failed.');
     } finally {
       setGenerating(false);
     }
   }, [input, tone, selectedProject, projects]);
 
-  const loadInitial = useCallback(async () => {
-    const ps = await getProjects();
-    setProjects(ps);
-    
-    const pid = searchParams.get('project');
-    if (pid && ps.find((p) => p.id === pid)) {
-      setSelectedProject(pid);
-    }
-
-    const initialInput = searchParams.get('input');
-    if (initialInput) {
-      setInput(initialInput);
-      // Wait for projects to be set before generating
-      setTimeout(() => generate(initialInput), 500);
-    }
-
-    fetchSuggestions(ps);
-  }, [searchParams, fetchSuggestions, generate]);
-
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
+    const loadInitial = async () => {
+      const ps = await getProjects();
+      setProjects(ps);
+      
+      const pid = searchParams.get('project');
+      if (pid && ps.find((p) => p.id === pid)) {
+        setSelectedProject(pid);
+      }
+
+      const initialInput = searchParams.get('input');
+      if (initialInput) {
+        setInput(initialInput);
+        // Wait for projects to be set before generating
+        setTimeout(() => generate(initialInput), 500);
+      }
+
+      fetchSuggestions(ps);
+    };
+
     loadInitial();
-  }, [loadInitial]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   const handleSuggestionClick = (hook: string) => {
     setInput(hook);
@@ -161,13 +167,13 @@ function GenerateContent() {
 
   return (
     <div style={{ maxWidth: 1200, margin: '0 auto' }}>
-      <div style={{ marginBottom: 40, display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between' }}>
+      <div className="page-header">
         <div>
-          <h1 className="text-gradient" style={{ fontSize: 40, fontWeight: 900, letterSpacing: '-0.06em' }}>Content Studio</h1>
-          <p style={{ color: 'var(--muted)', marginTop: 4 }}>Elite Brand Synthesis Engine</p>
+          <h1 className="text-gradient" style={{ fontSize: 'clamp(28px, 5vw, 40px)', fontWeight: 900, letterSpacing: '-0.055em' }}>Content Studio</h1>
+          <p style={{ color: 'var(--muted)', marginTop: 4, fontSize: 14 }}>Elite Brand Synthesis Engine</p>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 12, color: 'var(--muted-dark)', fontSize: 11, fontWeight: 700 }}>
-           <Activity size={14} /> NEURAL SYNC ACTIVE
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, color: 'var(--muted-dark)', fontSize: 11, fontWeight: 700, flexShrink: 0 }}>
+           <Activity size={13} /> NEURAL SYNC ACTIVE
         </div>
       </div>
 
@@ -202,10 +208,10 @@ function GenerateContent() {
         </div>
       )}
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(360px, 1fr))', gap: 48, alignItems: 'start' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(360px, 100%), 1fr))', gap: 'clamp(20px, 4vw, 48px)', alignItems: 'start' }}>
         
         {/* Input Console */}
-        <div className={`glass-card${generating ? ' border-pulse' : ''}`} style={{ padding: 32, border: '1px solid var(--border-bright)' }}>
+        <div className={`glass-card${generating ? ' border-pulse' : ''}`} style={{ padding: 'clamp(20px, 3vw, 32px)', border: '1px solid var(--border-bright)' }}>
           <div style={{ marginBottom: 32 }}>
             <label className="section-title-premium">
               <Zap size={14} className="text-green" /> Concept Seed
@@ -220,7 +226,7 @@ function GenerateContent() {
             />
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24, marginBottom: 32 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(160px, 100%), 1fr))', gap: 16, marginBottom: 28 }}>
             <div>
               <label className="section-title-premium">Tone</label>
               <ToneSelector selected={tone} onSelect={setTone} />
@@ -276,6 +282,7 @@ function GenerateContent() {
                  <button className="btn-premium" style={{ flex: 1, height: 56 }} onClick={async () => {
                     await savePost({ id: result.postId, is_saved: true });
                     setSaved(true);
+                    success('Post committed to brand history.');
                   }}>
                     {saved ? '✓ ARCHIVED' : 'COMMIT TO BRAND HISTORY'}
                  </button>

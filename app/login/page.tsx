@@ -2,10 +2,12 @@
 import { useState, useEffect, useCallback, Suspense } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { useToast } from '@/components/ui/Toast';
 import { Sparkles, ArrowRight, Terminal, Zap, ShieldCheck, Code } from 'lucide-react';
 
 function LoginContent() {
   const searchParams = useSearchParams();
+  const { success, error: toastError } = useToast();
   const [loading, setLoading] = useState(false);
   const [status, setStatus] = useState<{ type: 'error' | 'success', message: string } | null>(null);
   const router = useRouter();
@@ -33,6 +35,7 @@ function LoginContent() {
       }
     } catch (err: any) {
       console.error('Demo Login Exception:', err);
+      toastError('Neural link timed out. Defaulting to local simulation.');
       document.cookie = "folio_demo_mode=true; path=/; max-age=3600; SameSite=Lax";
       localStorage.setItem('folio_demo_mode', 'true');
       router.push('/');
@@ -58,18 +61,19 @@ function LoginContent() {
       }
     });
     if (error) {
+      toastError(error.message || 'Identity verification failed.');
       setStatus({ type: 'error', message: error.message });
       setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-black relative overflow-hidden font-sans">
-      {/* Dynamic Background Effects */}
-      <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-[var(--green-dim)] blur-[120px] rounded-full pointer-events-none opacity-40" />
-      <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-[var(--green-dim)] blur-[120px] rounded-full pointer-events-none opacity-40" />
-      
-      <div className="glass-card animate-fade-in w-full max-w-[440px] p-12 relative z-10 text-center shadow-2xl">
+    <div style={{ minHeight: '100dvh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--bg)', position: 'relative', overflow: 'hidden', padding: 'clamp(16px, 4vw, 32px)' }}>
+      {/* Dynamic Background */}
+      <div style={{ position: 'absolute', top: '-10%', left: '-10%', width: '50%', height: '50%', background: 'var(--green-dim)', filter: 'blur(120px)', borderRadius: '50%', pointerEvents: 'none', opacity: 0.5 }} />
+      <div style={{ position: 'absolute', bottom: '-10%', right: '-10%', width: '50%', height: '50%', background: 'var(--green-dim)', filter: 'blur(120px)', borderRadius: '50%', pointerEvents: 'none', opacity: 0.5 }} />
+
+      <div className="glass-card animate-fade-in" style={{ width: '100%', maxWidth: 420, padding: 'clamp(28px, 6vw, 48px)', position: 'relative', zIndex: 10, textAlign: 'center', boxShadow: '0 24px 64px rgba(0,0,0,0.4)' }}>
         <div className="mb-12">
           <div className="app-logo text-4xl mb-3 tracking-tighter">folio</div>
           <p className="text-[var(--muted)] text-sm font-medium tracking-tight">The world&apos;s first commit-to-content engine.</p>
@@ -116,13 +120,13 @@ function LoginContent() {
         </p>
       </div>
       
-      <div className="absolute bottom-10 flex flex-col items-center gap-4">
-         <div className="flex gap-8 text-[10px] text-[var(--muted)] font-bold tracking-widest uppercase">
-            <span className="flex items-center gap-2 text-[var(--green)]"><ShieldCheck size={12} /> SECURE OAUTH 2.0</span>
-            <button className="hover:text-white transition-colors">PRIVACY</button>
-            <button className="hover:text-white transition-colors">TERMS</button>
+      <div style={{ marginTop: 'clamp(24px, 5vw, 48px)', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 12 }}>
+         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'clamp(12px, 3vw, 28px)', justifyContent: 'center', fontSize: 10, color: 'var(--muted)', fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase' }}>
+            <span style={{ display: 'flex', alignItems: 'center', gap: 6, color: 'var(--green)' }}><ShieldCheck size={11} /> SECURE OAUTH 2.0</span>
+            <button style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--muted)', fontWeight: 700, fontSize: 10, letterSpacing: '0.14em', textTransform: 'uppercase' }} className="hover:text-white transition-colors">PRIVACY</button>
+            <button style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--muted)', fontWeight: 700, fontSize: 10, letterSpacing: '0.14em', textTransform: 'uppercase' }} className="hover:text-white transition-colors">TERMS</button>
          </div>
-         <div className="text-[9px] text-[var(--muted)]/50 font-black tracking-[0.3em] uppercase">© 2026 FOLIO BROADCAST ENGINE</div>
+         <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.2)', fontWeight: 800, letterSpacing: '0.25em', textTransform: 'uppercase' }}>© 2026 FOLIO BROADCAST ENGINE</div>
       </div>
     </div>
   );

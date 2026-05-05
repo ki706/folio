@@ -88,6 +88,32 @@ export async function POST(req: Request) {
         ],
         model: 'llama-3.3-70b-versatile',
         response_format: { type: 'json_object' }
+      }).catch(async (err) => {
+        console.warn('Webhook Groq failed. Falling back to OpenRouter...');
+        const orKey = process.env.OPENROUTER_API_KEY;
+        if (!orKey) throw err;
+
+        const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+          method: 'POST',
+          headers: {
+            'Authorization': `Bearer ${orKey}`,
+            'Content-Type': 'application/json',
+            'HTTP-Referer': 'https://folio.dev',
+            'X-Title': 'Folio Webhook Engine',
+          },
+          body: JSON.stringify({
+            model: 'meta-llama/llama-3.3-70b-instruct:free',
+            messages: [
+              { role: 'system', content: systemPrompt },
+              { role: 'user', content: userPrompt }
+            ],
+            response_format: { type: 'json_object' }
+          }),
+        });
+
+        if (!res.ok) throw new Error('OpenRouter fallback failed');
+        const orData = await res.json();
+        return { choices: orData.choices };
       });
 
       const aiResult = JSON.parse(completion.choices[0].message.content || '{}');

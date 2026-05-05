@@ -3,11 +3,13 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getSettings, saveSettings, Settings } from '@/lib/store';
+import { useToast } from '@/components/ui/Toast';
 import { ArrowRight, CheckCircle, GitMerge, Sparkles, Terminal } from 'lucide-react';
 import AmbientBackground from '@/components/landing/AmbientBackground';
 
 export default function OnboardingPage() {
   const router = useRouter();
+  const { success, error: toastError } = useToast();
   const [step, setStep] = useState(1);
   const [settings, setSettings] = useState<Partial<Settings>>({});
   const [loading, setLoading] = useState(true);
@@ -35,6 +37,7 @@ export default function OnboardingPage() {
     
     // Simulate some neural network calibration time for the "Aha" feeling
     setTimeout(() => {
+      success('Neural identity synchronized. Welcome to Folio.');
       router.push('/dashboard');
     }, 2000);
   };

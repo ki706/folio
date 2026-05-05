@@ -44,9 +44,31 @@ export async function POST(req: Request) {
       messages: [{ role: 'user', content: prompt }],
       model: 'llama-3.3-70b-versatile',
       response_format: { type: 'json_object' },
+    }).catch(async (err) => {
+      console.warn('Groq Suggestions failed. Falling back to OpenRouter...');
+      const orKey = process.env.OPENROUTER_API_KEY;
+      if (!orKey) throw err;
+
+      const res = await fetch('https://openrouter.ai/api/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${orKey}`,
+          'Content-Type': 'application/json',
+          'HTTP-Referer': 'https://folio.dev',
+          'X-Title': 'Folio Strategy Engine',
+        },
+        body: JSON.stringify({
+          model: 'meta-llama/llama-3-8b-instruct:free',
+          messages: [{ role: 'user', content: prompt }],
+        }),
+      });
+
+      if (!res.ok) throw new Error('OpenRouter fallback failed');
+      const orData = await res.json();
+      return { choices: orData.choices };
     });
 
-    const data = JSON.parse(completion.choices[0].message.content || '{}');
+    const data = JSON.parse((completion as any).choices[0].message.content || '{}');
     
     // Fallback if AI fails or returns empty
     const suggestions = data.suggestions || [

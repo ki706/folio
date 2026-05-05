@@ -3,6 +3,7 @@ import { useState } from 'react';
 import BottomSheet from '@/components/ui/BottomSheet';
 import TagInput from '@/components/ui/TagInput';
 import { Project, saveProject } from '@/lib/store';
+import { useToast } from '@/components/ui/Toast';
 
 interface AddProjectSheetProps {
   project?: Project | null;
@@ -11,6 +12,7 @@ interface AddProjectSheetProps {
 }
 
 export default function AddProjectSheet({ project, onClose, onSaved }: AddProjectSheetProps) {
+  const { success, error: toastError } = useToast();
   const [name, setName] = useState(project?.name || '');
   const [description, setDescription] = useState(project?.description || '');
   const [stack, setStack] = useState<string[]>(project?.stack || []);
@@ -22,18 +24,24 @@ export default function AddProjectSheet({ project, onClose, onSaved }: AddProjec
   const handleSave = async () => {
     if (!name.trim()) return;
     setSaving(true);
-    await saveProject({
-      id: project?.id,
-      name,
-      description,
-      stack,
-      learned,
-      achievement,
-      status,
-    });
-    setSaving(false);
-    onSaved();
-    onClose();
+    try {
+      await saveProject({
+        id: project?.id,
+        name,
+        description,
+        stack,
+        learned,
+        achievement,
+        status,
+      });
+      success(project ? 'Project context updated.' : 'New project initialized.');
+      onSaved();
+      onClose();
+    } catch (err) {
+      toastError('Neural context sync failed.');
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (

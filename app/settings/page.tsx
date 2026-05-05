@@ -29,7 +29,7 @@ const Field = ({ label, hint, children }: { label: string; hint?: string; childr
 );
 
 const Section = ({ title, icon: Icon, children }: { title: string; icon: any; children: React.ReactNode }) => (
-  <div className="glass-card" style={{ marginBottom: 24, padding: 32 }}>
+  <div className="glass-card" style={{ marginBottom: 20, padding: 'clamp(20px, 3vw, 32px)' }}>
     <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 32 }}>
       <div style={{ width: 40, height: 40, borderRadius: 12, background: 'rgba(255,255,255,0.03)', border: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--green)' }}>
         <Icon size={20} />
@@ -109,17 +109,17 @@ Writing Samples: ${settings.writing_samples.length} added`;
 
   return (
     <div style={{ maxWidth: 900, margin: '0 auto' }}>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 40 }}>
+      <div className="page-header">
         <div>
-          <h1 className="text-gradient" style={{ fontSize: 40, fontWeight: 800, letterSpacing: '-0.04em' }}>Settings</h1>
-          <p style={{ color: 'var(--muted)', marginTop: 4 }}>Configure your identity and AI parameters.</p>
+          <h1 className="text-gradient" style={{ fontSize: 'clamp(28px, 5vw, 40px)', fontWeight: 800, letterSpacing: '-0.04em' }}>Settings</h1>
+          <p style={{ color: 'var(--muted)', marginTop: 4, fontSize: 14 }}>Configure your identity and AI parameters.</p>
         </div>
         <button
           className="btn-premium"
           onClick={handleSave}
-          style={{ padding: '0 32px', height: 48 }}
+          style={{ height: 46, padding: '0 28px', flexShrink: 0 }}
         >
-          {saved ? '✓ CHANGES SAVED' : 'COMMIT SETTINGS'}
+          {saved ? '✓ SAVED' : 'COMMIT SETTINGS'}
         </button>
       </div>
 
@@ -127,7 +127,7 @@ Writing Samples: ${settings.writing_samples.length} added`;
         
         {/* Your Identity */}
         <Section title="Identity" icon={User}>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 24 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(280px, 100%), 1fr))', gap: 20 }}>
             <Field label="Full Name">
               <input className="input-premium" value={settings.name} onChange={(e) => set({ name: e.target.value })} placeholder="e.g. Kidus Ismail" />
             </Field>
@@ -135,7 +135,7 @@ Writing Samples: ${settings.writing_samples.length} added`;
               <input className="input-premium" value={settings.title} onChange={(e) => set({ title: e.target.value })} placeholder="Full Stack Developer" />
             </Field>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 24 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(200px, 100%), 1fr))', gap: 20 }}>
             <Field label="Years Experience">
               <input className="input-premium" value={settings.years_exp} onChange={(e) => set({ years_exp: e.target.value })} placeholder="5" />
             </Field>
@@ -144,7 +144,7 @@ Writing Samples: ${settings.writing_samples.length} added`;
             </Field>
           </div>
           <Field label="Primary Objective">
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))', gap: 12 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(130px, 100%), 1fr))', gap: 10 }}>
               {GOAL_OPTIONS.map((opt) => (
                 <button
                   key={opt.value}
@@ -213,7 +213,7 @@ Writing Samples: ${settings.writing_samples.length} added`;
 
         {/* Social Profiles */}
         <Section title="Network Integration" icon={Share2}>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 24 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(260px, 100%), 1fr))', gap: 20 }}>
             <Field label="LinkedIn URL">
               <input className="input-premium" value={settings.linkedin_url} onChange={(e) => set({ linkedin_url: e.target.value })} placeholder="linkedin.com/in/..." />
             </Field>

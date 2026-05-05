@@ -1,6 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { Post, deletePost, savePost } from '@/lib/store';
+import { useToast } from '@/components/ui/Toast';
 import CopyButton from '@/components/ui/CopyButton';
 import { ChevronDown, ChevronUp, Trash2, Calendar } from 'lucide-react';
 
@@ -22,54 +23,61 @@ const TONE_LABELS: Record<string, string> = {
 };
 
 export default function PostCard({ post, onDeleted, onSaved }: PostCardProps) {
+  const { success, error: toastError } = useToast();
   const [expanded, setExpanded] = useState(false);
   const [activeTab, setActiveTab] = useState<'linkedin' | 'x'>('linkedin');
 
   const handleDelete = async () => {
     if (confirm('Permanently delete this entry?')) {
-      await deletePost(post.id);
-      onDeleted();
+      try {
+        await deletePost(post.id);
+        success('Archive entry removed.');
+        onDeleted();
+      } catch (err) {
+        toastError('Failed to remove entry. Link severed.');
+      }
     }
   };
 
   const handleSave = async () => {
-    await savePost({ id: post.id, is_saved: true });
-    onSaved();
+    try {
+      await savePost({ id: post.id, is_saved: true });
+      success('Post successfully committed to archive.');
+      onSaved();
+    } catch (err) {
+      toastError('Synthesis commit failed.');
+    }
   };
 
   return (
-    <div className="glass-card stagger-item" style={{ cursor: 'pointer', padding: expanded ? '24px' : '20px' }} onClick={() => setExpanded((v) => !v)}>
-      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between' }}>
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 10, marginBottom: 12, flexWrap: 'wrap' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 11, color: 'var(--muted-dark)', fontWeight: 600 }}>
+    <div 
+      className={`glass-card stagger-item post-card-container ${expanded ? 'post-card-expanded' : 'post-card-collapsed'}`} 
+      onClick={() => setExpanded((v) => !v)}
+    >
+      <div className="flex items-start justify-between">
+        <div className="flex-1 min-w-0">
+          <div className="post-meta-row">
+            <div className="post-date-pill">
               <Calendar size={12} /> {formatDate(post.created_at)}
             </div>
             {post.project_name && (
-              <span className="pill pill-default" style={{ fontSize: 10, fontWeight: 700 }}>{post.project_name.toUpperCase()}</span>
+              <span className="pill pill-default">{post.project_name.toUpperCase()}</span>
             )}
-            <span className="pill pill-gray" style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.05em' }}>{TONE_LABELS[post.tone]}</span>
+            <span className="pill pill-gray">{TONE_LABELS[post.tone]}</span>
             {!post.is_saved && (
-              <span className="pill pill-amber" style={{ fontSize: 10, fontWeight: 700 }}>DRAFT</span>
+              <span className="pill pill-amber">DRAFT</span>
             )}
           </div>
           
-          <p style={{ 
-            fontSize: 15, color: 'var(--white)', lineHeight: 1.6, 
-            overflow: 'hidden', display: '-webkit-box', 
-            WebkitLineClamp: expanded ? undefined : 2, 
-            WebkitBoxOrient: 'vertical' as const 
-          }}>
+          <p 
+            className="post-content-preview"
+            style={{ WebkitLineClamp: expanded ? undefined : 2 }}
+          >
             {post.content_linkedin}
           </p>
         </div>
         
-        <div style={{ 
-          marginLeft: 16, width: 32, height: 32, 
-          borderRadius: 8, background: 'rgba(255,255,255,0.03)', 
-          display: 'flex', alignItems: 'center', justifyContent: 'center', 
-          color: 'var(--muted)', flexShrink: 0 
-        }}>
+        <div className="post-expand-trigger">
           {expanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
         </div>
       </div>

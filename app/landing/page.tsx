@@ -7,139 +7,326 @@ import { WebhookMockup, SocialMockup, VoiceMockup } from '@/components/landing/A
 import { ArrowRight, Zap, Globe, Cpu, Radio, GitMerge, MessageCircle, Briefcase } from 'lucide-react';
 
 const FADE_UP = {
-  hidden: { opacity: 0, y: 30 },
-  show: { opacity: 1, y: 0, transition: { type: "spring" as const, stiffness: 50, damping: 10 } }
+  hidden: { opacity: 0, y: 24 },
+  show: { opacity: 1, y: 0, transition: { type: 'spring' as const, stiffness: 60, damping: 12 } },
 };
 
 export default function LandingPage() {
   const router = useRouter();
 
   return (
-    <div className="relative min-h-screen text-[#F5F5F0] overflow-hidden selection:bg-[#00FF88] selection:text-black">
+    <div className="relative min-h-screen text-[#F5F5F0] overflow-hidden selection:bg-[#00FF88]/20 selection:text-white">
       <AmbientBackground />
       <LandingNavbar />
 
-      <main className="relative z-10 pt-[160px] pb-[120px] px-6">
-        {/* Hero Section */}
-        <section className="flex flex-col items-center text-center max-w-[1000px] mx-auto">
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 0.5 }}
-            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[rgba(0,255,136,0.05)] border border-[rgba(0,255,136,0.1)] text-[11px] font-bold text-[#00FF88] tracking-widest mb-8 font-mono uppercase"
+      <main className="relative z-10 pb-[100px] px-4 sm:px-6" style={{ paddingTop: 'clamp(100px, 18vw, 160px)' }}>
+
+        {/* ── Hero ── */}
+        <section className="flex flex-col items-center text-center max-w-[960px] mx-auto">
+
+          {/* Badge */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.85 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.45 }}
+            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-7"
+            style={{
+              background: 'rgba(0,255,136,0.05)',
+              border: '1px solid rgba(0,255,136,0.12)',
+              fontSize: 10, fontWeight: 800,
+              color: '#00FF88',
+              letterSpacing: '0.18em',
+              fontFamily: 'JetBrains Mono, monospace',
+            }}
           >
-            <Radio size={12} className="animate-pulse" /> Broadcasting Live from the Edge
+            <Radio size={11} className="animate-pulse" /> Broadcasting Live from the Edge
           </motion.div>
 
-          <motion.h1 
-            initial="hidden" animate="show"
-            variants={{
-              hidden: {},
-              show: { transition: { staggerChildren: 0.1 } }
+          {/* Headline */}
+          <motion.h1
+            initial="hidden"
+            animate="show"
+            variants={{ hidden: {}, show: { transition: { staggerChildren: 0.1 } } }}
+            style={{
+              fontSize: 'clamp(40px, 8.5vw, 96px)',
+              fontWeight: 900,
+              letterSpacing: '-0.045em',
+              lineHeight: 0.92,
+              marginBottom: 28,
             }}
-            className="text-[clamp(48px,8vw,100px)] font-[900] tracking-[-0.04em] leading-[0.9] mb-8"
           >
             <motion.span variants={FADE_UP} className="block">Turn commits into</motion.span>
-            <motion.span variants={FADE_UP} className="text-gradient block pb-2">Social Capital.</motion.span>
+            <motion.span variants={FADE_UP} className="text-gradient block pb-3">Social Capital.</motion.span>
           </motion.h1>
 
-          <motion.p 
+          {/* Sub */}
+          <motion.p
             initial="hidden" animate="show" variants={FADE_UP}
-            className="text-[clamp(18px,2vw,22px)] text-[#888] max-w-[640px] mb-12 leading-relaxed"
+            style={{
+              fontSize: 'clamp(16px, 2.2vw, 20px)',
+              color: '#888',
+              maxWidth: 600,
+              marginBottom: 44,
+              lineHeight: 1.65,
+            }}
           >
-            The world's first commit-to-content engine. Automatically transform your pushes into high-resonance LinkedIn and X threads with a zero-friction pipeline.
+            The world&apos;s first commit-to-content engine. Automatically transform your
+            pushes into high-resonance LinkedIn and X threads with zero friction.
           </motion.p>
 
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }}
-            className="flex flex-col sm:flex-row gap-4 justify-center items-center w-full sm:w-auto"
+          {/* CTAs */}
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.38 }}
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              gap: 12,
+              width: '100%',
+              maxWidth: 420,
+            }}
           >
-            <button onClick={() => router.push('/login')} className="btn-premium w-full sm:w-auto h-14 px-8 text-[15px]">
+            <button
+              onClick={() => router.push('/login')}
+              className="btn-premium"
+              style={{ height: 56, fontSize: 15, width: '100%' }}
+            >
               Deploy to Production <ArrowRight size={18} />
             </button>
-            <button onClick={() => router.push('/login?demo=true')} className="btn-ghost-premium w-full sm:w-auto h-14 px-8 text-[15px]">
+            <button
+              onClick={() => router.push('/login?demo=true')}
+              className="btn-ghost-premium"
+              style={{ height: 56, fontSize: 15, width: '100%' }}
+            >
               View Live Demo
             </button>
           </motion.div>
 
-          {/* Social Proof */}
-          <motion.div 
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.8, duration: 1 }}
-            className="mt-20 pt-10 border-t border-[rgba(255,255,255,0.05)] w-full max-w-[600px] flex flex-col items-center gap-6"
+          {/* Social proof */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.75, duration: 1 }}
+            style={{
+              marginTop: 60,
+              paddingTop: 32,
+              borderTop: '1px solid rgba(255,255,255,0.05)',
+              width: '100%',
+              maxWidth: 540,
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: 20,
+            }}
           >
-            <span className="text-[11px] font-bold text-[#555] tracking-[0.2em] uppercase">Trusted by engineers at</span>
-            <div className="flex gap-8 items-center justify-center opacity-40 grayscale mix-blend-screen">
-              {/* Dummy SVGs to look like premium companies */}
-              <div className="flex items-center gap-2 font-bold text-xl"><GitMerge size={24}/> Acme Corp</div>
-              <div className="flex items-center gap-2 font-bold text-xl"><Zap size={24}/> Linear</div>
-              <div className="flex items-center gap-2 font-bold text-xl"><Globe size={24}/> Vercel</div>
+            <span style={{ fontSize: 10, fontWeight: 800, color: '#444', letterSpacing: '0.2em', textTransform: 'uppercase' }}>
+              Trusted by engineers at
+            </span>
+            <div style={{
+              display: 'flex',
+              gap: 'clamp(16px, 4vw, 40px)',
+              alignItems: 'center',
+              justifyContent: 'center',
+              opacity: 0.35,
+              filter: 'grayscale(1)',
+              flexWrap: 'wrap',
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontWeight: 800, fontSize: 'clamp(14px, 2.5vw, 18px)' }}>
+                <GitMerge size={20} /> Acme Corp
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontWeight: 800, fontSize: 'clamp(14px, 2.5vw, 18px)' }}>
+                <Zap size={20} /> Linear
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontWeight: 800, fontSize: 'clamp(14px, 2.5vw, 18px)' }}>
+                <Globe size={20} /> Vercel
+              </div>
             </div>
           </motion.div>
         </section>
 
-        {/* Bento Grid */}
-        <section className="mt-[160px] max-w-[1200px] mx-auto">
-          <motion.div 
-            initial="hidden" whileInView="show" viewport={{ once: true, margin: "-100px" }}
+        {/* ── Bento Grid ── */}
+        <section className="mt-[100px] sm:mt-[140px] max-w-[1200px] mx-auto">
+          <motion.div
+            initial="hidden"
+            whileInView="show"
+            viewport={{ once: true, margin: '-80px' }}
             variants={{ show: { transition: { staggerChildren: 0.1 } } }}
-            className="grid grid-cols-1 md:grid-cols-12 auto-rows-[minmax(200px,auto)] gap-6"
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(12, 1fr)',
+              gap: 'clamp(12px, 2vw, 20px)',
+              gridAutoRows: 'minmax(180px, auto)',
+            }}
           >
-            
-            {/* Main Feature: Webhook */}
-            <motion.div variants={FADE_UP} className="glass-card hover-glow bento-item md:col-span-8 md:row-span-2 relative min-h-[400px] group flex flex-col justify-end p-8 md:p-10">
-              <div className="absolute inset-0 bg-gradient-to-t from-[rgba(0,255,136,0.05)] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-              <div className="absolute top-8 right-8 text-[#00FF88] bg-[rgba(0,255,136,0.1)] p-3 rounded-2xl"><Zap size={32} /></div>
-              
-              <WebhookMockup />
 
-              <div className="relative z-10 mt-auto pt-48">
-                <h3 className="text-3xl font-bold mb-3 tracking-tight">Zero-Config Pipeline</h3>
-                <p className="text-[#888] max-w-[400px] text-lg leading-relaxed">Folio listens to every push. The moment you hit 'commit', your next viral post is already being drafted in the background.</p>
+            {/* Main Feature: Webhook — full width on mobile, 8-col on desktop */}
+            <motion.div
+              variants={FADE_UP}
+              className="glass-card bento-item hover-glow group"
+              style={{
+                gridColumn: 'span 12',
+                position: 'relative',
+                minHeight: 'clamp(300px, 50vw, 480px)',
+                display: 'flex', flexDirection: 'column', justifyContent: 'flex-end',
+                padding: 'clamp(20px, 3vw, 40px)',
+              }}
+            >
+              <div style={{
+                position: 'absolute', inset: 0,
+                background: 'linear-gradient(to top, rgba(0,255,136,0.04), transparent)',
+                opacity: 0, transition: 'opacity 0.5s', borderRadius: 'inherit',
+              }} className="card-hover-overlay" />
+              <div style={{
+                position: 'absolute', top: 'clamp(16px, 3vw, 32px)', right: 'clamp(16px, 3vw, 32px)',
+                color: '#00FF88', background: 'rgba(0,255,136,0.1)',
+                padding: 12, borderRadius: 16,
+              }}>
+                <Zap size={28} />
+              </div>
+              <WebhookMockup />
+              <div style={{ position: 'relative', zIndex: 10, marginTop: 'auto', paddingTop: 220 }}>
+                <h3 style={{ fontSize: 'clamp(20px, 3vw, 28px)', fontWeight: 800, marginBottom: 10, letterSpacing: '-0.03em' }}>
+                  Zero-Config Pipeline
+                </h3>
+                <p style={{ color: '#888', maxWidth: 420, lineHeight: 1.6, fontSize: 'clamp(14px, 1.5vw, 17px)' }}>
+                  Folio listens to every push. The moment you commit, your next viral post is already being drafted.
+                </p>
               </div>
             </motion.div>
 
-            {/* Feature: Multi-channel */}
-            <motion.div variants={FADE_UP} className="glass-card hover-glow bento-item md:col-span-4 relative min-h-[250px] group overflow-hidden">
-               <div className="absolute top-6 left-6 text-[#00CCFF] bg-[rgba(0,204,255,0.1)] p-2 rounded-xl"><Globe size={20} /></div>
-               <SocialMockup />
-               <div className="absolute bottom-6 left-6 right-6">
-                 <h4 className="text-xl font-bold mb-2">Cross-Platform</h4>
-                 <p className="text-[#888] text-sm">One commit perfectly tailored for each network automatically.</p>
-               </div>
+            {/* Cross-Platform */}
+            <motion.div
+              variants={FADE_UP}
+              className="glass-card bento-item hover-glow group"
+              style={{
+                gridColumn: 'span 12',
+                position: 'relative',
+                minHeight: 220,
+                overflow: 'hidden',
+              }}
+            >
+              <div style={{ position: 'absolute', top: 20, left: 20, color: '#00CCFF', background: 'rgba(0,204,255,0.1)', padding: 8, borderRadius: 12 }}>
+                <Globe size={18} />
+              </div>
+              <SocialMockup />
+              <div style={{ position: 'absolute', bottom: 20, left: 20, right: 20 }}>
+                <h4 style={{ fontSize: 18, fontWeight: 800, marginBottom: 6, letterSpacing: '-0.02em' }}>Cross-Platform</h4>
+                <p style={{ color: '#888', fontSize: 13, lineHeight: 1.5 }}>One commit, perfectly tailored for every network.</p>
+              </div>
             </motion.div>
 
-            {/* Feature: Neural Voice */}
-            <motion.div variants={FADE_UP} className="glass-card hover-glow bento-item md:col-span-4 relative min-h-[250px] group overflow-hidden">
-               <div className="absolute top-6 left-6 text-[#F59E0B] bg-[rgba(245,158,11,0.1)] p-2 rounded-xl"><Cpu size={20} /></div>
-               <VoiceMockup />
-               <div className="absolute bottom-6 left-6 right-6">
-                 <h4 className="text-xl font-bold mb-2">Voice Cloning</h4>
-                 <p className="text-[#888] text-sm">Neural matching ensures every post sounds exactly like you.</p>
-               </div>
+            {/* Voice Cloning */}
+            <motion.div
+              variants={FADE_UP}
+              className="glass-card bento-item hover-glow group"
+              style={{
+                gridColumn: 'span 12',
+                position: 'relative',
+                minHeight: 220,
+                overflow: 'hidden',
+              }}
+            >
+              <div style={{ position: 'absolute', top: 20, left: 20, color: '#F59E0B', background: 'rgba(245,158,11,0.1)', padding: 8, borderRadius: 12 }}>
+                <Cpu size={18} />
+              </div>
+              <VoiceMockup />
+              <div style={{ position: 'absolute', bottom: 20, left: 20, right: 20 }}>
+                <h4 style={{ fontSize: 18, fontWeight: 800, marginBottom: 6, letterSpacing: '-0.02em' }}>Voice Cloning</h4>
+                <p style={{ color: '#888', fontSize: 13, lineHeight: 1.5 }}>Neural matching ensures every post sounds exactly like you.</p>
+              </div>
             </motion.div>
 
-            {/* Feature: Mobile First */}
-            <motion.div variants={FADE_UP} className="glass-card hover-glow bento-item md:col-span-12 flex flex-col md:flex-row items-center gap-10 p-8 md:p-12 mt-4 relative overflow-hidden group">
-               <div className="absolute inset-0 bg-gradient-to-r from-[rgba(139,92,246,0.05)] to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-               <div className="flex-1 relative z-10">
-                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[rgba(255,255,255,0.05)] border border-[rgba(255,255,255,0.1)] text-xs font-medium text-[#ccc] mb-6">
-                    Mobile First
-                  </div>
-                  <h3 className="text-3xl font-bold mb-4 tracking-tight">Studio in your pocket</h3>
-                  <p className="text-[#888] text-lg max-w-[500px]">Manage your entire engineering brand on the go. Approve drafts, monitor engagement, and trigger broadcasts directly from iOS or Android.</p>
-               </div>
-               <div className="w-[120px] h-[120px] shrink-0 rounded-3xl bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.05)] flex items-center justify-center text-[#8B5CF6] relative z-10 shadow-2xl">
-                  <Radio size={48} className="group-hover:scale-110 transition-transform duration-500" />
-                  <div className="absolute inset-0 border border-[rgba(139,92,246,0.3)] rounded-3xl animate-ping opacity-20" />
-               </div>
+            {/* Wide feature row */}
+            <motion.div
+              variants={FADE_UP}
+              className="glass-card bento-item hover-glow group"
+              style={{
+                gridColumn: 'span 12',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'flex-start',
+                gap: 24,
+                padding: 'clamp(20px, 3vw, 40px)',
+                position: 'relative',
+                overflow: 'hidden',
+              }}
+            >
+              <div style={{
+                position: 'absolute', inset: 0,
+                background: 'linear-gradient(135deg, rgba(139,92,246,0.04), transparent)',
+                opacity: 0, transition: 'opacity 0.5s', borderRadius: 'inherit',
+              }} />
+              <div style={{ position: 'relative', zIndex: 1, flex: 1 }}>
+                <div style={{
+                  display: 'inline-flex', alignItems: 'center',
+                  padding: '4px 12px', borderRadius: 100,
+                  background: 'rgba(255,255,255,0.04)',
+                  border: '1px solid rgba(255,255,255,0.08)',
+                  fontSize: 11, fontWeight: 700, color: '#aaa',
+                  marginBottom: 16, letterSpacing: '0.05em',
+                }}>
+                  Mobile First
+                </div>
+                <h3 style={{ fontSize: 'clamp(22px, 3vw, 30px)', fontWeight: 800, marginBottom: 12, letterSpacing: '-0.03em' }}>
+                  Studio in your pocket
+                </h3>
+                <p style={{ color: '#888', fontSize: 'clamp(14px, 1.5vw, 17px)', maxWidth: 500, lineHeight: 1.65 }}>
+                  Manage your entire engineering brand on the go. Approve drafts, monitor engagement,
+                  and trigger broadcasts from iOS or Android.
+                </p>
+              </div>
+              <div style={{
+                width: 100, height: 100, flexShrink: 0,
+                borderRadius: 28,
+                background: 'rgba(255,255,255,0.03)',
+                border: '1px solid rgba(255,255,255,0.05)',
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                color: '#8B5CF6', position: 'relative', zIndex: 1,
+              }}>
+                <Radio size={44} style={{ transition: 'transform 0.4s' }} />
+                <div style={{
+                  position: 'absolute', inset: 0,
+                  border: '1px solid rgba(139,92,246,0.25)',
+                  borderRadius: 28, animation: 'ping 2s ease-in-out infinite', opacity: 0.2,
+                }} />
+              </div>
             </motion.div>
 
           </motion.div>
         </section>
       </main>
 
-      <footer className="relative z-10 py-12 px-6 text-center border-t border-[rgba(255,255,255,0.05)] bg-[rgba(0,0,0,0.4)] backdrop-blur-md mt-24">
-        <div className="app-logo text-2xl mb-4 font-mono">folio</div>
-        <p className="text-[#444] text-[11px] font-mono tracking-widest uppercase">© 2026 FOLIO BROADCAST ENGINE • ALL RIGHTS RESERVED</p>
+      {/* Footer */}
+      <footer style={{
+        position: 'relative', zIndex: 10,
+        padding: 'clamp(32px, 5vw, 48px) 24px',
+        textAlign: 'center',
+        borderTop: '1px solid rgba(255,255,255,0.05)',
+        background: 'rgba(0,0,0,0.4)',
+        backdropFilter: 'blur(12px)',
+        marginTop: 'clamp(40px, 8vw, 80px)',
+      }}>
+        <div className="app-logo" style={{ fontSize: 22, display: 'inline-block', marginBottom: 12 }}>folio</div>
+        <p style={{ fontSize: 10, color: '#333', fontFamily: 'JetBrains Mono, monospace', letterSpacing: '0.2em', textTransform: 'uppercase' }}>
+          © 2026 Folio Broadcast Engine · All Rights Reserved
+        </p>
       </footer>
+
+      <style>{`
+        @keyframes ping {
+          0%, 100% { transform: scale(1); opacity: 0.2; }
+          50% { transform: scale(1.08); opacity: 0.1; }
+        }
+        .card-hover-overlay { border-radius: inherit; }
+        .group:hover .card-hover-overlay { opacity: 1 !important; }
+
+        /* 2-col bento on md+ */
+        @media (min-width: 768px) {
+          .bento-grid-side { grid-column: span 4 !important; }
+          .bento-grid-main { grid-column: span 8 !important; }
+        }
+      `}</style>
     </div>
   );
 }

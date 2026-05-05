@@ -1,6 +1,7 @@
 'use client';
 import { useState } from 'react';
 import { Project, deleteProject } from '@/lib/store';
+import { useToast } from '@/components/ui/Toast';
 import { MoreVertical, Pencil, Trash2, Sparkles, Calendar, Globe, Database } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 
@@ -26,13 +27,19 @@ function timeAgo(dateStr: string) {
 }
 
 export default function ProjectCard({ project, onEdit, onDelete }: ProjectCardProps) {
+  const { success, error: toastError, info } = useToast();
   const [menuOpen, setMenuOpen] = useState(false);
   const router = useRouter();
 
   const handleDelete = async () => {
     if (confirm(`Archive "${project.name}"?`)) {
-      await deleteProject(project.id);
-      onDelete();
+      try {
+        await deleteProject(project.id);
+        success(`Project "${project.name}" archived.`);
+        onDelete();
+      } catch (err) {
+        toastError('Failed to archive project. Link severed.');
+      }
     }
     setMenuOpen(false);
   };
@@ -79,7 +86,7 @@ export default function ProjectCard({ project, onEdit, onDelete }: ProjectCardPr
                   <Sparkles size={14} /> Draft Content
                 </button>
                 <button className="menu-item" onClick={() => {
-                  alert('Codebase-Aware RAG Simulation: Scanning entire git history and generating a deep dive technical article...');
+                  info('Neural Link: Scanning git history & synthesizing RAG context...');
                   router.push(`/generate?input=${encodeURIComponent('Deep Dive: Architecture choices for ' + project.name)}`);
                   setMenuOpen(false);
                 }}>
