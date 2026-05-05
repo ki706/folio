@@ -110,7 +110,8 @@ export async function getSettings(): Promise<Settings | null> {
   if (isDemoMode() || user.id === 'demo-user-uuid') {
     return {
       ...DEFAULT_SETTINGS('demo-user-uuid'),
-      name: 'Kidus Ismail',
+      name: 'Demo Account',
+      onboarding_completed: true,
       title: 'Full Stack Architect',
       years_exp: '8',
       location: 'Addis Ababa',

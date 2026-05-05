@@ -36,7 +36,7 @@ export async function POST(req: NextRequest) {
     if (isDemo || uid === 'demo-user-uuid') {
        // Mock data for demo
        settings = {
-         name: 'Demo Builder',
+         name: 'Demo Account',
          title: 'Full Stack Architect',
          years_exp: '8',
          location: 'Global',
