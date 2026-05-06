@@ -1,100 +1,89 @@
 'use client';
 import { useState } from 'react';
 import { Project, deleteProject } from '@/lib/store';
-import { useToast } from '@/components/ui/Toast';
 import { MoreVertical, Pencil, Trash2, Sparkles, Calendar, Globe, Database } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { useToast } from '@/components/ui/Toast';
 
 interface ProjectCardProps {
   project: Project;
-  onEdit: (project: Project) => void;
+  onEdit: () => void;
   onDelete: () => void;
 }
 
-const STATUS_STYLE: Record<string, { label: string; pillClass: string }> = {
-  active:    { label: 'ACTIVE',    pillClass: 'pill pill-green' },
-  completed: { label: 'SHIPPED',   pillClass: 'pill pill-blue' },
-  paused:    { label: 'PAUSED',    pillClass: 'pill pill-amber' },
+const STATUS_STYLE = {
+  active: { label: 'ACTIVE', pillClass: 'pill-green' },
+  completed: { label: 'COMPLETE', pillClass: 'pill-blue' },
+  paused: { label: 'PAUSED', pillClass: 'pill-amber' },
 };
 
-function timeAgo(dateStr: string) {
-  if (!dateStr) return 'Recently';
-  const diff = Date.now() - new Date(dateStr).getTime();
-  const days = Math.floor(diff / 86400000);
-  if (days === 0) return 'Just now';
-  if (days === 1) return 'Yesterday';
+function timeAgo(date: string) {
+  if (!date) return 'Unknown';
+  const seconds = Math.floor((new Date().getTime() - new Date(date).getTime()) / 1000);
+  if (seconds < 60) return 'Just now';
+  const minutes = Math.floor(seconds / 60);
+  if (minutes < 60) return `${minutes}m ago`;
+  const hours = Math.floor(minutes / 60);
+  if (hours < 24) return `${hours}h ago`;
+  const days = Math.floor(hours / 24);
   return `${days}d ago`;
 }
 
 export default function ProjectCard({ project, onEdit, onDelete }: ProjectCardProps) {
-  const { success, error: toastError, info } = useToast();
   const [menuOpen, setMenuOpen] = useState(false);
-  const router = useRouter();
-
-  const handleDelete = async () => {
-    if (confirm(`Archive "${project.name}"?`)) {
-      try {
-        await deleteProject(project.id);
-        success(`Project "${project.name}" archived.`);
-        onDelete();
-      } catch (err) {
-        toastError('Failed to archive project. Link severed.');
-      }
-    }
-    setMenuOpen(false);
-  };
-
-  const handleGeneratePost = () => {
-    router.push(`/generate?project=${project.id}`);
-    setMenuOpen(false);
-  };
-
+  const { success, error: toastError } = useToast();
   const status = STATUS_STYLE[project.status] ?? STATUS_STYLE.active;
 
+  const handleDelete = async () => {
+    if (confirm('Decommission this architectural node?')) {
+      try {
+        await deleteProject(project.id);
+        success('Project purged from fleet.');
+        onDelete();
+      } catch (err) {
+        toastError('Decommissioning failed. Link active.');
+      }
+    }
+  };
+
   return (
-    <div className="glass-card stagger-item flex flex-col h-full p-5">
-      <div className="flex items-start justify-between mb-4 gap-4 overflow-hidden">
+    <div className="glass-card stagger-item group relative flex flex-col h-full overflow-hidden p-5 sm:p-6">
+      {/* Header Section */}
+      <div className="flex items-start justify-between gap-4 mb-4">
         <div className="flex-1 min-w-0">
-          <h3 className="text-lg sm:text-xl font-bold text-white tracking-tight mb-1 break-words">
+          <div className="flex items-center gap-2 text-[10px] font-bold text-[var(--accent)] mb-1.5 uppercase tracking-widest">
+             <Database size={12} /> Node {project.id.slice(0, 4)}
+          </div>
+          <h3 className="text-lg font-bold text-white leading-tight break-words mb-2">
             {project.name}
           </h3>
-          <p className="text-xs sm:text-sm text-[var(--muted)] leading-relaxed line-clamp-2 break-words">
+          <p className="text-xs text-[var(--muted)] leading-relaxed line-clamp-2 break-words">
             {project.description || 'System context not provided.'}
           </p>
         </div>
-        
-        <div style={{ position: 'relative', flexShrink: 0 }}>
+
+        <div className="relative flex-shrink-0">
           <button
             onClick={() => setMenuOpen((v) => !v)}
-            style={{ 
-              background: 'rgba(255,255,255,0.03)', border: '1px solid var(--border)', 
-              borderRadius: 8, cursor: 'pointer', color: 'var(--muted)', 
-              width: 32, height: 32, display: 'flex', alignItems: 'center', justifyContent: 'center' 
-            }}
+            className="w-8 h-8 flex items-center justify-center rounded-lg border border-[var(--border)] bg-[rgba(255,255,255,0.03)] text-[var(--muted)] hover:text-white hover:bg-[rgba(255,255,255,0.06)] transition-all cursor-pointer"
           >
             <MoreVertical size={16} />
           </button>
-          
+
           {menuOpen && (
             <>
-              <div style={{ position: 'fixed', inset: 0, zIndex: 40 }} onClick={() => setMenuOpen(false)} />
-              <div className="menu-dropdown" style={{ right: 0, top: 40 }}>
-                <button className="menu-item" onClick={() => { onEdit(project); setMenuOpen(false); }}>
-                  <Pencil size={14} /> Edit Identity
+              <div className="fixed inset-0 z-10" onClick={() => setMenuOpen(false)} />
+              <div className="absolute right-0 top-10 w-48 z-20 bg-[#0C0C0C]/95 backdrop-blur-xl border border-[var(--glass-border-bright)] rounded-xl p-1.5 shadow-2xl animate-in fade-in slide-in-from-top-2">
+                <button
+                  onClick={() => { onEdit(); setMenuOpen(false); }}
+                  className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-[var(--muted)] hover:text-white hover:bg-white/5 transition-colors"
+                >
+                  <Pencil size={14} /> Edit Context
                 </button>
-                <button className="menu-item" onClick={handleGeneratePost}>
-                  <Sparkles size={14} /> Draft Content
-                </button>
-                <button className="menu-item" onClick={() => {
-                  info('Neural Link: Scanning git history & synthesizing RAG context...');
-                  router.push(`/generate?input=${encodeURIComponent('Deep Dive: Architecture choices for ' + project.name)}`);
-                  setMenuOpen(false);
-                }}>
-                  <Database size={14} className="text-[#8B5CF6]" /> Deep Dive (RAG)
-                </button>
-                <div className="divider" style={{ margin: '4px 0' }} />
-                <button className="menu-item danger" onClick={handleDelete}>
-                  <Trash2 size={14} /> Archive Project
+                <button
+                  onClick={() => { handleDelete(); setMenuOpen(false); }}
+                  className="w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium text-red-400 hover:bg-red-500/10 transition-colors"
+                >
+                  <Trash2 size={14} /> Decommission
                 </button>
               </div>
             </>
@@ -102,28 +91,42 @@ export default function ProjectCard({ project, onEdit, onDelete }: ProjectCardPr
         </div>
       </div>
 
-      <div className="flex flex-wrap gap-1.5 mb-5">
-        {project.stack.slice(0, 4).map((tech) => (
-          <span key={tech} className="pill pill-default !text-[9px] !px-2.5 !py-1">{tech}</span>
-        ))}
-        {project.stack.length > 4 && <span className="pill pill-default !text-[9px] !px-2.5 !py-1">+{project.stack.length - 4}</span>}
+      {/* Content Section */}
+      <div className="flex-1 flex flex-col min-h-0">
+        <div className="flex flex-wrap gap-1.5 mb-5">
+          {project.stack.slice(0, 5).map((tech) => (
+            <span key={tech} className="pill pill-default !text-[9px] !px-2 !py-0.5 !font-bold break-all">
+              {tech}
+            </span>
+          ))}
+          {project.stack.length > 5 && (
+            <span className="pill pill-default !text-[9px] !px-2 !py-0.5">+{project.stack.length - 5}</span>
+          )}
+        </div>
+
+        {project.achievement && (
+          <div className="bg-[rgba(0,255,136,0.04)] border border-[rgba(0,255,136,0.1)] rounded-xl p-3 mb-5">
+            <div className="flex items-start gap-2.5">
+              <div className="flex-shrink-0 w-5 h-5 rounded-md bg-[rgba(0,255,136,0.1)] flex items-center justify-center text-[var(--green)]">
+                <Globe size={12} />
+              </div>
+              <p className="text-[11px] text-[var(--green)] font-bold leading-snug break-words flex-1 min-w-0">
+                {project.achievement}
+              </p>
+            </div>
+          </div>
+        )}
       </div>
 
-      {project.achievement && (
-        <div className="bg-[rgba(0,255,136,0.04)] border border-[rgba(0,255,136,0.1)] rounded-xl p-3 mb-5 overflow-hidden">
-          <p className="text-[11px] sm:text-xs text-[var(--green)] font-bold flex items-start gap-2 break-words">
-            <Globe size={14} className="flex-shrink-0 mt-0.5" /> 
-            <span className="flex-1 min-w-0">{project.achievement}</span>
-          </p>
-        </div>
-      )}
-
-      <div className="mt-auto pt-4 border-t border-[var(--border)] flex items-center justify-between gap-4">
-        <div className="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-semibold text-[var(--muted-dark)] whitespace-nowrap">
+      {/* Footer Section */}
+      <div className="mt-auto pt-4 border-t border-[var(--border)] flex flex-wrap items-center justify-between gap-3">
+        <div className="flex items-center gap-2 text-[10px] font-bold text-[var(--muted-dark)] uppercase tracking-wider">
           <Calendar size={12} />
           {timeAgo(project.updated_at)}
         </div>
-        <span className={`${status.pillClass} !text-[9px] !font-black !px-2 !py-0.5 whitespace-nowrap`}>{status.label}</span>
+        <span className={`${status.pillClass} !text-[9px] !font-black !px-2.5 !py-1 tracking-tighter`}>
+          {status.label}
+        </span>
       </div>
     </div>
   );
