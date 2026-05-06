@@ -13,6 +13,7 @@ export async function proxy(request: NextRequest) {
     });
     return NextResponse.redirect(callbackUrl);
   }
+
   let response = NextResponse.next({
     request: {
       headers: request.headers,
