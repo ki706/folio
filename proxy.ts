@@ -2,10 +2,16 @@ import { createServerClient, type CookieOptions } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
 
 export async function proxy(request: NextRequest) {
-  // Fix OAuth Redirect loop: If Supabase redirects to root with a code, forward it to the callback handler
+  // Nuclear OAuth Redirect: If any request contains a 'code' parameter (usually from Supabase/GitHub),
+  // immediately intercept and force a redirect to the callback handler.
   const code = request.nextUrl.searchParams.get('code');
-  if (request.nextUrl.pathname === '/' && code) {
-    return NextResponse.redirect(new URL(`/auth/callback?code=${code}`, request.url));
+  if (code) {
+    const callbackUrl = new URL('/auth/callback', request.url);
+    // Forward all search params to the callback handler
+    request.nextUrl.searchParams.forEach((value, key) => {
+      callbackUrl.searchParams.set(key, value);
+    });
+    return NextResponse.redirect(callbackUrl);
   }
   let response = NextResponse.next({
     request: {

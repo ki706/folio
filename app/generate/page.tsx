@@ -13,7 +13,8 @@ import { useToast } from '@/components/ui/Toast';
 import ToneSelector from '@/components/generate/ToneSelector';
 import ContextSelector from '@/components/generate/ContextSelector';
 import OutputTabs from '@/components/generate/OutputTabs';
-import { Sparkles, ArrowRight, Zap, Info, Lightbulb, RefreshCw, Activity } from 'lucide-react';
+import { Sparkles, ArrowRight, Zap, Info, Lightbulb, RefreshCw, Activity, Code } from 'lucide-react';
+import { motion } from 'framer-motion';
 
 function NeuralWave() {
   return (
@@ -178,15 +179,20 @@ function GenerateContent() {
       </div>
 
       {!result && !generating && (
-        <div className="animate-fade-in" style={{ marginBottom: 48 }}>
-           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
-             <h2 className="section-title-premium" style={{ marginBottom: 0 }}>
-               <Lightbulb size={16} className="text-amber" /> Strategy Hooks
-             </h2>
-             <button onClick={() => fetchSuggestions(projects)} className="btn-ghost-premium" style={{ height: 28, padding: '0 10px', fontSize: 10 }}>
+        <div className="max-w-[var(--max-width-page)] mx-auto pb-32 animate-fade-in px-6 lg:px-8">
+          <div className="flex flex-col md:flex-row items-start md:items-end justify-between mb-16 gap-8">
+            <div>
+              <div className="flex items-center gap-2.5 text-[11px] font-bold tracking-[0.2em] mb-4 text-[var(--green)] uppercase">
+                <Zap size={14} className="animate-pulse" /> Neural Engine Active
+              </div>
+              <h1 className="text-[clamp(40px,5vw,64px)] font-[900] tracking-[-0.05em] leading-none text-white">
+                Post <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-[var(--muted)]">Synthesis.</span>
+              </h1>
+            </div>
+            <button onClick={() => fetchSuggestions(projects)} className="btn-ghost-premium" style={{ height: 28, padding: '0 10px', fontSize: 10 }}>
                <RefreshCw size={12} className={loadingSuggestions ? 'animate-spin' : ''} /> REFRESH
-             </button>
-           </div>
+            </button>
+          </div>
            
            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 16 }}>
               {loadingSuggestions ? (
@@ -211,8 +217,15 @@ function GenerateContent() {
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(360px, 100%), 1fr))', gap: 'clamp(20px, 4vw, 48px)', alignItems: 'start' }}>
         
         {/* Input Console */}
-        <div className={`glass-card${generating ? ' border-pulse' : ''}`} style={{ padding: 'clamp(20px, 3vw, 32px)' }}>
-          <div className="bg-[rgba(0,0,0,0.4)] rounded-2xl p-5 sm:p-6 border border-[rgba(255,255,255,0.03)] shadow-[inset_0_4px_20px_rgba(0,0,0,0.8)] mb-8">
+        <motion.div 
+          initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}
+          className={`lg:col-span-1 glass-card p-8 border border-[rgba(0,255,136,0.1)] bg-[#0A0A0A] relative overflow-hidden${generating ? ' border-pulse' : ''}`}
+        >
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(0,255,136,0.05)_0%,_transparent_70%)]" />
+          <div className="relative z-10">
+            <h2 className="text-sm font-bold text-white uppercase tracking-widest mb-8 flex items-center gap-2">
+              <Code size={16} className="text-[var(--green)]" /> Parameters
+            </h2>
             <div style={{ marginBottom: 28 }}>
               <label className="section-title-premium mb-3">
                 <Zap size={14} className="text-[#00FF88]" /> Concept Seed
@@ -270,7 +283,7 @@ function GenerateContent() {
           </button>
           
           {error && <p style={{ color: 'var(--danger)', fontSize: 12, marginTop: 16, textAlign: 'center' }}>{error}</p>}
-        </div>
+        </motion.div>
 
         {/* Output Visualization */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>

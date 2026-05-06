@@ -4,21 +4,21 @@ import { TrendingUp, GitCommit, MessageCircle, ArrowRight, GitMerge, Zap, Eye, A
 
 export default function AnalyticsPage() {
   const nodes = [
-    { id: 'commits', label: 'Commits Analyzed', value: '142', icon: GitCommit, color: '#00CCFF', trend: '+12% this week' },
-    { id: 'posts', label: 'Posts Synthesized', value: '38', icon: TrendingUp, color: '#00FF88', trend: '8 active drafts' },
-    { id: 'impressions', label: 'Total Impressions', value: '124.5k', icon: Eye, color: '#8B5CF6', trend: '+45.2% vs last month' },
-    { id: 'stars', label: 'GitHub Stars', value: '+412', icon: GitMerge, color: '#F59E0B', trend: 'Trending in TypeScript' },
+    { id: 'commits', label: 'Commits Analyzed', value: '142', icon: GitCommit, color: 'var(--green)', trend: '+12% this week' },
+    { id: 'posts', label: 'Posts Synthesized', value: '38', icon: TrendingUp, color: 'var(--green)', trend: '8 active drafts' },
+    { id: 'impressions', label: 'Total Impressions', value: '124.5k', icon: Eye, color: 'var(--green)', trend: '+45.2% vs last month' },
+    { id: 'stars', label: 'GitHub Stars', value: '+412', icon: GitMerge, color: 'var(--green)', trend: 'Trending in TypeScript' },
   ];
 
   return (
-    <div className="max-w-[1200px] mx-auto pb-[100px] animate-fade-in px-4 sm:px-0">
-      <div className="flex flex-col md:flex-row items-start md:items-end justify-between mb-12 gap-4">
+    <div className="max-w-[var(--max-width-page)] mx-auto pb-32 animate-fade-in px-6 lg:px-8">
+      <div className="flex flex-col md:flex-row items-start md:items-end justify-between mb-16 gap-8">
         <div>
-          <div className="flex items-center gap-2.5 text-[11px] font-bold tracking-[0.2em] mb-4 text-[#8B5CF6] uppercase">
+          <div className="flex items-center gap-2.5 text-[11px] font-bold tracking-[0.2em] mb-4 text-[var(--green)] uppercase">
             <Activity size={14} className="animate-pulse" /> Telemetry Active
           </div>
-          <h1 className="text-[clamp(36px,5vw,56px)] font-[900] tracking-[-0.05em] leading-none text-white">
-            Brand <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#8B5CF6] to-[#00CCFF]">Telemetry.</span>
+          <h1 className="text-[clamp(40px,5vw,64px)] font-[900] tracking-[-0.05em] leading-none text-white">
+            Brand <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-[var(--muted)]">Telemetry.</span>
           </h1>
         </div>
         <div className="flex items-center gap-3 bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.05)] rounded-full px-4 py-2">
@@ -33,10 +33,10 @@ export default function AnalyticsPage() {
         {/* Main Graph (Spans 2 rows, 3 cols) */}
         <motion.div 
           initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
-          className="md:col-span-3 md:row-span-2 glass-card relative overflow-hidden group border border-[rgba(139,92,246,0.15)] bg-[#0A0A0A]"
+          className="md:col-span-3 md:row-span-2 glass-card relative overflow-hidden group border border-[rgba(0,255,136,0.1)] bg-[#0A0A0A]"
         >
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(139,92,246,0.15)_0%,_transparent_70%)] opacity-50 group-hover:opacity-100 transition-opacity duration-700" />
-          <div className="p-8 relative z-10 flex flex-col h-full">
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(0,255,136,0.1)_0%,_transparent_70%)] opacity-40 group-hover:opacity-70 transition-opacity duration-700" />
+          <div className="p-8 sm:p-10 relative z-10 flex flex-col h-full">
              <div className="flex justify-between items-start mb-8">
                <div>
                  <h2 className="text-xl font-bold text-white mb-1">Audience Trajectory</h2>
@@ -49,15 +49,15 @@ export default function AnalyticsPage() {
              </div>
 
              <div className="flex-1 relative w-full mt-4">
-                <svg viewBox="0 0 800 300" className="w-full h-full drop-shadow-[0_0_20px_rgba(139,92,246,0.3)]" preserveAspectRatio="none">
+                 <svg viewBox="0 0 800 300" className="w-full h-full drop-shadow-[0_0_20px_rgba(0,255,136,0.2)]" preserveAspectRatio="none">
                   <defs>
                     <linearGradient id="chartGlow" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="rgba(139, 92, 246, 0.4)" />
-                      <stop offset="100%" stopColor="rgba(139, 92, 246, 0)" />
+                      <stop offset="0%" stopColor="rgba(0, 255, 136, 0.2)" />
+                      <stop offset="100%" stopColor="rgba(0, 255, 136, 0)" />
                     </linearGradient>
                     <linearGradient id="lineGlow" x1="0" y1="0" x2="1" y2="0">
-                      <stop offset="0%" stopColor="#00CCFF" />
-                      <stop offset="50%" stopColor="#8B5CF6" />
+                      <stop offset="0%" stopColor="#00FF88" />
+                      <stop offset="50%" stopColor="var(--white)" />
                       <stop offset="100%" stopColor="#00FF88" />
                     </linearGradient>
                   </defs>
