@@ -167,7 +167,7 @@ function GenerateContent() {
   };
 
   return (
-    <div style={{ maxWidth: 1200, margin: '0 auto' }}>
+    <div className="animate-fade-in mx-auto" style={{ maxWidth: 'var(--max-width-page)' }}>
       <div className="page-header">
         <div>
           <h1 className="text-gradient" style={{ fontSize: 'clamp(28px, 5vw, 40px)', fontWeight: 900, letterSpacing: '-0.055em' }}>Content Studio</h1>
@@ -179,7 +179,7 @@ function GenerateContent() {
       </div>
 
       {!result && !generating && (
-        <div className="max-w-[var(--max-width-page)] mx-auto pb-32 animate-fade-in px-6 lg:px-8">
+        <div className="pb-32">
           <div className="flex flex-col md:flex-row items-start md:items-end justify-between mb-16 gap-8">
             <div>
               <div className="flex items-center gap-2.5 text-[11px] font-bold tracking-[0.2em] mb-4 text-[var(--green)] uppercase">

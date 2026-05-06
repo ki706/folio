@@ -46,7 +46,7 @@ export default function ProjectCard({ project, onEdit, onDelete }: ProjectCardPr
   };
 
   return (
-    <div className="glass-card stagger-item group relative flex flex-col h-full overflow-hidden p-5 sm:p-6">
+    <div className="glass-card stagger-item group relative flex flex-col h-full overflow-hidden p-6 sm:p-8">
       {/* Header Section */}
       <div className="flex items-start justify-between gap-4 mb-4">
         <div className="flex-1 min-w-0">

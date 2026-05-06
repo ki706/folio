@@ -62,7 +62,7 @@ export default function HistoryPage() {
   const filtered = filterPosts(posts, filter, search);
 
   return (
-    <div style={{ maxWidth: 1000, margin: '0 auto' }}>
+    <div className="animate-fade-in mx-auto" style={{ maxWidth: 'var(--max-width-page)' }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 40 }}>
         <div>
           <h1 className="text-gradient" style={{ fontSize: 40, fontWeight: 800, letterSpacing: '-0.04em' }}>Archive</h1>

@@ -34,7 +34,7 @@ export default function ProjectsPage() {
   };
 
   return (
-    <div className="max-w-[var(--max-width-page)] mx-auto pb-32 animate-fade-in px-6 lg:px-8">
+    <div className="max-w-[var(--max-width-page)] mx-auto pb-32 animate-fade-in">
       <div className="flex flex-col md:flex-row items-start md:items-end justify-between mb-16 gap-8">
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2.5 text-[11px] font-bold tracking-[0.2em] mb-4 text-[var(--green)] uppercase">

@@ -11,7 +11,7 @@ export default function AnalyticsPage() {
   ];
 
   return (
-    <div className="max-w-[var(--max-width-page)] mx-auto pb-32 animate-fade-in px-6 lg:px-8">
+    <div className="max-w-[var(--max-width-page)] mx-auto pb-32 animate-fade-in">
       <div className="flex flex-col md:flex-row items-start md:items-end justify-between mb-16 gap-8">
         <div>
           <div className="flex items-center gap-2.5 text-[11px] font-bold tracking-[0.2em] mb-4 text-[var(--green)] uppercase">
@@ -28,7 +28,7 @@ export default function AnalyticsPage() {
       </div>
 
       {/* Bento Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-4 md:grid-rows-3 gap-5 md:h-[800px]">
+      <div className="grid grid-cols-1 md:grid-cols-4 md:grid-rows-3 gap-5">
         
         {/* Main Graph (Spans 2 rows, 3 cols) */}
         <motion.div 
