@@ -1,7 +1,7 @@
 import { createServerClient, type CookieOptions } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
 
-export async function proxy(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   // Nuclear OAuth Redirect: If any request contains a 'code' parameter (usually from Supabase/GitHub),
   // immediately intercept and force a redirect to the callback handler.
   const code = request.nextUrl.searchParams.get('code');

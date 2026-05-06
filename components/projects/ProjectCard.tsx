@@ -52,13 +52,13 @@ export default function ProjectCard({ project, onEdit, onDelete }: ProjectCardPr
   const status = STATUS_STYLE[project.status] ?? STATUS_STYLE.active;
 
   return (
-    <div className="glass-card stagger-item" style={{ height: '100%', display: 'flex', flexDirection: 'column' }}>
-      <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 16 }}>
-        <div style={{ flex: 1, minWidth: 0, paddingRight: 12 }}>
-          <h3 style={{ fontSize: 18, fontWeight: 700, color: 'var(--white)', letterSpacing: '-0.02em', marginBottom: 4 }}>
+    <div className="glass-card stagger-item flex flex-col h-full p-6 sm:p-8">
+      <div className="flex items-start justify-between mb-4 gap-4 overflow-hidden">
+        <div className="flex-1 min-w-0">
+          <h3 className="text-lg sm:text-xl font-bold text-white tracking-tight mb-1 truncate">
             {project.name}
           </h3>
-          <p style={{ fontSize: 13, color: 'var(--muted)', lineHeight: 1.5, overflow: 'hidden', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical' }}>
+          <p className="text-xs sm:text-sm text-[var(--muted)] leading-relaxed line-clamp-2 break-words">
             {project.description || 'System context not provided.'}
           </p>
         </div>
@@ -102,27 +102,28 @@ export default function ProjectCard({ project, onEdit, onDelete }: ProjectCardPr
         </div>
       </div>
 
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6, marginBottom: 20 }}>
+      <div className="flex flex-wrap gap-1.5 mb-5">
         {project.stack.slice(0, 4).map((tech) => (
-          <span key={tech} className="pill pill-default" style={{ fontSize: 10 }}>{tech}</span>
+          <span key={tech} className="pill pill-default !text-[9px] !px-2.5 !py-1">{tech}</span>
         ))}
-        {project.stack.length > 4 && <span className="pill pill-default" style={{ fontSize: 10 }}>+{project.stack.length - 4}</span>}
+        {project.stack.length > 4 && <span className="pill pill-default !text-[9px] !px-2.5 !py-1">+{project.stack.length - 4}</span>}
       </div>
 
       {project.achievement && (
-        <div style={{ background: 'rgba(0, 255, 136, 0.04)', border: '1px solid rgba(0, 255, 136, 0.1)', borderRadius: 10, padding: '10px 12px', marginBottom: 20 }}>
-          <p style={{ fontSize: 12, color: 'var(--green)', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 6 }}>
-            <Globe size={14} /> {project.achievement}
+        <div className="bg-[rgba(0,255,136,0.04)] border border-[rgba(0,255,136,0.1)] rounded-xl p-3 mb-5 overflow-hidden">
+          <p className="text-[11px] sm:text-xs text-[var(--green)] font-bold flex items-start gap-2 break-words">
+            <Globe size={14} className="flex-shrink-0 mt-0.5" /> 
+            <span className="flex-1 min-w-0">{project.achievement}</span>
           </p>
         </div>
       )}
 
-      <div style={{ marginTop: 'auto', paddingTop: 16, borderTop: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 6, color: 'var(--muted-dark)', fontSize: 11, fontWeight: 500 }}>
+      <div className="mt-auto pt-4 border-t border-[var(--border)] flex items-center justify-between gap-4">
+        <div className="flex items-center gap-1.5 text-[10px] sm:text-[11px] font-semibold text-[var(--muted-dark)] whitespace-nowrap">
           <Calendar size={12} />
           {timeAgo(project.updated_at)}
         </div>
-        <span className={status.pillClass} style={{ fontSize: 10, fontWeight: 700, letterSpacing: '0.05em' }}>{status.label}</span>
+        <span className={`${status.pillClass} !text-[9px] !font-black !px-2 !py-0.5 whitespace-nowrap`}>{status.label}</span>
       </div>
     </div>
   );

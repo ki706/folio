@@ -77,11 +77,11 @@ export default function DashboardClient({
   return (
     <div className="animate-fade-in mx-auto" style={{ maxWidth: 'var(--max-width-page)' }}>
       <div className="page-header">
-        <div>
+        <div className="flex-1 min-w-0">
           <div className="section-title-premium" style={{ color: 'var(--green)', marginBottom: 12 }}>
             <Activity size={13} /> NEURAL SYNC • ACTIVE
           </div>
-          <h1 style={{ fontSize: 'clamp(36px, 6vw, 60px)', fontWeight: 900, letterSpacing: '-0.055em', lineHeight: 1, color: 'var(--white)' }}>
+          <h1 className="truncate" style={{ fontSize: 'clamp(36px, 6vw, 60px)', fontWeight: 900, letterSpacing: '-0.055em', lineHeight: 1, color: 'var(--white)' }}>
             Control the{' '}
             <span className="text-gradient">Narrative.</span>
           </h1>
@@ -99,27 +99,32 @@ export default function DashboardClient({
           <div className="glass-card resonance-card" style={{ 
             background: 'linear-gradient(180deg, rgba(0,255,136,0.03) 0%, rgba(0,0,0,0) 100%)',
             border: '1px solid var(--green-border)',
-            boxShadow: '0 24px 80px -20px rgba(0,255,136,0.15)'
+            boxShadow: '0 24px 80px -20px rgba(0,255,136,0.15)',
+            padding: 'clamp(20px, 5vw, 40px)' /* Responsive padding */
           }}>
              <h2 className="section-title-premium" style={{ justifyContent: 'center', opacity: 0.5 }}>Resonance Score</h2>
-             <div style={{ transform: 'scale(1.1)', margin: '20px 0' }}>
-               <BrandGauge score={initialResonanceScore} label="Equity" />
+             <div className="flex items-center justify-center py-4">
+                <div style={{ transform: 'scale(clamp(0.8, 4vw, 1.1))', transformOrigin: 'center' }}>
+                  <BrandGauge score={initialResonanceScore} label="Equity" />
+                </div>
              </div>
-             <p className="resonance-description" style={{ fontSize: 14, fontWeight: 500, color: 'var(--white)', opacity: 0.7 }}>
+             <p className="resonance-description" style={{ fontSize: 13, fontWeight: 500, color: 'var(--white)', opacity: 0.7, maxWidth: '100%' }}>
                 {initialResonanceScore > 50 
                   ? "Your brand signal is outperforming 84% of technical peers." 
                   : "Initialize more projects to increase your architectural depth."}
              </p>
           </div>
 
-          <div className="glass-card broadcast-history-card">
+          <div className="glass-card broadcast-history-card" style={{ padding: 'clamp(20px, 5vw, 32px)' }}>
             <h2 className="section-title-premium">Broadcast History</h2>
-            <ActivityGrid days={initialWeekActivity} />
+            <div style={{ width: '100%', overflowX: 'auto', paddingBottom: 8 }}>
+              <ActivityGrid days={initialWeekActivity} />
+            </div>
             <div style={{ marginTop: 24, display: 'flex', gap: 16, alignItems: 'center' }}>
                <div style={{ flex: 1, height: 4, background: 'rgba(255,255,255,0.05)', borderRadius: 2, overflow: 'hidden' }}>
                  <div style={{ width: `${initialResonanceScore}%`, height: '100%', background: 'var(--accent-gradient)' }} />
                </div>
-               <span className="metric-label">{initialResonanceScore}% SIGNAL</span>
+               <span className="metric-label" style={{ whiteSpace: 'nowrap' }}>{initialResonanceScore}% SIGNAL</span>
             </div>
           </div>
         </div>
