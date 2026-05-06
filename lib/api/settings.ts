@@ -57,18 +57,9 @@ export async function getSettings(): Promise<Settings | null> {
       .single();
 
     if (error || !data) {
-      const newSettings = DEFAULT_SETTINGS(user.id);
-      const { data: created, error: createError } = await supabase
-        .from('settings_portfolio')
-        .upsert(newSettings)
-        .select()
-        .single();
-      
-      if (createError) {
-        console.error('Settings Init Error:', createError);
-        return null;
-      }
-      return created;
+      // Prevent race conditions by returning defaults in-memory
+      // The row will be created when the user explicitly saves settings.
+      return DEFAULT_SETTINGS(user.id) as Settings;
     }
     return data;
   } catch (err) {
@@ -78,13 +69,13 @@ export async function getSettings(): Promise<Settings | null> {
 }
 
 export async function saveSettings(settings: Partial<Settings>): Promise<void> {
-  try {
-    if (await isDemoMode()) return;
-    const user = await getCurrentUser();
-    if (!user) return;
-    const { error } = await supabase.from('settings_portfolio').upsert({ ...settings, user_id: user.id });
-    if (error) console.error('Save Settings Error:', error);
-  } catch (err) {
-    console.error('saveSettings Exception:', err);
+  if (await isDemoMode()) return;
+  const user = await getCurrentUser();
+  if (!user) throw new Error('Unauthorized');
+  
+  const { error } = await supabase.from('settings_portfolio').upsert({ ...settings, user_id: user.id });
+  if (error) {
+    console.error('Save Settings Error:', error);
+    throw new Error(error.message);
   }
 }

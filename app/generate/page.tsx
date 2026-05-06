@@ -80,7 +80,7 @@ function GenerateContent() {
     } finally {
       setLoadingSuggestions(false);
     }
-  }, []);
+  }, [toastError]);
 
   const generate = useCallback(async (forcedInput?: string) => {
     const activeInput = forcedInput || input;
@@ -134,7 +134,7 @@ function GenerateContent() {
     } finally {
       setGenerating(false);
     }
-  }, [input, tone, selectedProject, projects]);
+  }, [input, tone, selectedProject, projects, success, toastError]);
 
   useEffect(() => {
     const loadInitial = async () => {
@@ -211,39 +211,41 @@ function GenerateContent() {
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(360px, 100%), 1fr))', gap: 'clamp(20px, 4vw, 48px)', alignItems: 'start' }}>
         
         {/* Input Console */}
-        <div className={`glass-card${generating ? ' border-pulse' : ''}`} style={{ padding: 'clamp(20px, 3vw, 32px)', border: '1px solid var(--border-bright)' }}>
-          <div style={{ marginBottom: 32 }}>
-            <label className="section-title-premium">
-              <Zap size={14} className="text-green" /> Concept Seed
-            </label>
-            <textarea
-              ref={textareaRef}
-              className="input-premium"
-              value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder="Inject a technical milestone or thought..."
-              style={{ minHeight: 140, fontSize: 16, lineHeight: 1.6, background: 'rgba(0,0,0,0.2)' }}
-            />
-          </div>
-
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(160px, 100%), 1fr))', gap: 16, marginBottom: 28 }}>
-            <div>
-              <label className="section-title-premium">Tone</label>
-              <ToneSelector selected={tone} onSelect={setTone} />
+        <div className={`glass-card${generating ? ' border-pulse' : ''}`} style={{ padding: 'clamp(20px, 3vw, 32px)' }}>
+          <div className="bg-[rgba(0,0,0,0.4)] rounded-2xl p-5 sm:p-6 border border-[rgba(255,255,255,0.03)] shadow-[inset_0_4px_20px_rgba(0,0,0,0.8)] mb-8">
+            <div style={{ marginBottom: 28 }}>
+              <label className="section-title-premium mb-3">
+                <Zap size={14} className="text-[#00FF88]" /> Concept Seed
+              </label>
+              <textarea
+                ref={textareaRef}
+                className="input-premium focus:shadow-[0_0_20px_rgba(0,255,136,0.15)] transition-shadow duration-300"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                placeholder="Inject a technical milestone or thought..."
+                style={{ minHeight: 140, fontSize: 16, lineHeight: 1.6, background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)' }}
+              />
             </div>
-            <div>
-              <label className="section-title-premium">Context</label>
-              {projects.length === 0 ? (
-                <button 
-                  onClick={() => router.push('/projects')}
-                  className="btn-ghost-premium" 
-                  style={{ width: '100%', height: 44, fontSize: 11, borderStyle: 'dashed' }}
-                >
-                  + INITIALIZE PROJECT CONTEXT
-                </button>
-              ) : (
-                <ContextSelector projects={projects} selected={selectedProject} onSelect={setSelectedProject} />
-              )}
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(160px, 100%), 1fr))', gap: 20 }}>
+              <div>
+                <label className="section-title-premium mb-3">Tone Parameters</label>
+                <ToneSelector selected={tone} onSelect={setTone} />
+              </div>
+              <div>
+                <label className="section-title-premium mb-3">Project Context</label>
+                {projects.length === 0 ? (
+                  <button 
+                    onClick={() => router.push('/projects')}
+                    className="btn-ghost-premium hover:bg-[rgba(255,255,255,0.05)]" 
+                    style={{ width: '100%', height: 44, fontSize: 11, borderStyle: 'dashed', borderColor: 'rgba(255,255,255,0.15)' }}
+                  >
+                    + INITIALIZE CONTEXT
+                  </button>
+                ) : (
+                  <ContextSelector projects={projects} selected={selectedProject} onSelect={setSelectedProject} />
+                )}
+              </div>
             </div>
           </div>
 

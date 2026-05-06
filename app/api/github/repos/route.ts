@@ -1,9 +1,30 @@
 import { NextResponse } from 'next/server';
-import { getSettings } from '@/lib/store';
+import { createClient } from '@/lib/supabase-server';
+import { cookies } from 'next/headers';
 
 export async function GET() {
   try {
-    const settings = await getSettings();
+    const isDemo = (await cookies()).get('folio_demo_mode')?.value === 'true';
+    if (isDemo) {
+      return NextResponse.json([
+        { id: 1, name: 'folio-broadcast-engine', full_name: 'engineer/folio-broadcast-engine', description: 'Autonomous content synthesis engine.', language: 'TypeScript', url: '#' },
+        { id: 2, name: 'supabase-ssr-layer', full_name: 'engineer/supabase-ssr-layer', description: 'Global session persistence layer.', language: 'TypeScript', url: '#' }
+      ]);
+    }
+
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+    
+    if (!user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const { data: settings } = await supabase
+      .from('settings_portfolio')
+      .select('github_token')
+      .eq('user_id', user.id)
+      .single();
+
     if (!settings || !settings.github_token) {
       return NextResponse.json({ error: 'GitHub token not found in settings.' }, { status: 401 });
     }

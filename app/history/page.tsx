@@ -116,12 +116,19 @@ export default function HistoryPage() {
           ))}
         </div>
       ) : filtered.length === 0 ? (
-        <div className="glass-card" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '80px 20px', textAlign: 'center' }}>
-          <div style={{ width: 80, height: 80, borderRadius: 24, background: 'rgba(255,255,255,0.02)', border: '1px solid var(--border)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 24 }}>
-            <Archive size={32} style={{ color: 'var(--muted-dark)' }} />
+        <div className="glass-card relative overflow-hidden" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '100px 20px', textAlign: 'center' }}>
+          <div className="absolute inset-0 bg-gradient-to-b from-[rgba(0,255,136,0.02)] to-transparent pointer-events-none" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[rgba(0,255,136,0.03)] rounded-full blur-[100px] pointer-events-none" />
+          
+          <div className="relative w-32 h-32 mb-8">
+            <div className="absolute inset-0 border border-[rgba(0,255,136,0.2)] rounded-3xl -rotate-12 bg-[rgba(0,255,136,0.02)]" />
+            <div className="absolute inset-0 border border-[rgba(255,255,255,0.1)] rounded-3xl rotate-6 bg-[rgba(255,255,255,0.01)] backdrop-blur-md flex items-center justify-center shadow-[0_20px_40px_rgba(0,0,0,0.4)]">
+              <Archive size={40} className="text-[#00FF88] drop-shadow-[0_0_15px_rgba(0,255,136,0.5)]" />
+            </div>
           </div>
-          <h2 style={{ fontSize: 20, fontWeight: 600, color: 'var(--white)' }}>Archive empty</h2>
-          <p style={{ color: 'var(--muted)', marginTop: 8, maxWidth: 320 }}>
+          
+          <h2 style={{ fontSize: 28, fontWeight: 800, color: 'var(--white)', letterSpacing: '-0.03em', marginBottom: 12 }} className="relative z-10">Archive empty</h2>
+          <p style={{ color: 'var(--muted)', fontSize: 16, maxWidth: 420, lineHeight: 1.6 }} className="relative z-10">
             {search || filter !== 'all' ? 'No entries match your current filters.' : 'Your generated intelligence will appear here once saved.'}
           </p>
         </div>

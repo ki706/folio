@@ -59,17 +59,45 @@ export default function AnalyticsPage() {
           <h3 className="text-lg font-bold text-white mb-6">Top Performing Hooks</h3>
           <div className="flex flex-col gap-4">
              {['"Most teams over-engineer their auth..."', '"Stop using Redux for everything."', '"We migrated to Edge computing and..."'].map((hook, i) => (
-                <div key={i} className="p-4 rounded-xl bg-[rgba(255,255,255,0.02)] border border-[rgba(255,255,255,0.05)] flex items-center justify-between">
-                  <span className="text-[#ccc] text-sm font-medium">"{hook}</span>
-                  <span className="text-[#00FF88] text-xs font-bold font-mono px-2 py-1 bg-[rgba(0,255,136,0.1)] rounded-md">+{((i * 7) % 20) + 5} Stars</span>
+                <div key={i} className="group p-4 rounded-xl bg-[rgba(255,255,255,0.02)] border border-[rgba(255,255,255,0.05)] flex items-center justify-between cursor-pointer hover:bg-[rgba(255,255,255,0.05)] hover:border-[rgba(255,255,255,0.15)] transition-all hover:-translate-y-0.5">
+                  <span className="text-[#ccc] text-sm font-medium group-hover:text-white transition-colors">"{hook}</span>
+                  <span className="text-[#00FF88] text-xs font-bold font-mono px-2 py-1 bg-[rgba(0,255,136,0.1)] rounded-md shadow-[0_0_10px_rgba(0,255,136,0)] group-hover:shadow-[0_0_15px_rgba(0,255,136,0.3)] transition-all border border-[rgba(0,255,136,0.1)]">+{((i * 7) % 20) + 5} Stars</span>
                 </div>
              ))}
           </div>
         </div>
         <div className="glass-card p-8 bg-[rgba(245,158,11,0.02)] border-[rgba(245,158,11,0.1)]">
           <h3 className="text-lg font-bold text-white mb-6">Audience Growth</h3>
-          <div className="flex items-center justify-center h-48 border border-dashed border-[rgba(255,255,255,0.1)] rounded-xl text-[#666] font-mono text-sm">
-             [ Chart.js Integration Placeholder ]
+          <div className="relative w-full h-48 overflow-hidden rounded-xl border border-[rgba(255,255,255,0.05)] bg-[rgba(0,0,0,0.2)]">
+            <svg viewBox="0 0 400 150" className="w-full h-full" preserveAspectRatio="none">
+              <defs>
+                <linearGradient id="chartGradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="rgba(245, 158, 11, 0.3)" />
+                  <stop offset="100%" stopColor="rgba(245, 158, 11, 0)" />
+                </linearGradient>
+              </defs>
+              <motion.path
+                initial={{ pathLength: 0, opacity: 0 }}
+                animate={{ pathLength: 1, opacity: 1 }}
+                transition={{ duration: 1.5, ease: "easeOut" }}
+                d="M0,130 C40,110 80,140 120,90 C160,50 200,80 240,60 C280,30 320,60 360,20 L400,15"
+                fill="none"
+                stroke="#F59E0B"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+              />
+              <motion.path
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 1.5, delay: 0.3, ease: "easeOut" }}
+                d="M0,130 C40,110 80,140 120,90 C160,50 200,80 240,60 C280,30 320,60 360,20 L400,15 L400,150 L0,150 Z"
+                fill="url(#chartGradient)"
+              />
+            </svg>
+            <div className="absolute inset-x-0 border-t border-[rgba(255,255,255,0.03)] top-[25%]" />
+            <div className="absolute inset-x-0 border-t border-[rgba(255,255,255,0.03)] top-[50%]" />
+            <div className="absolute inset-x-0 border-t border-[rgba(255,255,255,0.03)] top-[75%]" />
+            <div className="absolute inset-0 bg-gradient-to-r from-[rgba(0,0,0,0.5)] via-transparent to-transparent pointer-events-none w-16" />
           </div>
         </div>
       </div>

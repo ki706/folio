@@ -3,6 +3,8 @@ import { buildMasterPrompt } from '@/lib/ai/prompt';
 import { createClient } from '@/lib/supabase-server';
 import { cookies } from 'next/headers';
 
+export const maxDuration = 60; // Extend Vercel limit to prevent 504 timeouts
+
 export async function POST(req: NextRequest) {
   try {
     const supabase = await createClient();
@@ -118,11 +120,15 @@ export async function POST(req: NextRequest) {
     }
 
     const data = await response.json();
-    const content = data.choices?.[0]?.message?.content;
+    let content = data.choices?.[0]?.message?.content;
 
     if (!content) {
       return NextResponse.json({ error: 'Empty response from AI' }, { status: 500 });
     }
+
+    // OpenRouter fallback often returns markdown-wrapped JSON blocks.
+    // We must sanitize the output to prevent JSON.parse SyntaxErrors.
+    content = content.replace(/```json\n?/gi, '').replace(/```/g, '').trim();
 
     const parsed = JSON.parse(content);
     return NextResponse.json({

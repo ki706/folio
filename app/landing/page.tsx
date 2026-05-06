@@ -79,13 +79,8 @@ export default function LandingPage() {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.38 }}
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              gap: 12,
-              width: '100%',
-              maxWidth: 420,
-            }}
+            style={{ width: '100%' }}
+            className="flex flex-col sm:flex-row max-w-[420px] sm:max-w-[500px] gap-3 sm:gap-4 mx-auto"
           >
             <button
               onClick={() => router.push('/login')}
@@ -163,7 +158,7 @@ export default function LandingPage() {
             {/* Main Feature: Webhook — full width on mobile, 8-col on desktop */}
             <motion.div
               variants={FADE_UP}
-              className="glass-card bento-item hover-glow group"
+              className="glass-card bento-item hover-glow group bento-main"
               style={{
                 gridColumn: 'span 12',
                 position: 'relative',
@@ -198,7 +193,7 @@ export default function LandingPage() {
             {/* Cross-Platform */}
             <motion.div
               variants={FADE_UP}
-              className="glass-card bento-item hover-glow group"
+              className="glass-card bento-item hover-glow group bento-side"
               style={{
                 gridColumn: 'span 12',
                 position: 'relative',
@@ -219,7 +214,7 @@ export default function LandingPage() {
             {/* Voice Cloning */}
             <motion.div
               variants={FADE_UP}
-              className="glass-card bento-item hover-glow group"
+              className="glass-card bento-item hover-glow group bento-side"
               style={{
                 gridColumn: 'span 12',
                 position: 'relative',
@@ -240,7 +235,7 @@ export default function LandingPage() {
             {/* Wide feature row */}
             <motion.div
               variants={FADE_UP}
-              className="glass-card bento-item hover-glow group"
+              className="glass-card bento-item hover-glow group bento-wide"
               style={{
                 gridColumn: 'span 12',
                 display: 'flex',
@@ -321,10 +316,11 @@ export default function LandingPage() {
         .card-hover-overlay { border-radius: inherit; }
         .group:hover .card-hover-overlay { opacity: 1 !important; }
 
-        /* 2-col bento on md+ */
+        /* Bento Grid on md+ */
         @media (min-width: 768px) {
-          .bento-grid-side { grid-column: span 4 !important; }
-          .bento-grid-main { grid-column: span 8 !important; }
+          .bento-main { grid-column: span 8 !important; grid-row: span 2 !important; }
+          .bento-side { grid-column: span 4 !important; }
+          .bento-wide { grid-column: span 12 !important; }
         }
       `}</style>
     </div>

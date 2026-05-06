@@ -42,32 +42,31 @@ export async function getProjects(): Promise<Project[]> {
 }
 
 export async function saveProject(project: Partial<Project>): Promise<void> {
-  try {
-    if (await isDemoMode()) return;
-    const user = await getCurrentUser();
-    if (!user) return;
-    
-    const { id, ...rest } = project;
-    let result;
-    if (id) {
-      result = await supabase.from('projects_portfolio').update({ ...rest, updated_at: new Date().toISOString() }).eq('id', id).eq('user_id', user.id);
-    } else {
-      result = await supabase.from('projects_portfolio').insert({ ...rest, user_id: user.id });
-    }
-    if (result.error) console.error('Save Project Error:', result.error);
-  } catch (err) {
-    console.error('saveProject Exception:', err);
+  if (await isDemoMode()) return;
+  const user = await getCurrentUser();
+  if (!user) throw new Error('Unauthorized');
+  
+  const { id, ...rest } = project;
+  let result;
+  if (id) {
+    result = await supabase.from('projects_portfolio').update({ ...rest, updated_at: new Date().toISOString() }).eq('id', id).eq('user_id', user.id);
+  } else {
+    result = await supabase.from('projects_portfolio').insert({ ...rest, user_id: user.id });
+  }
+  if (result.error) {
+    console.error('Save Project Error:', result.error);
+    throw new Error(result.error.message);
   }
 }
 
 export async function deleteProject(id: string): Promise<void> {
-  try {
-    if (await isDemoMode()) return;
-    const user = await getCurrentUser();
-    if (!user) return;
-    const { error } = await supabase.from('projects_portfolio').delete().eq('id', id).eq('user_id', user.id);
-    if (error) console.error('Delete Project Error:', error);
-  } catch (err) {
-    console.error('deleteProject Exception:', err);
+  if (await isDemoMode()) return;
+  const user = await getCurrentUser();
+  if (!user) throw new Error('Unauthorized');
+  
+  const { error } = await supabase.from('projects_portfolio').delete().eq('id', id).eq('user_id', user.id);
+  if (error) {
+    console.error('Delete Project Error:', error);
+    throw new Error(error.message);
   }
 }

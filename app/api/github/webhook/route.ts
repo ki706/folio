@@ -4,6 +4,8 @@ import { supabase } from '@/lib/supabase';
 import Groq from 'groq-sdk';
 import { buildMasterPrompt } from '@/lib/ai/prompt';
 
+export const maxDuration = 60; // Prevent Vercel free tier timeouts during heavy generation
+
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
 export async function POST(req: Request) {
@@ -24,11 +26,18 @@ export async function POST(req: Request) {
 
     if (sError || !settings) return NextResponse.json({ error: 'User not found' }, { status: 404 });
 
-    // 2. Verify signature
+    // 2. Verify signature securely to prevent timing attacks
     const hmac = crypto.createHmac('sha256', settings.webhook_secret);
     const digest = 'sha256=' + hmac.update(payload).digest('hex');
     
-    if (signature !== digest) {
+    if (!signature) {
+      return NextResponse.json({ error: 'Missing signature' }, { status: 401 });
+    }
+
+    const sigBuffer = Buffer.from(signature);
+    const digestBuffer = Buffer.from(digest);
+    
+    if (sigBuffer.length !== digestBuffer.length || !crypto.timingSafeEqual(sigBuffer, digestBuffer)) {
       return NextResponse.json({ error: 'Invalid signature' }, { status: 401 });
     }
 
@@ -57,7 +66,7 @@ export async function POST(req: Request) {
         .eq('user_id', uid);
 
       const repoName = data.repository.name;
-      const matchedProject = projects?.find((p: any) => 
+      const matchedProject = projects?.find((p: { name: string; description: string; id: string }) => 
         p.name.toLowerCase().includes(repoName.toLowerCase()) || 
         repoName.toLowerCase().includes(p.name.toLowerCase())
       );
@@ -116,7 +125,9 @@ export async function POST(req: Request) {
         return { choices: orData.choices };
       });
 
-      const aiResult = JSON.parse(completion.choices[0].message.content || '{}');
+      let rawContent = completion.choices[0].message.content || '{}';
+      rawContent = rawContent.replace(/```json\n?/gi, '').replace(/```/g, '').trim();
+      const aiResult = JSON.parse(rawContent);
 
       // 6. Save Draft & Create Notification
       const { data: savedPost } = await supabase
@@ -145,8 +156,8 @@ export async function POST(req: Request) {
     }
 
     return NextResponse.json({ status: 'no_commits' });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Webhook Error:', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json({ error: error instanceof Error ? error.message : 'Unknown error' }, { status: 500 });
   }
 }

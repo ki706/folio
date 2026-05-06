@@ -3,7 +3,7 @@ import { useState, useEffect, useCallback, Suspense } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useToast } from '@/components/ui/Toast';
-import { Sparkles, ArrowRight, Terminal, Zap, ShieldCheck, Code } from 'lucide-react';
+import { Sparkles, ArrowRight, Terminal, Zap, ShieldCheck, Github } from 'lucide-react';
 
 function LoginContent() {
   const searchParams = useSearchParams();
@@ -41,7 +41,7 @@ function LoginContent() {
       router.push('/');
       router.refresh();
     }
-  }, [router]);
+  }, [router, toastError]);
 
   useEffect(() => {
     if (searchParams.get('demo') === 'true') {
@@ -95,7 +95,7 @@ function LoginContent() {
             onClick={handleGitHubLogin} 
             disabled={loading}
           >
-            <Code size={22} strokeWidth={2.5} />
+            <Github size={22} strokeWidth={2.5} />
             {loading ? 'SYNCHRONIZING...' : 'Continue with GitHub'}
           </button>
 

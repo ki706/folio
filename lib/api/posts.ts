@@ -40,32 +40,31 @@ export async function getPosts(): Promise<Post[]> {
 }
 
 export async function savePost(post: Partial<Post>): Promise<void> {
-  try {
-    if (await isDemoMode()) return;
-    const user = await getCurrentUser();
-    if (!user) return;
+  if (await isDemoMode()) return;
+  const user = await getCurrentUser();
+  if (!user) throw new Error('Unauthorized');
 
-    const { id, ...rest } = post;
-    let result;
-    if (id) {
-      result = await supabase.from('posts_portfolio').upsert({ id, ...rest, user_id: user.id });
-    } else {
-      result = await supabase.from('posts_portfolio').insert({ ...rest, user_id: user.id });
-    }
-    if (result.error) console.error('Save Post Error:', result.error);
-  } catch (err) {
-    console.error('savePost Exception:', err);
+  const { id, ...rest } = post;
+  let result;
+  if (id) {
+    result = await supabase.from('posts_portfolio').upsert({ id, ...rest, user_id: user.id });
+  } else {
+    result = await supabase.from('posts_portfolio').insert({ ...rest, user_id: user.id });
+  }
+  if (result.error) {
+    console.error('Save Post Error:', result.error);
+    throw new Error(result.error.message);
   }
 }
 
 export async function deletePost(id: string): Promise<void> {
-  try {
-    if (await isDemoMode()) return;
-    const user = await getCurrentUser();
-    if (!user) return;
-    const { error } = await supabase.from('posts_portfolio').delete().eq('id', id).eq('user_id', user.id);
-    if (error) console.error('Delete Post Error:', error);
-  } catch (err) {
-    console.error('deletePost Exception:', err);
+  if (await isDemoMode()) return;
+  const user = await getCurrentUser();
+  if (!user) throw new Error('Unauthorized');
+  
+  const { error } = await supabase.from('posts_portfolio').delete().eq('id', id).eq('user_id', user.id);
+  if (error) {
+    console.error('Delete Post Error:', error);
+    throw new Error(error.message);
   }
 }
