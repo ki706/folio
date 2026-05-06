@@ -40,7 +40,7 @@ export default function ProjectsPage() {
           <div className="flex items-center gap-2.5 text-[11px] font-bold tracking-[0.2em] mb-4 text-[var(--green)] uppercase">
             <Briefcase size={14} className="animate-pulse" /> Architecture
           </div>
-          <h1 className="text-[clamp(40px,5vw,64px)] font-[900] tracking-[-0.05em] leading-none text-white truncate">
+          <h1 className="text-[clamp(40px,5vw,64px)] font-[900] tracking-[-0.05em] leading-none text-white flex flex-wrap gap-x-4">
             Your <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-[var(--muted)]">Fleet.</span>
           </h1>
         </div>
@@ -51,7 +51,7 @@ export default function ProjectsPage() {
       </div>
 
       {loading ? (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(280px, 100%), 1fr))', gap: 20 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(340px, 100%), 1fr))', gap: 20 }}>
           {[1, 2, 3, 4].map((i) => (
             <div key={i} className="skeleton" style={{ height: 200, borderRadius: 16 }} />
           ))}
@@ -80,7 +80,7 @@ export default function ProjectsPage() {
           </button>
         </div>
       ) : (
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(280px, 100%), 1fr))', gap: 20 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(340px, 100%), 1fr))', gap: 20 }}>
           {projects.map((p) => (
             <ProjectCard
               key={p.id}

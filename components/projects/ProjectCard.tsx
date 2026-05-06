@@ -52,10 +52,10 @@ export default function ProjectCard({ project, onEdit, onDelete }: ProjectCardPr
   const status = STATUS_STYLE[project.status] ?? STATUS_STYLE.active;
 
   return (
-    <div className="glass-card stagger-item flex flex-col h-full p-6 sm:p-8">
+    <div className="glass-card stagger-item flex flex-col h-full p-5">
       <div className="flex items-start justify-between mb-4 gap-4 overflow-hidden">
         <div className="flex-1 min-w-0">
-          <h3 className="text-lg sm:text-xl font-bold text-white tracking-tight mb-1 truncate">
+          <h3 className="text-lg sm:text-xl font-bold text-white tracking-tight mb-1 break-words">
             {project.name}
           </h3>
           <p className="text-xs sm:text-sm text-[var(--muted)] leading-relaxed line-clamp-2 break-words">

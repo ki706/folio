@@ -81,7 +81,7 @@ export default function DashboardClient({
           <div className="section-title-premium" style={{ color: 'var(--green)', marginBottom: 12 }}>
             <Activity size={13} /> NEURAL SYNC • ACTIVE
           </div>
-          <h1 className="truncate" style={{ fontSize: 'clamp(36px, 6vw, 60px)', fontWeight: 900, letterSpacing: '-0.055em', lineHeight: 1, color: 'var(--white)' }}>
+          <h1 className="flex flex-wrap gap-x-4" style={{ fontSize: 'clamp(36px, 6vw, 60px)', fontWeight: 900, letterSpacing: '-0.055em', lineHeight: 1, color: 'var(--white)' }}>
             Control the{' '}
             <span className="text-gradient">Narrative.</span>
           </h1>
