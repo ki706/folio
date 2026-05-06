@@ -21,7 +21,7 @@ export async function getNotifications(): Promise<Notification[]> {
     if (!user) return [];
 
     const { data, error } = await supabase
-      .from('notifications_portfolio')
+      .from('notifications_portemitto')
       .select('*')
       .eq('user_id', user.id)
       .order('created_at', { ascending: false });
@@ -41,7 +41,7 @@ export async function addNotification(n: Omit<Notification, 'id' | 'created_at' 
   try {
     const user = await getCurrentUser();
     if (!user) return;
-    const { error } = await supabase.from('notifications_portfolio').insert([{ ...n, user_id: user.id }]);
+    const { error } = await supabase.from('notifications_portemitto').insert([{ ...n, user_id: user.id }]);
     if (error) console.error('Add Notification Error:', error);
   } catch (err) {
     console.error('addNotification Exception:', err);
@@ -52,7 +52,7 @@ export async function markNotificationRead(id: string): Promise<void> {
   try {
     const user = await getCurrentUser();
     if (!user) return;
-    const { error } = await supabase.from('notifications_portfolio').update({ is_read: true }).eq('id', id).eq('user_id', user.id);
+    const { error } = await supabase.from('notifications_portemitto').update({ is_read: true }).eq('id', id).eq('user_id', user.id);
     if (error) console.error('Mark Notification Read Error:', error);
   } catch (err) {
     console.error('markNotificationRead Exception:', err);
@@ -63,7 +63,7 @@ export async function dismissNotification(id: string): Promise<void> {
   try {
     const user = await getCurrentUser();
     if (!user) return;
-    const { error } = await supabase.from('notifications_portfolio').delete().eq('id', id).eq('user_id', user.id);
+    const { error } = await supabase.from('notifications_portemitto').delete().eq('id', id).eq('user_id', user.id);
     if (error) console.error('Dismiss Notification Error:', error);
   } catch (err) {
     console.error('dismissNotification Exception:', err);

@@ -6,7 +6,7 @@ export const maxDuration = 60;
 
 // Uses a service role key to bypass RLS since this is an automated cron job.
 // In a real app, you would use a SUPABASE_SERVICE_ROLE_KEY to bypass RLS.
-// For this portfolio demo, we will use the Anon Key but assume RLS is open for inserting notifications.
+// For this portemitto demo, we will use the Anon Key but assume RLS is open for inserting notifications.
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
@@ -22,7 +22,7 @@ export async function GET(req: Request) {
 
     // 1. Fetch users who have proactive_trending enabled
     const { data: users, error } = await supabase
-      .from('settings_portfolio')
+      .from('settings_portemitto')
       .select('user_id, proactive_trending, proactive_inactivity, inactivity_days');
 
     if (error || !users) {
@@ -57,7 +57,7 @@ export async function GET(req: Request) {
     }
 
     if (notificationsToInsert.length > 0) {
-      await supabase.from('notifications_portfolio').insert(notificationsToInsert);
+      await supabase.from('notifications_portemitto').insert(notificationsToInsert);
     }
 
     return NextResponse.json({ 

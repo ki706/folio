@@ -37,7 +37,7 @@ export default function OnboardingPage() {
     
     // Simulate some neural network calibration time for the "Aha" feeling
     setTimeout(() => {
-      success('Neural identity synchronized. Welcome to Folio.');
+      success('Neural identity synchronized. Welcome to Emitto.');
       router.push('/dashboard');
     }, 2000);
   };

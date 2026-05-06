@@ -1,12 +1,12 @@
-# Folio: The Personal Broadcast Engine 🚀
+# Emitto: The Personal Broadcast Engine 🚀
 
-**Turn Commits into Social Capital.** Folio is a high-performance content synthesis engine designed for engineers who want to build a personal brand without the friction of manual content creation. It listens to your GitHub activity and automatically crafts high-resonance technical narratives for LinkedIn and X (Twitter).
+**Turn Commits into Social Capital.** Emitto is a high-performance content synthesis engine designed for engineers who want to build a personal brand without the friction of manual content creation. It listens to your GitHub activity and automatically crafts high-resonance technical narratives for LinkedIn and X (Twitter).
 
-![Folio Hero Mockup](https://raw.githubusercontent.com/ki706/folio/main/public/preview.png) *(Note: Placeholder for your actual project screenshot)*
+![Emitto Hero Mockup](https://raw.githubusercontent.com/ki706/emitto/main/public/preview.png) *(Note: Placeholder for your actual project screenshot)*
 
 ## ⚡ Key Features
 
-- **Zero-Config Pipeline**: Connect your GitHub and let Folio handle the rest. No complex setup, just pure commit-to-content automation.
+- **Zero-Config Pipeline**: Connect your GitHub and let Emitto handle the rest. No complex setup, just pure commit-to-content automation.
 - **Neural Voice Matching**: Advanced AI that learns your technical vocabulary and syntax to ensure every post sounds exactly like you.
 - **Bento Intelligence Dashboard**: A premium, "deep dark" aesthetic interface providing real-time analytics on your brand resonance and social ROI.
 - **Multi-Channel Synthesis**: Tailors content specifically for the unique algorithms of LinkedIn and X threads from a single source of truth.
@@ -14,7 +14,7 @@
 
 ## 🛠️ Technical Architecture
 
-Folio is built with a state-of-the-art stack focused on speed, security, and developer experience:
+Emitto is built with a state-of-the-art stack focused on speed, security, and developer experience:
 
 - **Framework**: [Next.js 15+](https://nextjs.org) with Turbopack & App Router
 - **Runtime**: Node.js 20+
@@ -36,8 +36,8 @@ Folio is built with a state-of-the-art stack focused on speed, security, and dev
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/yourusername/folio.git
-   cd folio
+   git clone https://github.com/yourusername/emitto.git
+   cd emitto
    ```
 
 2. **Install dependencies:**
@@ -71,7 +71,7 @@ Folio is built with a state-of-the-art stack focused on speed, security, and dev
 
 ## 🛡️ Security & Purity
 
-Folio adheres to the highest standards of modern web development:
+Emitto adheres to the highest standards of modern web development:
 - **React 19 Ready**: Implements strict render-phase purity and idempotency.
 - **HMAC Verification**: Securely validates GitHub webhooks to prevent spoofing.
 - **Production-Hardened**: Zero linting errors and a fully optimized build pipeline.
@@ -82,4 +82,4 @@ This project is licensed under the MIT License.
 
 ---
 
-**Built by engineers, for engineers. Broadcast your journey with Folio.**
+**Built by engineers, for engineers. Broadcast your journey with Emitto.**

@@ -49,7 +49,7 @@ export default function AddProjectSheet({ project, onClose, onSaved }: AddProjec
       <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
         <div>
           <label style={{ display: 'block', fontSize: 12, fontWeight: 600, color: 'var(--muted)', marginBottom: 6 }}>NAME</label>
-          <input className="input" value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Folio AI" />
+          <input className="input" value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Emitto AI" />
         </div>
 
         <div>

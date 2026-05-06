@@ -32,7 +32,7 @@ export async function GET() {
       const redditResponse = await fetch(
         'https://www.reddit.com/r/artificial/top.json?limit=5&t=day',
         {
-          headers: { 'User-Agent': 'Folio/1.0' },
+          headers: { 'User-Agent': 'Emitto/1.0' },
           next: { revalidate: 3600 },
         }
       );

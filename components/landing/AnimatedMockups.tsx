@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 
 // 1. Webhook Visualizer: Types out a JSON payload
 export function WebhookMockup() {
-  const payloadStr = `{\n  "event": "push",\n  "ref": "refs/heads/main",\n  "repository": {\n    "name": "folio-engine",\n    "owner": "engineer"\n  },\n  "commits": [\n    {\n      "message": "feat: release v2.0"\n    }\n  ]\n}`;
+  const payloadStr = `{\n  "event": "push",\n  "ref": "refs/heads/main",\n  "repository": {\n    "name": "emitto-engine",\n    "owner": "engineer"\n  },\n  "commits": [\n    {\n      "message": "feat: release v2.0"\n    }\n  ]\n}`;
   
   const [displayedText, setDisplayedText] = useState('');
   

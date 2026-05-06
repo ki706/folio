@@ -43,15 +43,15 @@ export async function getSettings(): Promise<Settings | null> {
         stack: ['Next.js', 'Supabase', 'TypeScript', 'AI Agents'],
         voice_description: 'Strategic, technical, and slightly provocative.',
         writing_samples: ['Sample 1', 'Sample 2'],
-        github_url: 'https://github.com/folio-demo',
+        github_url: 'https://github.com/emitto-demo',
         github_token: 'demo-token',
-        tracked_repos: ['folio-broadcast-engine'],
+        tracked_repos: ['emitto-broadcast-engine'],
         webhook_secret: 'demo-secret'
       } as Settings;
     }
 
     const { data, error } = await supabase
-      .from('settings_portfolio')
+      .from('settings_portemitto')
       .select('*')
       .eq('user_id', user.id)
       .single();
@@ -73,7 +73,7 @@ export async function saveSettings(settings: Partial<Settings>): Promise<void> {
   const user = await getCurrentUser();
   if (!user) throw new Error('Unauthorized');
   
-  const { error } = await supabase.from('settings_portfolio').upsert({ ...settings, user_id: user.id });
+  const { error } = await supabase.from('settings_portemitto').upsert({ ...settings, user_id: user.id });
   if (error) {
     console.error('Save Settings Error:', error);
     throw new Error(error.message);

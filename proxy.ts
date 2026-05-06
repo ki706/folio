@@ -2,6 +2,11 @@ import { createServerClient, type CookieOptions } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
 
 export async function proxy(request: NextRequest) {
+  // Fix OAuth Redirect loop: If Supabase redirects to root with a code, forward it to the callback handler
+  const code = request.nextUrl.searchParams.get('code');
+  if (request.nextUrl.pathname === '/' && code) {
+    return NextResponse.redirect(new URL(`/auth/callback?code=${code}`, request.url));
+  }
   let response = NextResponse.next({
     request: {
       headers: request.headers,
@@ -55,7 +60,7 @@ export async function proxy(request: NextRequest) {
   );
 
   const { data: { user } } = await supabase.auth.getUser();
-  const isDemo = request.cookies.get('folio_demo_mode')?.value === 'true';
+  const isDemo = request.cookies.get('emitto_demo_mode')?.value === 'true';
 
   const isPublicPath = 
     request.nextUrl.pathname === '/' || 

@@ -19,7 +19,7 @@ export default async function Page() {
   );
 
   const { data: { user } } = await supabase.auth.getUser();
-  const isDemo = (await cookies()).get('folio_demo_mode')?.value === 'true';
+  const isDemo = (await cookies()).get('emitto_demo_mode')?.value === 'true';
 
   if (!user && !isDemo) {
     return <LandingPage />;

@@ -6,9 +6,9 @@ import { ChevronRight, Play, Menu, X, ArrowRight } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const NAV_LINKS = [
-  { label: 'Platform', href: '#features' },
-  { label: 'Vision',   href: '#vision' },
-  { label: 'Pricing',  href: '#pricing' },
+  { label: 'Network', href: '/trends' },
+  { label: 'Architecture',   href: '/projects' },
+  { label: 'Community',  href: '/landing' },
 ];
 
 export default function LandingNavbar() {
@@ -50,7 +50,7 @@ export default function LandingNavbar() {
         }}>
           {/* Logo */}
           <div className="app-logo" style={{ fontSize: 26, letterSpacing: '-0.06em', flexShrink: 0 }}>
-            folio
+            emitto
           </div>
 
           {/* Desktop nav links */}

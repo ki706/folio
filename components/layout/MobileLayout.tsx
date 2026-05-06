@@ -73,8 +73,8 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
   const handleSignOut = async () => {
     // Clear Demo state explicitly
-    document.cookie = "folio_demo_mode=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
-    localStorage.removeItem('folio_demo_mode');
+    document.cookie = "emitto_demo_mode=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+    localStorage.removeItem('emitto_demo_mode');
     
     await supabase.auth.signOut();
     router.push('/login');
@@ -85,7 +85,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     ? userSettings.name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
     : userEmail ? userEmail[0].toUpperCase() : 'U';
 
-  const isDemo = userEmail === 'demo@folio.dev';
+  const isDemo = userEmail === 'demo@emitto.dev';
 
   // Don't render shell on auth pages
   if (pathname === '/login' || pathname === '/onboarding') return <>{children}</>;
@@ -116,7 +116,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         {/* Logo */}
         <div style={{ padding: '0 14px', marginBottom: 36, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div>
-            <div className="app-logo" style={{ fontSize: 22 }}>folio</div>
+            <div className="app-logo" style={{ fontSize: 22 }}>emitto</div>
             <p style={{ fontSize: 10, color: 'var(--muted-dark)', marginTop: 4, letterSpacing: '0.06em', fontWeight: 700 }}>
               BROADCAST ENGINE
             </p>

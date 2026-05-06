@@ -105,7 +105,7 @@ export default function GitHubSection({ settings, onRefresh }: GitHubSectionProp
           </button>
         </div>
         <p style={{ marginTop: 12, fontSize: 11, color: '#444', lineHeight: 1.5 }}>
-          Folio uses a Personal Access Token to register webhooks on your behalf.
+          Emitto uses a Personal Access Token to register webhooks on your behalf.
           <a href="https://github.com/settings/tokens" target="_blank" style={{ color: 'var(--green)', marginLeft: 4 }}>Generate one here</a> (select <b>repo</b> scope).
         </p>
       </div>
@@ -155,7 +155,7 @@ export default function GitHubSection({ settings, onRefresh }: GitHubSectionProp
       <div style={{ marginTop: 32, padding: 16, borderRadius: 12, background: 'rgba(0,255,136,0.03)', border: '1px solid rgba(0,255,136,0.1)', display: 'flex', gap: 12 }}>
         <ShieldCheck size={20} className="text-green" style={{ flexShrink: 0 }} />
         <p style={{ fontSize: 11, color: 'var(--green)', lineHeight: 1.5, opacity: 0.8 }}>
-          <b>Security Protocol:</b> Folio verifies every incoming signal using a unique HMAC SHA-256 secret. Your token is stored encrypted in your private studio vault.
+          <b>Security Protocol:</b> Emitto verifies every incoming signal using a unique HMAC SHA-256 secret. Your token is stored encrypted in your private studio vault.
         </p>
       </div>
     </div>

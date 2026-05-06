@@ -185,7 +185,7 @@ export default function LandingPage() {
                   Zero-Config Pipeline
                 </h3>
                 <p style={{ color: '#888', maxWidth: 420, lineHeight: 1.6, fontSize: 'clamp(14px, 1.5vw, 17px)' }}>
-                  Folio listens to every push. The moment you commit, your next viral post is already being drafted.
+                  Emitto listens to every push. The moment you commit, your next viral post is already being drafted.
                 </p>
               </div>
             </motion.div>
@@ -302,9 +302,9 @@ export default function LandingPage() {
         backdropFilter: 'blur(12px)',
         marginTop: 'clamp(40px, 8vw, 80px)',
       }}>
-        <div className="app-logo" style={{ fontSize: 22, display: 'inline-block', marginBottom: 12 }}>folio</div>
+        <div className="app-logo" style={{ fontSize: 22, display: 'inline-block', marginBottom: 12 }}>emitto</div>
         <p style={{ fontSize: 10, color: '#333', fontFamily: 'JetBrains Mono, monospace', letterSpacing: '0.2em', textTransform: 'uppercase' }}>
-          © 2026 Folio Broadcast Engine · All Rights Reserved
+          © 2026 Emitto Broadcast Engine · All Rights Reserved
         </p>
       </footer>
 

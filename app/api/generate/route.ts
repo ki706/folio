@@ -9,7 +9,7 @@ export async function POST(req: NextRequest) {
   try {
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
-    const isDemo = (await cookies()).get('folio_demo_mode')?.value === 'true';
+    const isDemo = (await cookies()).get('emitto_demo_mode')?.value === 'true';
 
     if (!user && !isDemo) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -47,13 +47,13 @@ export async function POST(req: NextRequest) {
          voice_description: 'Strategic, technical, and slightly provocative.',
          writing_samples: []
        } as any;
-       projects = [{ id: '1', name: 'Folio Demo', description: 'AI Content Engine', stack: ['Next.js'], status: 'active', achievement: 'Demo', learned: 'Demo' }] as any;
+       projects = [{ id: '1', name: 'Emitto Demo', description: 'AI Content Engine', stack: ['Next.js'], status: 'active', achievement: 'Demo', learned: 'Demo' }] as any;
        recentPosts = [] as any;
     } else {
       const [sRes, pRes, rRes] = await Promise.all([
-        supabase.from('settings_portfolio').select('*').eq('user_id', uid).single(),
-        supabase.from('projects_portfolio').select('*').eq('user_id', uid),
-        supabase.from('posts_portfolio').select('*').eq('user_id', uid).order('created_at', { ascending: false }).limit(5)
+        supabase.from('settings_portemitto').select('*').eq('user_id', uid).single(),
+        supabase.from('projects_portemitto').select('*').eq('user_id', uid),
+        supabase.from('posts_portemitto').select('*').eq('user_id', uid).order('created_at', { ascending: false }).limit(5)
       ]);
       settings = sRes.data;
       projects = pRes.data || [];
@@ -98,8 +98,8 @@ export async function POST(req: NextRequest) {
           headers: {
             'Authorization': `Bearer ${orKey}`,
             'Content-Type': 'application/json',
-            'HTTP-Referer': 'https://folio.dev',
-            'X-Title': 'Folio Broadcast Engine',
+            'HTTP-Referer': 'https://emitto.dev',
+            'X-Title': 'Emitto Broadcast Engine',
           },
           body: JSON.stringify({
             model: 'meta-llama/llama-3.3-70b-instruct:free',

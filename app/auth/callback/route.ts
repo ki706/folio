@@ -35,7 +35,7 @@ export async function GET(request: Request) {
       if (provider_token) {
         // First check if settings exist
         const { data: existing } = await supabase
-          .from('settings_portfolio')
+          .from('settings_portemitto')
           .select('id')
           .eq('user_id', user.id)
           .single();
@@ -43,7 +43,7 @@ export async function GET(request: Request) {
         if (existing) {
           // Update only GitHub specific fields
           await supabase
-            .from('settings_portfolio')
+            .from('settings_portemitto')
             .update({ 
               github_token: provider_token,
               github_url: `https://github.com/${user.user_metadata.user_name || ''}`
@@ -52,7 +52,7 @@ export async function GET(request: Request) {
         } else {
           // New user: create full record with defaults
           await supabase
-            .from('settings_portfolio')
+            .from('settings_portemitto')
             .insert({ 
               user_id: user.id, 
               github_token: provider_token,

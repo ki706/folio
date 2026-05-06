@@ -10,7 +10,7 @@ export default function GlobalError({
   reset: () => void;
 }) {
   useEffect(() => {
-    console.error('Folio System Error:', error);
+    console.error('Emitto System Error:', error);
   }, [error]);
 
   return (

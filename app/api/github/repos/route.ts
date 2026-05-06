@@ -4,10 +4,10 @@ import { cookies } from 'next/headers';
 
 export async function GET() {
   try {
-    const isDemo = (await cookies()).get('folio_demo_mode')?.value === 'true';
+    const isDemo = (await cookies()).get('emitto_demo_mode')?.value === 'true';
     if (isDemo) {
       return NextResponse.json([
-        { id: 1, name: 'folio-broadcast-engine', full_name: 'engineer/folio-broadcast-engine', description: 'Autonomous content synthesis engine.', language: 'TypeScript', url: '#' },
+        { id: 1, name: 'emitto-broadcast-engine', full_name: 'engineer/emitto-broadcast-engine', description: 'Autonomous content synthesis engine.', language: 'TypeScript', url: '#' },
         { id: 2, name: 'supabase-ssr-layer', full_name: 'engineer/supabase-ssr-layer', description: 'Global session persistence layer.', language: 'TypeScript', url: '#' }
       ]);
     }
@@ -20,7 +20,7 @@ export async function GET() {
     }
 
     const { data: settings } = await supabase
-      .from('settings_portfolio')
+      .from('settings_portemitto')
       .select('github_token')
       .eq('user_id', user.id)
       .single();

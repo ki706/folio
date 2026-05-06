@@ -10,7 +10,7 @@ export async function POST(req: Request) {
     const hasData = (projects && projects.length > 0) || (recentPosts && recentPosts.length > 0);
 
     const prompt = `
-      You are Folio's Strategy Engine. Suggest 3 high-resonance content "hooks" for a technical founder.
+      You are Emitto's Strategy Engine. Suggest 3 high-resonance content "hooks" for a technical founder.
       
       USER CONTEXT:
       Title: ${settings?.title || 'Technical Founder'}
@@ -54,8 +54,8 @@ export async function POST(req: Request) {
         headers: {
           'Authorization': `Bearer ${orKey}`,
           'Content-Type': 'application/json',
-          'HTTP-Referer': 'https://folio.dev',
-          'X-Title': 'Folio Strategy Engine',
+          'HTTP-Referer': 'https://emitto.dev',
+          'X-Title': 'Emitto Strategy Engine',
         },
         body: JSON.stringify({
           model: 'meta-llama/llama-3-8b-instruct:free',
