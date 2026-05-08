@@ -65,6 +65,12 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   }, [pathname, router]);
 
   useEffect(() => {
+    // Check for demo mode cookie synchronously
+    const demoCookie = document.cookie.split('; ').find(row => row.startsWith('emitto_demo_mode='));
+    if (demoCookie?.split('=')[1] === 'true') {
+      setUserEmail('demo@emitto.dev');
+    }
+
     const run = async () => { await fetchData(); };
     run();
     const interval = setInterval(fetchData, 15000);
