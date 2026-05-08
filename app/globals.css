@@ -335,7 +335,7 @@ h1, h2, h3, h4, .font-heading {
 @media (max-width: 1023px) {
   .sidebar {
     transform: translateX(-100%);
-    width: 320px;
+    width: min(320px, 85vw);
     background: #080808;
     padding-top: 100px;
   }
@@ -347,7 +347,7 @@ h1, h2, h3, h4, .font-heading {
   
   .main-content {
     margin-left: 0;
-    padding: 24px;
+    padding: clamp(16px, 4vw, 24px);
     padding-top: 90px;
     padding-bottom: calc(var(--dock-height) + env(safe-area-inset-bottom) + 32px);
   }
@@ -366,6 +366,59 @@ h1, h2, h3, h4, .font-heading {
 
   .page-header > div:last-child {
     text-align: left !important;
+  }
+
+  /* Prevent cards from lifting on mobile (avoids layout shifts) */
+  .glass-card:hover {
+    transform: none;
+  }
+}
+
+/* ── SMALL SCREEN (phones < 480px) ── */
+@media (max-width: 480px) {
+  .main-content {
+    padding: 16px;
+    padding-top: 84px;
+    padding-bottom: calc(var(--dock-height) + env(safe-area-inset-bottom) + 24px);
+  }
+
+  .page-header {
+    margin-bottom: 24px;
+    gap: 12px;
+  }
+
+  /* Stack all buttons to full width in headers on very small screens */
+  .page-header .btn-premium,
+  .page-header .btn-ghost-premium {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .glass-card {
+    border-radius: 18px;
+  }
+
+  .btn-premium,
+  .btn-ghost-premium {
+    border-radius: 12px;
+  }
+
+  .section-title-premium {
+    font-size: 10px;
+    margin-bottom: 16px;
+  }
+}
+
+/* ── TABLET (768px – 1023px) ── */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .main-content {
+    padding: 28px 32px;
+    padding-top: 96px;
+    padding-bottom: calc(var(--dock-height) + env(safe-area-inset-bottom) + 40px);
+  }
+
+  .dashboard-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 

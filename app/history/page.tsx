@@ -116,22 +116,23 @@ export default function HistoryPage() {
           ))}
         </div>
       ) : filtered.length === 0 ? (
-        <div className="glass-card relative overflow-hidden" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '100px 20px', textAlign: 'center' }}>
-          <div className="absolute inset-0 bg-gradient-to-b from-[rgba(0,255,136,0.02)] to-transparent pointer-events-none" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-[rgba(0,255,136,0.03)] rounded-full blur-[100px] pointer-events-none" />
-          
-          <div className="relative w-32 h-32 mb-8">
-            <div className="absolute inset-0 border border-[rgba(0,255,136,0.2)] rounded-3xl -rotate-12 bg-[rgba(0,255,136,0.02)]" />
-            <div className="absolute inset-0 border border-[rgba(255,255,255,0.1)] rounded-3xl rotate-6 bg-[rgba(255,255,255,0.01)] backdrop-blur-md flex items-center justify-center shadow-[0_20px_40px_rgba(0,0,0,0.4)]">
-              <Archive size={40} className="text-[#00FF88] drop-shadow-[0_0_15px_rgba(0,255,136,0.5)]" />
+        <div className="glass-card" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '80px 24px', textAlign: 'center', position: 'relative', overflow: 'hidden' }}>
+          <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, rgba(0,255,136,0.02), transparent)', pointerEvents: 'none' }} />
+          <div style={{ position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)', width: 500, height: 500, background: 'rgba(0,255,136,0.03)', borderRadius: '50%', filter: 'blur(100px)', pointerEvents: 'none' }} />
+
+          <div style={{ position: 'relative', width: 120, height: 120, marginBottom: 32, flexShrink: 0 }}>
+            <div style={{ position: 'absolute', inset: 0, border: '1px solid rgba(0,255,136,0.2)', borderRadius: '1.5rem', transform: 'rotate(-12deg)', background: 'rgba(0,255,136,0.02)' }} />
+            <div style={{ position: 'absolute', inset: 0, border: '1px solid rgba(255,255,255,0.1)', borderRadius: '1.5rem', transform: 'rotate(6deg)', background: 'rgba(255,255,255,0.01)', backdropFilter: 'blur(12px)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 20px 40px rgba(0,0,0,0.4)' }}>
+              <Archive size={40} style={{ color: '#00FF88' }} />
             </div>
           </div>
-          
-          <h2 style={{ fontSize: 28, fontWeight: 800, color: 'var(--white)', letterSpacing: '-0.03em', marginBottom: 12 }} className="relative z-10">Archive empty</h2>
-          <p style={{ color: 'var(--muted)', fontSize: 16, maxWidth: 420, lineHeight: 1.6 }} className="relative z-10">
+
+          <h2 style={{ fontSize: 28, fontWeight: 800, color: 'var(--white)', letterSpacing: '-0.03em', marginBottom: 12, position: 'relative', zIndex: 1 }}>Archive empty</h2>
+          <p style={{ color: 'var(--muted)', fontSize: 16, maxWidth: 420, lineHeight: 1.6, position: 'relative', zIndex: 1 }}>
             {search || filter !== 'all' ? 'No entries match your current filters.' : 'Your generated intelligence will appear here once saved.'}
           </p>
         </div>
+
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
           {filtered.map((post) => (
