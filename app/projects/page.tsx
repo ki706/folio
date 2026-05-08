@@ -19,9 +19,19 @@ export default function ProjectsPage() {
   }, []);
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    refresh();
-  }, [refresh]);
+    let isMounted = true;
+    
+    const init = async () => {
+      const ps = await getProjects();
+      if (isMounted) {
+        setProjects(ps);
+        setLoading(false);
+      }
+    };
+
+    init();
+    return () => { isMounted = false; };
+  }, []);
 
   const handleEdit = (p: Project) => {
     setEditingProject(p);
@@ -34,53 +44,93 @@ export default function ProjectsPage() {
   };
 
   return (
-    <div className="max-w-[var(--max-width-page)] mx-auto animate-fade-in">
-      <header className="page-header">
+    <div className="animate-fade-in" style={{ maxWidth: 'var(--max-width-page)', margin: '0 auto' }}>
+      <style>{`
+        .projects-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(min(340px, 100%), 1fr));
+          gap: var(--card-gap);
+          padding-bottom: 80px;
+        }
+      `}</style>
+
+      {/* Page Header */}
+      <div className="page-header">
         <div>
-          <div className="flex items-center gap-2.5 text-[11px] font-bold tracking-[0.2em] mb-4 text-[var(--green)] uppercase">
-            <Briefcase size={14} className="animate-pulse" /> Architecture
+          <div className="section-title-premium" style={{ color: 'var(--green)', marginBottom: 12 }}>
+            <Briefcase size={13} /> Architecture
           </div>
-          <h1 className="text-[clamp(32px,5vw,56px)] font-[900] tracking-[-0.05em] leading-tight text-white flex flex-wrap gap-x-4">
+          <h1 style={{ fontSize: 'clamp(32px, 5vw, 56px)', fontWeight: 900, letterSpacing: '-0.05em', lineHeight: 1.1, color: 'var(--white)' }}>
             Your <span className="text-gradient">Fleet.</span>
           </h1>
         </div>
-        <button className="btn-premium mb-2" onClick={() => setIsSheetOpen(true)}>
+        <button
+          className="btn-premium"
+          onClick={() => setIsSheetOpen(true)}
+          style={{ height: 48, padding: '0 24px', fontSize: 13, flexShrink: 0 }}
+        >
           <Plus size={18} />
-          <span>Add New Project</span>
+          Add New Project
         </button>
-      </header>
+      </div>
 
+      {/* Content */}
       {loading ? (
-        <div className="dashboard-grid">
-          {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="skeleton h-[200px] rounded-2xl" />
+        <div className="projects-grid">
+          {[1, 2, 3, 4].map(i => (
+            <div key={i} className="skeleton" style={{ height: 200, borderRadius: 20 }} />
           ))}
         </div>
       ) : projects.length === 0 ? (
-        <div className="glass-card flex flex-col items-center p-16 sm:p-24 text-center pb-32">
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(0,255,136,0.05)_0%,_transparent_60%)] pointer-events-none" />
-          
-          <div className="relative w-40 h-40 mb-12 group cursor-pointer" onClick={() => setIsSheetOpen(true)}>
-            <div className="absolute inset-0 border border-[rgba(0,255,136,0.2)] rounded-[2.5rem] rotate-12 bg-[#0A0A0A] group-hover:rotate-45 transition-transform duration-700 ease-in-out" />
-            <div className="absolute inset-0 border border-[var(--border)] rounded-[2.5rem] -rotate-6 bg-[rgba(255,255,255,0.02)] backdrop-blur-md flex items-center justify-center shadow-2xl group-hover:-rotate-12 transition-transform duration-700 ease-in-out">
-              <Briefcase size={48} className="text-[var(--green)] drop-shadow-[0_0_15px_rgba(0,255,136,0.4)] group-hover:scale-110 transition-transform" />
+        <div
+          className="glass-card"
+          style={{ padding: 'clamp(48px, 8vw, 96px) 40px', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', marginBottom: 80 }}
+        >
+          {/* Animated icon */}
+          <div
+            onClick={() => setIsSheetOpen(true)}
+            style={{ position: 'relative', width: 160, height: 160, marginBottom: 40, cursor: 'pointer' }}
+          >
+            <div style={{
+              position: 'absolute', inset: 0,
+              border: '1px solid rgba(0,255,136,0.2)',
+              borderRadius: '2.5rem',
+              background: '#0A0A0A',
+              transform: 'rotate(12deg)',
+              transition: 'transform 0.7s ease',
+            }} />
+            <div style={{
+              position: 'absolute', inset: 0,
+              border: '1px solid var(--border)',
+              borderRadius: '2.5rem',
+              background: 'rgba(255,255,255,0.02)',
+              backdropFilter: 'blur(12px)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              transform: 'rotate(-6deg)',
+              transition: 'transform 0.7s ease',
+            }}>
+              <Briefcase size={48} style={{ color: 'var(--green)' }} />
             </div>
           </div>
-          
-          <h2 className="text-3xl sm:text-4xl font-[900] text-white tracking-tight mb-4 relative z-10">Initialize the Grid</h2>
-          <p className="text-[#888] text-sm sm:text-base max-w-[460px] mb-12 leading-relaxed font-medium relative z-10">
+
+          <h2 style={{ fontSize: 'clamp(24px, 4vw, 36px)', fontWeight: 900, color: 'var(--white)', letterSpacing: '-0.04em', marginBottom: 16 }}>
+            Initialize the Grid
+          </h2>
+          <p style={{ fontSize: 15, color: '#888', maxWidth: 460, lineHeight: 1.7, fontWeight: 500, marginBottom: 40 }}>
             Your fleet is currently empty. Mount your active repositories to grant the neural engine structural context for content synthesis.
           </p>
-          <button 
-            className="btn-premium h-14 px-10 relative z-10" 
+          <button
+            className="btn-premium"
             onClick={() => setIsSheetOpen(true)}
+            style={{ height: 56, padding: '0 40px', fontSize: 13 }}
           >
-            <Plus size={18} /> Mount First Project
+            <Plus size={18} />
+            Mount First Project
           </button>
         </div>
       ) : (
-        <div className="dashboard-grid pb-32">
-          {projects.map((p) => (
+        <div className="projects-grid">
+          {projects.map(p => (
             <ProjectCard
               key={p.id}
               project={p}

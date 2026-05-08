@@ -1,126 +1,155 @@
 'use client';
 import { motion } from 'framer-motion';
-import { TrendingUp, GitCommit, MessageCircle, ArrowRight, GitMerge, Zap, Eye, Activity } from 'lucide-react';
+import { TrendingUp, GitCommit, Eye, GitMerge, Zap, Activity } from 'lucide-react';
 
 export default function AnalyticsPage() {
   const nodes = [
-    { id: 'commits', label: 'Commits Analyzed', value: '142', icon: GitCommit, color: 'var(--green)', trend: '+12% this week' },
-    { id: 'posts', label: 'Posts Synthesized', value: '38', icon: TrendingUp, color: 'var(--green)', trend: '8 active drafts' },
-    { id: 'impressions', label: 'Total Impressions', value: '124.5k', icon: Eye, color: 'var(--green)', trend: '+45.2% vs last month' },
-    { id: 'stars', label: 'GitHub Stars', value: '+412', icon: GitMerge, color: 'var(--green)', trend: 'Trending in TypeScript' },
+    { id: 'commits', label: 'Commits Analyzed', value: '142', icon: GitCommit, trend: '+12% this week' },
+    { id: 'posts', label: 'Posts Synthesized', value: '38', icon: TrendingUp, trend: '8 active drafts' },
+    { id: 'impressions', label: 'Total Impressions', value: '124.5k', icon: Eye, trend: '+45.2% vs last month' },
+    { id: 'stars', label: 'GitHub Stars', value: '+412', icon: GitMerge, trend: 'Trending in TypeScript' },
   ];
 
   return (
-    <div className="max-w-[var(--max-width-page)] mx-auto animate-fade-in">
-      <header className="page-header">
+    <div className="animate-fade-in" style={{ maxWidth: 'var(--max-width-page)', margin: '0 auto' }}>
+      <style>{`
+        .analytics-bento {
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: var(--card-gap);
+          padding-bottom: 80px;
+        }
+        .analytics-metric-row {
+          display: grid;
+          grid-template-columns: repeat(2, 1fr);
+          gap: var(--card-gap);
+        }
+        @media (min-width: 768px) {
+          .analytics-bento {
+            grid-template-columns: repeat(4, 1fr);
+          }
+          .analytics-main-chart {
+            grid-column: span 3;
+            grid-row: span 2;
+          }
+          .analytics-metric-col {
+            grid-column: span 1;
+            grid-row: span 1;
+          }
+          .analytics-hooks-row {
+            grid-column: span 3;
+          }
+        }
+      `}</style>
+
+      {/* Page Header */}
+      <div className="page-header">
         <div>
-          <div className="flex items-center gap-2.5 text-[11px] font-bold tracking-[0.2em] mb-4 text-[var(--green)] uppercase">
-            <Activity size={14} className="animate-pulse" /> Telemetry Active
+          <div className="section-title-premium" style={{ color: 'var(--green)', marginBottom: 12 }}>
+            <Activity size={13} /> Telemetry Active
           </div>
-          <h1 className="text-[clamp(32px,5vw,56px)] font-[900] tracking-[-0.05em] leading-tight text-white">
+          <h1 style={{ fontSize: 'clamp(32px, 5vw, 56px)', fontWeight: 900, letterSpacing: '-0.05em', lineHeight: 1.1, color: 'var(--white)' }}>
             Brand <span className="text-gradient">Telemetry.</span>
           </h1>
         </div>
-        <div className="flex items-center gap-3 bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.05)] rounded-full px-4 py-2 mb-2">
-           <div className="w-2 h-2 rounded-full bg-[#00FF88] shadow-[0_0_10px_#00FF88] animate-pulse" />
-           <span className="text-[10px] font-bold text-[#888] tracking-widest uppercase">Live Sync</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.05)', borderRadius: 100, padding: '8px 16px', flexShrink: 0 }}>
+          <div style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--green)', boxShadow: '0 0 10px var(--green)' }} />
+          <span style={{ fontSize: 10, fontWeight: 800, color: '#888', letterSpacing: '0.15em', textTransform: 'uppercase' }}>Live Sync</span>
         </div>
-      </header>
+      </div>
 
       {/* Bento Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-4 md:grid-rows-3 gap-[var(--card-gap)] pb-32">
-        
-        {/* Main Graph (Spans 2 rows, 3 cols) */}
-        <motion.div 
-          initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
-          className="md:col-span-3 md:row-span-2 glass-card relative overflow-hidden group"
-        >
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(0,255,136,0.1)_0%,_transparent_70%)] opacity-40 group-hover:opacity-70 transition-opacity duration-700 pointer-events-none" />
-          <div className="p-8 sm:p-10 relative z-10 flex flex-col h-full">
-             <div className="flex justify-between items-start mb-8">
-               <div>
-                 <h2 className="text-xl font-bold text-white mb-1">Audience Trajectory</h2>
-                 <p className="text-xs text-[#888] font-medium uppercase tracking-wider">Impressions (Aggregated)</p>
-               </div>
-               <div className="text-right">
-                 <div className="text-3xl font-[900] text-white font-mono tracking-tighter">124,500</div>
-                 <div className="text-xs font-bold text-[#00FF88] mt-1">+45.2%</div>
-               </div>
-             </div>
+      <div className="analytics-bento">
 
-             <div className="flex-1 relative w-full mt-4 min-h-[240px]">
-                  <svg viewBox="0 0 800 300" className="w-full h-full drop-shadow-[0_0_20px_rgba(0,255,136,0.2)]" preserveAspectRatio="none">
-                  <defs>
-                    <linearGradient id="chartGlow" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="0%" stopColor="rgba(0, 255, 136, 0.2)" />
-                      <stop offset="100%" stopColor="rgba(0, 255, 136, 0)" />
-                    </linearGradient>
-                    <linearGradient id="lineGlow" x1="0" y1="0" x2="1" y2="0">
-                      <stop offset="0%" stopColor="#00FF88" />
-                      <stop offset="50%" stopColor="var(--white)" />
-                      <stop offset="100%" stopColor="#00FF88" />
-                    </linearGradient>
-                  </defs>
-                  <motion.path
-                    initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 2, ease: "easeInOut" }}
-                    d="M0,250 C100,240 150,180 250,190 C350,200 450,100 550,120 C650,140 700,50 800,20"
-                    fill="none" stroke="url(#lineGlow)" strokeWidth="4" strokeLinecap="round"
-                  />
-                  <motion.path
-                    initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1, duration: 1 }}
-                    d="M0,250 C100,240 150,180 250,190 C350,200 450,100 550,120 C650,140 700,50 800,20 L800,300 L0,300 Z"
-                    fill="url(#chartGlow)"
-                  />
-                </svg>
-                
-                <div className="absolute inset-0 pointer-events-none opacity-20">
-                   {[25, 50, 75].map(pos => (
-                     <div key={pos} className="absolute inset-x-0 border-t border-dashed border-[#888]" style={{ top: `${pos}%` }} />
-                   ))}
-                </div>
-             </div>
+        {/* Main Audience Trajectory Chart */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
+          className="glass-card analytics-main-chart"
+          style={{ padding: 40, display: 'flex', flexDirection: 'column', minHeight: 360 }}
+        >
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 32 }}>
+            <div>
+              <h2 style={{ fontSize: 20, fontWeight: 800, color: 'var(--white)', marginBottom: 4 }}>Audience Trajectory</h2>
+              <p style={{ fontSize: 12, color: '#888', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.08em' }}>Impressions (Aggregated)</p>
+            </div>
+            <div style={{ textAlign: 'right' }}>
+              <div style={{ fontSize: 36, fontWeight: 900, color: 'var(--white)', fontFamily: 'JetBrains Mono, monospace', letterSpacing: '-0.04em' }}>124,500</div>
+              <div style={{ fontSize: 12, fontWeight: 800, color: 'var(--green)', marginTop: 4 }}>+45.2%</div>
+            </div>
+          </div>
+
+          <div style={{ flex: 1, position: 'relative', minHeight: 200 }}>
+            <svg viewBox="0 0 800 300" style={{ width: '100%', height: '100%' }} preserveAspectRatio="none">
+              <defs>
+                <linearGradient id="chartGlow" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="0%" stopColor="rgba(0, 255, 136, 0.2)" />
+                  <stop offset="100%" stopColor="rgba(0, 255, 136, 0)" />
+                </linearGradient>
+                <linearGradient id="lineGlow" x1="0" y1="0" x2="1" y2="0">
+                  <stop offset="0%" stopColor="#00FF88" />
+                  <stop offset="50%" stopColor="#ffffff" />
+                  <stop offset="100%" stopColor="#00FF88" />
+                </linearGradient>
+              </defs>
+              <motion.path
+                initial={{ pathLength: 0 }} animate={{ pathLength: 1 }} transition={{ duration: 2, ease: 'easeInOut' }}
+                d="M0,250 C100,240 150,180 250,190 C350,200 450,100 550,120 C650,140 700,50 800,20"
+                fill="none" stroke="url(#lineGlow)" strokeWidth="4" strokeLinecap="round"
+              />
+              <motion.path
+                initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1, duration: 1 }}
+                d="M0,250 C100,240 150,180 250,190 C350,200 450,100 550,120 C650,140 700,50 800,20 L800,300 L0,300 Z"
+                fill="url(#chartGlow)"
+              />
+              {[25, 50, 75].map(pos => (
+                <line key={pos} x1="0" y1={pos * 3} x2="800" y2={pos * 3} stroke="#888" strokeWidth="0.5" strokeDasharray="8,8" opacity="0.25" />
+              ))}
+            </svg>
           </div>
         </motion.div>
 
-        {/* Small Hardware Metric Cards (Span 1 col, 1 row each) */}
+        {/* Metric Cards */}
         {nodes.map((node, i) => (
-          <motion.div 
+          <motion.div
             key={node.id}
             initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.2 + (i * 0.1) }}
-            className={`md:col-span-1 md:row-span-1 glass-card p-6 flex flex-col justify-between ${i === 3 ? 'md:col-start-4 md:row-start-2' : ''}`}
+            className="glass-card analytics-metric-col"
+            style={{ padding: 24, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', minHeight: 160 }}
           >
-            <div className="absolute top-0 left-0 w-full h-1 bg-[var(--green)] opacity-20" />
-            
-            <div className="flex items-center justify-between">
-              <div className="w-10 h-10 rounded-xl flex items-center justify-center bg-[rgba(255,255,255,0.03)] border border-[rgba(255,255,255,0.05)] shadow-lg">
-                <node.icon size={20} className="text-[var(--green)]" />
+            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+              <div style={{ width: 40, height: 40, borderRadius: 12, display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'rgba(0,255,136,0.05)', border: '1px solid rgba(0,255,136,0.1)' }}>
+                <node.icon size={20} style={{ color: 'var(--green)' }} />
               </div>
-              <Zap size={14} className="text-[#333]" />
+              <Zap size={14} style={{ color: '#333' }} />
             </div>
-
             <div>
-              <div className="text-[10px] font-bold text-[#666] tracking-widest uppercase mb-1">{node.label}</div>
-              <div className="text-3xl font-[900] text-white font-mono tracking-tighter">{node.value}</div>
-              <div className="text-[10px] font-bold mt-2 text-[var(--green)]">{node.trend}</div>
+              <div style={{ fontSize: 10, fontWeight: 800, color: '#555', letterSpacing: '0.12em', textTransform: 'uppercase', marginBottom: 6 }}>{node.label}</div>
+              <div style={{ fontSize: 32, fontWeight: 900, color: 'var(--white)', fontFamily: 'JetBrains Mono, monospace', letterSpacing: '-0.04em', lineHeight: 1 }}>{node.value}</div>
+              <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--green)', marginTop: 8 }}>{node.trend}</div>
             </div>
           </motion.div>
         ))}
 
-        {/* Top Performing Hooks (Spans 3 cols, 1 row) */}
-        <motion.div 
+        {/* Top Performing Hooks */}
+        <motion.div
           initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.6 }}
-          className="md:col-span-3 md:row-span-1 glass-card p-6 flex flex-col"
+          className="glass-card analytics-hooks-row"
+          style={{ padding: 32 }}
         >
-          <h3 className="section-title-premium mb-6">Top Performing Neural Hooks</h3>
-          <div className="flex flex-col gap-3 flex-1">
-             {['"Most teams over-engineer their auth..."', '"Stop using Redux for everything."', '"We migrated to Edge computing and dropped latency by 40ms..."'].map((hook, i) => (
-                <div key={i} className="group p-4 rounded-xl bg-[rgba(255,255,255,0.02)] border border-[var(--border)] flex flex-col sm:flex-row items-start sm:items-center justify-between cursor-pointer hover:bg-[rgba(255,255,255,0.05)] hover:border-[rgba(255,255,255,0.2)] transition-all">
-                  <span className="text-[#ccc] text-sm font-medium group-hover:text-white transition-colors">"{hook}</span>
-                  <span className="mt-2 sm:mt-0 pill-green text-[10px] font-mono shrink-0">
-                    +{((i * 7) % 20) + 5}.4k Impressions
-                  </span>
-                </div>
-             ))}
+          <h3 className="section-title-premium" style={{ marginBottom: 20 }}>Top Performing Neural Hooks</h3>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+            {[
+              '"Most teams over-engineer their auth..."',
+              '"Stop using Redux for everything."',
+              '"We migrated to Edge computing and dropped latency by 40ms..."'
+            ].map((hook, i) => (
+              <div key={i} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 12, padding: '14px 18px', borderRadius: 12, background: 'rgba(255,255,255,0.02)', border: '1px solid var(--border)', cursor: 'pointer' }}>
+                <span style={{ fontSize: 14, color: '#ccc', fontWeight: 500 }}>{hook}</span>
+                <span style={{ fontSize: 10, fontWeight: 800, color: 'var(--green)', fontFamily: 'JetBrains Mono, monospace', background: 'rgba(0,255,136,0.08)', padding: '4px 10px', borderRadius: 6, border: '1px solid rgba(0,255,136,0.12)', whiteSpace: 'nowrap' }}>
+                  +{((i * 7) % 20) + 5}.4k Impressions
+                </span>
+              </div>
+            ))}
           </div>
         </motion.div>
 

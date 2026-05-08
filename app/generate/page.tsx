@@ -13,7 +13,7 @@ import { useToast } from '@/components/ui/Toast';
 import ToneSelector from '@/components/generate/ToneSelector';
 import ContextSelector from '@/components/generate/ContextSelector';
 import OutputTabs from '@/components/generate/OutputTabs';
-import { Sparkles, ArrowRight, Zap, Info, Lightbulb, RefreshCw, Activity, Code } from 'lucide-react';
+import { Sparkles, Zap, RefreshCw, Activity, Code } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 function NeuralWave() {
@@ -22,22 +22,17 @@ function NeuralWave() {
       {[...Array(12)].map((_, i) => (
         <div
           key={i}
-          className="wave-bar"
-          style={{ 
-            width: 3, 
-            background: 'var(--green)', 
-            borderRadius: 2, 
+          style={{
+            width: 3,
+            background: 'var(--green)',
+            borderRadius: 2,
             animation: `wave 1s ease-in-out infinite ${i * 0.1}s`,
-            opacity: 0.8
-          }} 
+            opacity: 0.8,
+          }}
         />
       ))}
       <style>{`
-        @keyframes wave {
-          0%, 100% { height: 8px; }
-          50% { height: 32px; }
-        }
-        .wave-bar { transition: height 0.2s ease; }
+        @keyframes wave { 0%, 100% { height: 8px; } 50% { height: 32px; } }
       `}</style>
     </div>
   );
@@ -46,7 +41,7 @@ function NeuralWave() {
 function GenerateContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { success, error: toastError, info } = useToast();
+  const { success, error: toastError } = useToast();
   const [input, setInput] = useState('');
   const [tone, setTone] = useState<'builder' | 'hustler' | 'hot_take'>('builder');
   const [selectedProject, setSelectedProject] = useState<string | null>(null);
@@ -67,16 +62,11 @@ function GenerateContent() {
       const res = await fetch('/api/suggest', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          projects: currentProjects,
-          settings: s,
-          recentPosts: posts.slice(0, 5),
-        }),
+        body: JSON.stringify({ projects: currentProjects, settings: s, recentPosts: posts.slice(0, 5) }),
       });
       const data = await res.json();
       setSuggestions(data.suggestions || []);
-    } catch (err) {
-      console.error('Suggestions failed');
+    } catch {
       toastError('Neural nodes are recalibrating. Failed to fetch hooks.');
     } finally {
       setLoadingSuggestions(false);
@@ -85,51 +75,23 @@ function GenerateContent() {
 
   const generate = useCallback(async (forcedInput?: string) => {
     const activeInput = forcedInput || input;
-    if (!activeInput.trim()) {
-      setError('Select a strategy hook or provide a seed.');
-      return;
-    }
-    setError('');
-    setGenerating(true);
-    setResult(null);
-    setSaved(false);
-
+    if (!activeInput.trim()) { setError('Select a strategy hook or provide a seed.'); return; }
+    setError(''); setGenerating(true); setResult(null); setSaved(false);
     try {
       const [settings, allPosts] = await Promise.all([getSettings(), getPosts()]);
       const res = await fetch('/api/generate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          input: activeInput,
-          tone,
-          projectId: selectedProject,
-          settings,
-          projects,
-          recentPosts: allPosts.filter(p => p.is_saved).slice(0, 10),
-        }),
+        body: JSON.stringify({ input: activeInput, tone, projectId: selectedProject, settings, projects, recentPosts: allPosts.filter(p => p.is_saved).slice(0, 10) }),
       });
-
       const data = await res.json();
-      if (!res.ok || data.error) {
-        setError(data.error || 'Synthesis node failed.');
-        return;
-      }
-
-      const selectedProj = projects.find((p) => p.id === selectedProject);
-      await savePost({
-        content_linkedin: data.linkedin,
-        content_x: data.x_thread,
-        tone,
-        project_id: selectedProject,
-        project_name: selectedProj?.name ?? null,
-        is_saved: false,
-      });
-      
+      if (!res.ok || data.error) { setError(data.error || 'Synthesis node failed.'); return; }
+      const selectedProj = projects.find(p => p.id === selectedProject);
+      await savePost({ content_linkedin: data.linkedin, content_x: data.x_thread, tone, project_id: selectedProject, project_name: selectedProj?.name ?? null, is_saved: false });
       const posts = await getPosts();
       setResult({ linkedin: data.linkedin, x_thread: data.x_thread, postId: posts[0].id });
       success('Brand asset successfully synthesized.');
-    } catch (err) {
-      console.error('Generate error:', err);
+    } catch {
       toastError('Synthesis link severed. Check your network sync.');
       setError('Network sync failed.');
     } finally {
@@ -141,119 +103,141 @@ function GenerateContent() {
     const loadInitial = async () => {
       const ps = await getProjects();
       setProjects(ps);
-      
       const pid = searchParams.get('project');
-      if (pid && ps.find((p) => p.id === pid)) {
-        setSelectedProject(pid);
-      }
-
+      if (pid && ps.find(p => p.id === pid)) setSelectedProject(pid);
       const initialInput = searchParams.get('input');
-      if (initialInput) {
-        setInput(initialInput);
-        // Wait for projects to be set before generating
-        setTimeout(() => generate(initialInput), 500);
-      }
-
+      if (initialInput) { setInput(initialInput); setTimeout(() => generate(initialInput), 500); }
       fetchSuggestions(ps);
     };
-
     loadInitial();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const handleSuggestionClick = (hook: string) => {
-    setInput(hook);
-    generate(hook);
-  };
+  const handleSuggestionClick = (hook: string) => { setInput(hook); generate(hook); };
 
   return (
-    <div className="max-w-[var(--max-width-page)] mx-auto animate-fade-in">
-      <header className="page-header">
-        <div>
-          <h1 className="text-gradient" style={{ fontSize: 'clamp(32px, 5vw, 48px)', fontWeight: 900, letterSpacing: '-0.055em' }}>Content Studio</h1>
-          <p style={{ color: 'var(--muted)', marginTop: 4, fontSize: 14 }}>Elite Brand Synthesis Engine</p>
-        </div>
-        <div className="hidden sm:flex items-center gap-3 bg-[rgba(0,255,136,0.05)] border border-[rgba(0,255,136,0.1)] rounded-full px-4 py-2 mb-2">
-           <Activity size={14} className="text-[var(--green)]" />
-           <span className="text-[10px] font-bold text-[var(--green)] tracking-widest uppercase">Neural Sync Active</span>
-        </div>
-      </header>
+    <div className="animate-fade-in" style={{ maxWidth: 'var(--max-width-page)', margin: '0 auto' }}>
+      <style>{`
+        .generate-two-col {
+          display: grid;
+          grid-template-columns: 1fr;
+          gap: var(--card-gap);
+          align-items: start;
+          padding-bottom: 80px;
+        }
+        @media (min-width: 1024px) {
+          .generate-two-col { grid-template-columns: 1fr 1fr; }
+        }
+        .suggestions-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(min(280px, 100%), 1fr));
+          gap: 16px;
+        }
+      `}</style>
 
+      {/* Page Header */}
+      <div className="page-header">
+        <div>
+          <div className="section-title-premium" style={{ color: 'var(--green)', marginBottom: 12 }}>
+            <Activity size={13} /> Elite Brand Synthesis Engine
+          </div>
+          <h1 style={{ fontSize: 'clamp(32px, 5vw, 48px)', fontWeight: 900, letterSpacing: '-0.055em', lineHeight: 1.1, color: 'var(--white)' }}>
+            Content <span className="text-gradient">Studio.</span>
+          </h1>
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10, background: 'rgba(0,255,136,0.05)', border: '1px solid rgba(0,255,136,0.1)', borderRadius: 100, padding: '8px 16px', flexShrink: 0 }}>
+          <div style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--green)', boxShadow: '0 0 8px var(--green)' }} />
+          <span style={{ fontSize: 10, fontWeight: 800, color: 'var(--green)', letterSpacing: '0.15em', textTransform: 'uppercase' }}>Neural Sync Active</span>
+        </div>
+      </div>
+
+      {/* Strategy Hooks — visible when no result yet */}
       {!result && !generating && (
-        <div className="mb-16">
-          <div className="flex flex-col md:flex-row items-start md:items-end justify-between mb-10 gap-8">
-            <div>
-              <div className="flex items-center gap-2.5 text-[11px] font-bold tracking-[0.2em] mb-4 text-[var(--green)] uppercase">
-                <Zap size={14} className="animate-pulse" /> Neural Engine Active
-              </div>
-              <h2 className="text-[clamp(28px,4vw,48px)] font-[900] tracking-[-0.05em] leading-tight text-white">
-                Strategy <span className="text-gradient">Hooks.</span>
-              </h2>
-            </div>
-            <button onClick={() => fetchSuggestions(projects)} className="btn-ghost-premium h-10 px-4 text-[11px]">
-               <RefreshCw size={14} className={loadingSuggestions ? 'animate-spin' : ''} /> REFRESH SIGNALS
+        <div style={{ marginBottom: 40 }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20, flexWrap: 'wrap', gap: 12 }}>
+            <h2 className="section-title-premium" style={{ marginBottom: 0 }}>
+              <Zap size={14} style={{ color: 'var(--green)' }} /> Strategy Hooks
+            </h2>
+            <button
+              onClick={() => fetchSuggestions(projects)}
+              className="btn-ghost-premium"
+              style={{ height: 36, padding: '0 16px', fontSize: 11, gap: 8 }}
+            >
+              <RefreshCw size={13} style={loadingSuggestions ? { animation: 'spin 1s linear infinite' } : {}} />
+              Refresh Signals
             </button>
           </div>
-           
-           <div className="dashboard-grid">
-              {loadingSuggestions ? (
-                [1, 2, 3].map(i => <div key={i} className="skeleton h-[120px] rounded-2xl" />)
-              ) : suggestions.map((hook, i) => (
+          <div className="suggestions-grid">
+            {loadingSuggestions
+              ? [1, 2, 3].map(i => <div key={i} className="skeleton" style={{ height: 110, borderRadius: 20 }} />)
+              : suggestions.map((hook, i) => (
                 <button
                   key={i}
-                  className="glass-card p-6 text-left hover:border-[var(--green-border)] transition-all group"
+                  className="glass-card"
                   onClick={() => handleSuggestionClick(hook)}
+                  style={{ padding: 24, textAlign: 'left', cursor: 'pointer', display: 'flex', flexDirection: 'column' }}
                 >
-                  <p className="text-sm text-white leading-relaxed font-medium mb-6">{hook}</p>
-                  <div className="flex items-center gap-2 text-[10px] font-bold text-[var(--green)] tracking-widest uppercase opacity-60 group-hover:opacity-100 transition-opacity">
-                    <Zap size={12} /> Synthesize Hook
+                  <p style={{ fontSize: 14, color: 'var(--white)', lineHeight: 1.6, fontWeight: 500, marginBottom: 16 }}>{hook}</p>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: 6, fontSize: 10, color: 'var(--green)', fontWeight: 800, letterSpacing: '0.1em', textTransform: 'uppercase', marginTop: 'auto' }}>
+                    <Zap size={11} /> Synthesize Hook
                   </div>
                 </button>
-              ))}
-           </div>
+              ))
+            }
+          </div>
         </div>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-[var(--card-gap)] items-start pb-32">
-        
+      {/* Main Two-Column: Input Console + Output */}
+      <div className="generate-two-col">
+
         {/* Input Console */}
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}
-          className={`glass-card p-8 relative overflow-hidden ${generating ? 'border-[var(--green-border)]' : ''}`}
+          className="glass-card"
+          style={{ padding: 32, position: 'relative', overflow: 'hidden', border: generating ? '1px solid var(--green-border)' : '1px solid var(--border)' }}
         >
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(0,255,136,0.05)_0%,_transparent_70%)] pointer-events-none" />
-          
-          <div className="relative z-10">
-            <h3 className="section-title-premium mb-8">
-              <Code size={16} className="text-[var(--green)]" /> Parameters
+          <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at top, rgba(0,255,136,0.05) 0%, transparent 70%)', pointerEvents: 'none' }} />
+          <div style={{ position: 'relative', zIndex: 1 }}>
+
+            <h3 className="section-title-premium" style={{ marginBottom: 28 }}>
+              <Code size={15} style={{ color: 'var(--green)' }} /> Parameters
             </h3>
-            
-            <div className="mb-8">
-              <label className="text-[10px] font-bold text-[#666] tracking-[0.2em] uppercase mb-3 block">
+
+            {/* Concept Seed */}
+            <div style={{ marginBottom: 24 }}>
+              <label style={{ display: 'block', fontSize: 10, fontWeight: 800, color: '#666', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: 10 }}>
                 Concept Seed
               </label>
               <textarea
                 ref={textareaRef}
-                className="input-premium min-h-[160px] text-base leading-relaxed"
+                className="input-premium"
                 value={input}
-                onChange={(e) => setInput(e.target.value)}
+                onChange={e => setInput(e.target.value)}
                 placeholder="Inject a technical milestone or thought..."
+                style={{ minHeight: 140, fontSize: 15, lineHeight: 1.6 }}
               />
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-10">
+            {/* Tone + Project side by side */}
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 20, marginBottom: 28 }}>
               <div>
-                <label className="text-[10px] font-bold text-[#666] tracking-[0.2em] uppercase mb-3 block">Tone Parameters</label>
+                <label style={{ display: 'block', fontSize: 10, fontWeight: 800, color: '#666', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: 10 }}>
+                  Tone
+                </label>
                 <ToneSelector selected={tone} onSelect={setTone} />
               </div>
               <div>
-                <label className="text-[10px] font-bold text-[#666] tracking-[0.2em] uppercase mb-3 block">Project Context</label>
+                <label style={{ display: 'block', fontSize: 10, fontWeight: 800, color: '#666', letterSpacing: '0.15em', textTransform: 'uppercase', marginBottom: 10 }}>
+                  Project
+                </label>
                 {projects.length === 0 ? (
-                  <button 
+                  <button
                     onClick={() => router.push('/projects')}
-                    className="btn-ghost-premium w-full h-[54px] border-dashed"
+                    className="btn-ghost-premium"
+                    style={{ width: '100%', height: 48, fontSize: 11, borderStyle: 'dashed' }}
                   >
-                    + INITIALIZE CONTEXT
+                    + Initialize Context
                   </button>
                 ) : (
                   <ContextSelector projects={projects} selected={selectedProject} onSelect={setSelectedProject} />
@@ -261,52 +245,62 @@ function GenerateContent() {
               </div>
             </div>
 
+            {/* Generating indicator */}
             {generating && (
-              <div className="text-center mb-8">
-                 <p className="text-[10px] font-black text-[var(--green)] tracking-[0.3em] uppercase mb-4 animate-pulse">Cloning Voice Architecture</p>
-                 <NeuralWave />
+              <div style={{ textAlign: 'center', marginBottom: 20 }}>
+                <p style={{ fontSize: 10, fontWeight: 900, color: 'var(--green)', letterSpacing: '0.25em', textTransform: 'uppercase', marginBottom: 8 }}>
+                  Cloning Voice Architecture
+                </p>
+                <NeuralWave />
               </div>
             )}
 
+            {/* Main CTA */}
             <button
-              className="btn-premium w-full h-16 text-lg"
+              className="btn-premium"
               onClick={() => generate()}
               disabled={generating}
+              style={{ width: '100%', height: 64, fontSize: 17, background: 'var(--accent-gradient)', color: '#000', letterSpacing: '0.02em' }}
             >
-              {generating ? 'SYNTHESIZING...' : (
-                <>
-                  <Sparkles size={20} /> SYTHESIZE BRAND ASSET
-                </>
-              )}
+              <Sparkles size={20} />
+              {generating ? 'SYNTHESIZING...' : 'SYNTHESIZE BRAND ASSET'}
             </button>
-            
-            {error && <p className="text-danger text-xs mt-4 text-center font-bold tracking-tight">{error}</p>}
+
+            {error && (
+              <p style={{ color: 'var(--danger)', fontSize: 12, marginTop: 14, textAlign: 'center', fontWeight: 700 }}>{error}</p>
+            )}
           </div>
         </motion.div>
 
-        {/* Output Visualization */}
-        <div className="flex flex-col gap-6">
+        {/* Output Panel */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 20 }}>
           {result && !generating && (
             <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}>
-              <OutputTabs
-                linkedin={result.linkedin}
-                xThread={result.x_thread}
-              />
-              <div className="mt-6 flex gap-4">
-                 <button className="btn-premium flex-1 h-14" onClick={async () => {
+              <OutputTabs linkedin={result.linkedin} xThread={result.x_thread} />
+              <div style={{ marginTop: 20, display: 'flex', gap: 12 }}>
+                <button
+                  className="btn-premium"
+                  style={{ flex: 1, height: 56, fontSize: 13 }}
+                  onClick={async () => {
                     await savePost({ id: result.postId, is_saved: true });
                     setSaved(true);
                     success('Post committed to brand history.');
-                  }}>
-                    {saved ? '✓ ARCHIVED' : 'COMMIT TO BRAND HISTORY'}
-                 </button>
-                 <button className="btn-ghost-premium w-14 h-14 p-0" onClick={() => generate()}>
-                    <RefreshCw size={20} />
-                 </button>
+                  }}
+                >
+                  {saved ? '✓ ARCHIVED' : 'COMMIT TO BRAND HISTORY'}
+                </button>
+                <button
+                  className="btn-ghost-premium"
+                  style={{ width: 56, height: 56, padding: 0, flexShrink: 0 }}
+                  onClick={() => generate()}
+                >
+                  <RefreshCw size={18} />
+                </button>
               </div>
             </motion.div>
           )}
         </div>
+
       </div>
     </div>
   );
@@ -314,7 +308,11 @@ function GenerateContent() {
 
 export default function GeneratePage() {
   return (
-    <Suspense fallback={<div>Syncing Neural Nodes...</div>}>
+    <Suspense fallback={
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: 400, color: 'var(--muted)', fontSize: 13, letterSpacing: '0.1em' }}>
+        Syncing Neural Nodes...
+      </div>
+    }>
       <GenerateContent />
     </Suspense>
   );
