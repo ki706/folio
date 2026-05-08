@@ -167,46 +167,46 @@ function GenerateContent() {
   };
 
   return (
-    <div className="animate-fade-in mx-auto" style={{ maxWidth: 'var(--max-width-page)' }}>
-      <div className="page-header">
+    <div className="max-w-[var(--max-width-page)] mx-auto animate-fade-in">
+      <header className="page-header">
         <div>
-          <h1 className="text-gradient" style={{ fontSize: 'clamp(28px, 5vw, 40px)', fontWeight: 900, letterSpacing: '-0.055em' }}>Content Studio</h1>
+          <h1 className="text-gradient" style={{ fontSize: 'clamp(32px, 5vw, 48px)', fontWeight: 900, letterSpacing: '-0.055em' }}>Content Studio</h1>
           <p style={{ color: 'var(--muted)', marginTop: 4, fontSize: 14 }}>Elite Brand Synthesis Engine</p>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 10, color: 'var(--muted-dark)', fontSize: 11, fontWeight: 700, flexShrink: 0 }}>
-           <Activity size={13} /> NEURAL SYNC ACTIVE
+        <div className="hidden sm:flex items-center gap-3 bg-[rgba(0,255,136,0.05)] border border-[rgba(0,255,136,0.1)] rounded-full px-4 py-2 mb-2">
+           <Activity size={14} className="text-[var(--green)]" />
+           <span className="text-[10px] font-bold text-[var(--green)] tracking-widest uppercase">Neural Sync Active</span>
         </div>
-      </div>
+      </header>
 
       {!result && !generating && (
-        <div className="pb-32">
-          <div className="flex flex-col md:flex-row items-start md:items-end justify-between mb-16 gap-8">
+        <div className="mb-16">
+          <div className="flex flex-col md:flex-row items-start md:items-end justify-between mb-10 gap-8">
             <div>
               <div className="flex items-center gap-2.5 text-[11px] font-bold tracking-[0.2em] mb-4 text-[var(--green)] uppercase">
                 <Zap size={14} className="animate-pulse" /> Neural Engine Active
               </div>
-              <h1 className="text-[clamp(40px,5vw,64px)] font-[900] tracking-[-0.05em] leading-none text-white">
-                Post <span className="text-transparent bg-clip-text bg-gradient-to-r from-white to-[var(--muted)]">Synthesis.</span>
-              </h1>
+              <h2 className="text-[clamp(28px,4vw,48px)] font-[900] tracking-[-0.05em] leading-tight text-white">
+                Strategy <span className="text-gradient">Hooks.</span>
+              </h2>
             </div>
-            <button onClick={() => fetchSuggestions(projects)} className="btn-ghost-premium" style={{ height: 28, padding: '0 10px', fontSize: 10 }}>
-               <RefreshCw size={12} className={loadingSuggestions ? 'animate-spin' : ''} /> REFRESH
+            <button onClick={() => fetchSuggestions(projects)} className="btn-ghost-premium h-10 px-4 text-[11px]">
+               <RefreshCw size={14} className={loadingSuggestions ? 'animate-spin' : ''} /> REFRESH SIGNALS
             </button>
           </div>
            
-           <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 16 }}>
+           <div className="dashboard-grid">
               {loadingSuggestions ? (
-                [1, 2, 3].map(i => <div key={i} className="skeleton" style={{ height: 100, borderRadius: 16 }} />)
+                [1, 2, 3].map(i => <div key={i} className="skeleton h-[120px] rounded-2xl" />)
               ) : suggestions.map((hook, i) => (
                 <button
                   key={i}
-                  className="glass-card hover-glow"
+                  className="glass-card p-6 text-left hover:border-[var(--green-border)] transition-all group"
                   onClick={() => handleSuggestionClick(hook)}
-                  style={{ textAlign: 'left', padding: 20, cursor: 'pointer', background: 'rgba(255,255,255,0.01)' }}
                 >
-                  <p style={{ fontSize: 14, color: 'var(--white)', lineHeight: 1.5, fontWeight: 500 }}>{hook}</p>
-                  <div style={{ marginTop: 12, display: 'flex', alignItems: 'center', gap: 6, fontSize: 10, color: 'var(--green)', fontWeight: 700 }}>
-                    <Zap size={10} /> SYNTHESIZE
+                  <p className="text-sm text-white leading-relaxed font-medium mb-6">{hook}</p>
+                  <div className="flex items-center gap-2 text-[10px] font-bold text-[var(--green)] tracking-widest uppercase opacity-60 group-hover:opacity-100 transition-opacity">
+                    <Zap size={12} /> Synthesize Hook
                   </div>
                 </button>
               ))}
@@ -214,44 +214,44 @@ function GenerateContent() {
         </div>
       )}
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(360px, 100%), 1fr))', gap: 'clamp(20px, 4vw, 48px)', alignItems: 'start' }}>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-[var(--card-gap)] items-start pb-32">
         
         {/* Input Console */}
         <motion.div 
           initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }}
-          className={`lg:col-span-1 glass-card p-8 border border-[rgba(0,255,136,0.1)] bg-[#0A0A0A] relative overflow-hidden${generating ? ' border-pulse' : ''}`}
+          className={`glass-card p-8 relative overflow-hidden ${generating ? 'border-[var(--green-border)]' : ''}`}
         >
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(0,255,136,0.05)_0%,_transparent_70%)]" />
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_rgba(0,255,136,0.05)_0%,_transparent_70%)] pointer-events-none" />
+          
           <div className="relative z-10">
-            <h2 className="text-sm font-bold text-white uppercase tracking-widest mb-8 flex items-center gap-2">
+            <h3 className="section-title-premium mb-8">
               <Code size={16} className="text-[var(--green)]" /> Parameters
-            </h2>
-            <div style={{ marginBottom: 28 }}>
-              <label className="section-title-premium mb-3">
-                <Zap size={14} className="text-[#00FF88]" /> Concept Seed
+            </h3>
+            
+            <div className="mb-8">
+              <label className="text-[10px] font-bold text-[#666] tracking-[0.2em] uppercase mb-3 block">
+                Concept Seed
               </label>
               <textarea
                 ref={textareaRef}
-                className="input-premium focus:shadow-[0_0_20px_rgba(0,255,136,0.15)] transition-shadow duration-300"
+                className="input-premium min-h-[160px] text-base leading-relaxed"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 placeholder="Inject a technical milestone or thought..."
-                style={{ minHeight: 140, fontSize: 16, lineHeight: 1.6, background: 'rgba(255,255,255,0.02)', border: '1px solid rgba(255,255,255,0.05)' }}
               />
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(min(160px, 100%), 1fr))', gap: 20 }}>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-10">
               <div>
-                <label className="section-title-premium mb-3">Tone Parameters</label>
+                <label className="text-[10px] font-bold text-[#666] tracking-[0.2em] uppercase mb-3 block">Tone Parameters</label>
                 <ToneSelector selected={tone} onSelect={setTone} />
               </div>
               <div>
-                <label className="section-title-premium mb-3">Project Context</label>
+                <label className="text-[10px] font-bold text-[#666] tracking-[0.2em] uppercase mb-3 block">Project Context</label>
                 {projects.length === 0 ? (
                   <button 
                     onClick={() => router.push('/projects')}
-                    className="btn-ghost-premium hover:bg-[rgba(255,255,255,0.05)]" 
-                    style={{ width: '100%', height: 44, fontSize: 11, borderStyle: 'dashed', borderColor: 'rgba(255,255,255,0.15)' }}
+                    className="btn-ghost-premium w-full h-[54px] border-dashed"
                   >
                     + INITIALIZE CONTEXT
                   </button>
@@ -260,52 +260,51 @@ function GenerateContent() {
                 )}
               </div>
             </div>
-          </div>
 
-          {generating && (
-            <div style={{ textAlign: 'center', marginBottom: 24 }}>
-               <p style={{ fontSize: 11, fontWeight: 800, color: 'var(--green)', letterSpacing: '0.2em', marginBottom: 12 }}>CLONING VOICE ARCHITECTURE</p>
-               <NeuralWave />
-            </div>
-          )}
-
-          <button
-            className={`btn-premium${generating ? ' loading' : ''}`}
-            onClick={() => generate()}
-            disabled={generating}
-            style={{ width: '100%', height: 64, fontSize: 18, background: 'var(--accent-gradient)', color: '#000' }}
-          >
-            {generating ? 'SYNTHESIZING...' : (
-              <>
-                <Sparkles size={20} /> SYTHESIZE BRAND ASSET
-              </>
+            {generating && (
+              <div className="text-center mb-8">
+                 <p className="text-[10px] font-black text-[var(--green)] tracking-[0.3em] uppercase mb-4 animate-pulse">Cloning Voice Architecture</p>
+                 <NeuralWave />
+              </div>
             )}
-          </button>
-          
-          {error && <p style={{ color: 'var(--danger)', fontSize: 12, marginTop: 16, textAlign: 'center' }}>{error}</p>}
+
+            <button
+              className="btn-premium w-full h-16 text-lg"
+              onClick={() => generate()}
+              disabled={generating}
+            >
+              {generating ? 'SYNTHESIZING...' : (
+                <>
+                  <Sparkles size={20} /> SYTHESIZE BRAND ASSET
+                </>
+              )}
+            </button>
+            
+            {error && <p className="text-danger text-xs mt-4 text-center font-bold tracking-tight">{error}</p>}
+          </div>
         </motion.div>
 
         {/* Output Visualization */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: 24 }}>
+        <div className="flex flex-col gap-6">
           {result && !generating && (
-            <div style={{ animation: 'fadeIn 0.5s ease forwards' }}>
+            <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }}>
               <OutputTabs
                 linkedin={result.linkedin}
                 xThread={result.x_thread}
               />
-              <div style={{ marginTop: 24, display: 'flex', gap: 16 }}>
-                 <button className="btn-premium" style={{ flex: 1, height: 56 }} onClick={async () => {
+              <div className="mt-6 flex gap-4">
+                 <button className="btn-premium flex-1 h-14" onClick={async () => {
                     await savePost({ id: result.postId, is_saved: true });
                     setSaved(true);
                     success('Post committed to brand history.');
                   }}>
                     {saved ? '✓ ARCHIVED' : 'COMMIT TO BRAND HISTORY'}
                  </button>
-                 <button className="btn-ghost-premium" style={{ height: 56, width: 56, padding: 0 }} onClick={() => generate()}>
+                 <button className="btn-ghost-premium w-14 h-14 p-0" onClick={() => generate()}>
                     <RefreshCw size={20} />
                  </button>
               </div>
-            </div>
+            </motion.div>
           )}
         </div>
       </div>
