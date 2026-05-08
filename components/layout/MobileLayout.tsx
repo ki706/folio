@@ -90,6 +90,10 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   // Don't render shell on auth pages
   if (pathname === '/login' || pathname === '/onboarding') return <>{children}</>;
 
+  // Detect if we are on the landing page (root path with no auth/demo)
+  const isLanding = pathname === '/' && !userEmail && !isDemo;
+  if (isLanding) return <>{children}</>;
+
   return (
     <div className="app-container">
 

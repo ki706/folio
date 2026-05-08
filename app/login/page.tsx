@@ -70,10 +70,10 @@ function LoginContent() {
   };
 
   return (
-    <div style={{ minHeight: '100dvh', width: '100%', display: 'flex', flexDirection: 'column', background: '#050505', overflow: 'hidden', position: 'relative' }}>
+    <div className="login-shell" style={{ minHeight: '100dvh', width: '100%', display: 'flex', flexDirection: 'column', background: '#050505', overflow: 'hidden', position: 'relative' }}>
       <style>{`
         @media (min-width: 1024px) {
-          .login-wrapper { flex-direction: row !important; }
+          .login-shell { flex-direction: row !important; }
           .login-left-panel { display: flex !important; }
           .login-right-panel { width: 50% !important; }
           .login-mobile-logo { display: none !important; }
@@ -144,7 +144,7 @@ function LoginContent() {
 
       {/* RIGHT PANEL — Auth Console */}
       <div
-        className="login-right-panel login-wrapper"
+        className="login-right-panel"
         style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 'clamp(24px, 6vw, 64px) clamp(20px, 5vw, 48px)', minHeight: '100dvh', position: 'relative' }}
       >
         {/* Mobile logo */}
