@@ -34,6 +34,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [unreadCount, setUnreadCount] = useState(0);
   const [userSettings, setUserSettings] = useState<UserSettings | null>(null);
+  const [loading, setLoading] = useState(true);
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   // Close drawer on route change
@@ -52,27 +53,31 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   }, []);
 
   const fetchData = useCallback(async () => {
-    const { data: { user } } = await supabase.auth.getUser();
-    setUserEmail(user?.email || null);
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      setUserEmail(user?.email || null);
+      
+      const [notifs, settings] = await Promise.all([getNotifications(), getSettings()]);
+      setUnreadCount(notifs.filter(n => !n.is_read).length);
+      setUserSettings(settings);
 
-    const [notifs, settings] = await Promise.all([getNotifications(), getSettings()]);
-    setUnreadCount(notifs.filter(n => !n.is_read).length);
-    setUserSettings(settings);
-
-    if (settings && settings.onboarding_completed === false && pathname !== '/onboarding') {
-      router.push('/onboarding');
+      if (settings && settings.onboarding_completed === false && pathname !== '/onboarding') {
+        router.push('/onboarding');
+      }
+    } finally {
+      setLoading(false);
     }
   }, [pathname, router]);
 
   useEffect(() => {
-    // Check for demo mode cookie synchronously
+    // Check for demo mode cookie synchronously to avoid flicker
     const demoCookie = document.cookie.split('; ').find(row => row.startsWith('emitto_demo_mode='));
     if (demoCookie?.split('=')[1] === 'true') {
       setUserEmail('demo@emitto.dev');
+      setLoading(false);
     }
 
-    const run = async () => { await fetchData(); };
-    run();
+    fetchData();
     const interval = setInterval(fetchData, 15000);
     return () => clearInterval(interval);
   }, [fetchData]);
@@ -96,9 +101,11 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   // Don't render shell on auth pages
   if (pathname === '/login' || pathname === '/onboarding') return <>{children}</>;
 
-  // Detect if we are on the landing page (root path with no auth/demo)
-  const isLanding = pathname === '/' && !userEmail && !isDemo;
-  if (isLanding) return <>{children}</>;
+  // If loading and on root, show nothing or children to prevent layout shift
+  if (loading && pathname === '/') return <div style={{ background: '#050505', minHeight: '100vh' }}>{children}</div>;
+
+  // On landing page (root with no user), skip shell
+  if (pathname === '/' && !userEmail && !isDemo) return <>{children}</>;
 
   return (
     <div className="app-container">
