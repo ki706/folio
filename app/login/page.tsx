@@ -123,7 +123,9 @@ function LoginContent() {
             <div style={{ display: 'flex' }}>
               {[1, 2, 3].map(i => (
                 <div key={i} style={{ width: 40, height: 40, borderRadius: '50%', border: '2px solid #0A0A0A', background: '#111', display: 'flex', alignItems: 'center', justifyContent: 'center', marginLeft: i > 1 ? -12 : 0, boxShadow: '0 4px 12px rgba(0,0,0,0.4)' }}>
-                  <GitHubIcon size={16} style={{ color: '#666' }} />
+                  <div style={{ color: '#666' }}>
+                    <GitHubIcon size={16} />
+                  </div>
                 </div>
               ))}
             </div>
