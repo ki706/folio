@@ -64,14 +64,24 @@ export default function ProjectsPage() {
             Your <span className="text-gradient">Architectural Nodes.</span>
           </h1>
         </div>
-        <button
-          className="btn-premium hover-glow"
-          onClick={() => setIsSheetOpen(true)}
-          style={{ height: 64, padding: '0 32px', fontSize: 14, flexShrink: 0, borderRadius: 20 }}
-        >
-          <Plus size={20} />
-          Initialize Node
-        </button>
+        <div style={{ display: 'flex', gap: 12 }}>
+          <button
+            className="btn-ghost-premium"
+            onClick={() => router.push('/settings')}
+            style={{ height: 48, padding: '0 24px', fontSize: 13, flexShrink: 0 }}
+          >
+            <Zap size={18} />
+            GitHub Intelligence
+          </button>
+          <button
+            className="btn-premium hover-glow"
+            onClick={() => setIsSheetOpen(true)}
+            style={{ height: 48, padding: '0 24px', fontSize: 13, flexShrink: 0 }}
+          >
+            <Plus size={18} />
+            Add Project
+          </button>
+        </div>
       </div>
 
       {/* Content */}
