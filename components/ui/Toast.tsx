@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect, createContext, useContext, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, CheckCircle, AlertCircle, Info, AlertTriangle } from 'lucide-react';
+import { X, CheckCircle, AlertCircle, Info, AlertTriangle, ShieldCheck, Zap } from 'lucide-react';
 
 type ToastType = 'success' | 'error' | 'info' | 'warning';
 
@@ -33,7 +33,7 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
     setToasts((prev) => [...prev, { id, message, type }]);
     setTimeout(() => {
       removeToast(id);
-    }, 5000);
+    }, 6000);
   }, [removeToast]);
 
   const contextValue = {
@@ -47,35 +47,116 @@ export function ToastProvider({ children }: { children: React.ReactNode }) {
   return (
     <ToastContext.Provider value={contextValue}>
       {children}
-      <div className="fixed bottom-24 right-6 z-[200] flex flex-col gap-3 pointer-events-none max-w-sm w-full">
+      <div style={{ 
+        position: 'fixed', 
+        top: 24, 
+        right: 24, 
+        zIndex: 9999, 
+        display: 'flex', 
+        flexDirection: 'column', 
+        gap: 12, 
+        pointerEvents: 'none', 
+        maxWidth: 420, 
+        width: 'calc(100% - 48px)' 
+      }}>
         <AnimatePresence>
           {toasts.map((t) => (
             <motion.div
               key={t.id}
-              initial={{ opacity: 0, y: 20, scale: 0.9 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.8, transition: { duration: 0.2 } }}
-              className="pointer-events-auto"
+              initial={{ opacity: 0, x: 100, filter: 'blur(10px)' }}
+              animate={{ opacity: 1, x: 0, filter: 'blur(0px)' }}
+              exit={{ opacity: 0, scale: 0.9, x: 20, filter: 'blur(5px)' }}
+              transition={{ type: 'spring', damping: 20, stiffness: 300 }}
+              style={{ pointerEvents: 'auto' }}
             >
-              <div className={`glass-card p-4 flex items-center gap-3 border-l-4 ${
-                t.type === 'success' ? 'border-l-[#00FF88] bg-[rgba(0,255,136,0.05)]' :
-                t.type === 'error' ? 'border-l-[#FF3333] bg-[rgba(255,51,51,0.05)]' :
-                t.type === 'warning' ? 'border-l-[#F59E0B] bg-[rgba(245,158,11,0.05)]' :
-                'border-l-[#00CCFF] bg-[rgba(0,204,255,0.05)]'
-              }`}>
-                <div className={
-                  t.type === 'success' ? 'text-[#00FF88]' :
-                  t.type === 'error' ? 'text-[#FF3333]' :
-                  t.type === 'warning' ? 'text-[#F59E0B]' :
-                  'text-[#00CCFF]'
-                }>
-                  {t.type === 'success' && <CheckCircle size={18} />}
-                  {t.type === 'error' && <AlertCircle size={18} />}
-                  {t.type === 'warning' && <AlertTriangle size={18} />}
-                  {t.type === 'info' && <Info size={18} />}
+              <div style={{ 
+                background: '#0A0A0A', 
+                border: '1px solid rgba(255,255,255,0.1)', 
+                borderLeft: `4px solid ${
+                  t.type === 'success' ? '#00FF88' : 
+                  t.type === 'error' ? '#FF3333' : 
+                  t.type === 'warning' ? '#F59E0B' : '#00CCFF'
+                }`,
+                padding: '16px 20px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: 16,
+                position: 'relative',
+                boxShadow: t.type === 'success' ? '0 10px 40px -10px rgba(0,255,136,0.2)' : 
+                           t.type === 'error' ? '0 10px 40px -10px rgba(255,51,51,0.2)' : '0 10px 40px -10px rgba(0,0,0,0.5)',
+                backdropFilter: 'blur(20px)'
+              }}>
+                {/* Decorative scanning line animation */}
+                <motion.div 
+                  initial={{ width: '100%' }}
+                  animate={{ width: '0%' }}
+                  transition={{ duration: 6, ease: 'linear' }}
+                  style={{ 
+                    position: 'absolute', 
+                    bottom: 0, 
+                    left: 0, 
+                    height: 1, 
+                    background: t.type === 'success' ? '#00FF88' : 
+                               t.type === 'error' ? '#FF3333' : '#FFF',
+                    opacity: 0.3
+                  }} 
+                />
+
+                <div style={{ 
+                  color: t.type === 'success' ? '#00FF88' : 
+                         t.type === 'error' ? '#FF3333' : 
+                         t.type === 'warning' ? '#F59E0B' : '#00CCFF',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  flexShrink: 0
+                }}>
+                  {t.type === 'success' && <ShieldCheck size={20} />}
+                  {t.type === 'error' && <AlertCircle size={20} />}
+                  {t.type === 'warning' && <AlertTriangle size={20} />}
+                  {t.type === 'info' && <Zap size={20} />}
                 </div>
-                <p className="flex-1 text-sm font-semibold text-white">{t.message}</p>
-                <button onClick={() => removeToast(t.id)} className="text-white/40 hover:text-white transition-colors">
+
+                <div style={{ flex: 1, display: 'flex', flexDirection: 'column', gap: 2 }}>
+                  <div style={{ 
+                    fontSize: 10, 
+                    fontWeight: 900, 
+                    textTransform: 'uppercase', 
+                    letterSpacing: '0.15em', 
+                    color: '#444',
+                    fontFamily: 'monospace'
+                  }}>
+                    {t.type === 'success' ? 'SIGNAL_STABLE' : 
+                     t.type === 'error' ? 'SYSTEM_ALERT' : 'DATA_INPUT'}
+                  </div>
+                  <p style={{ 
+                    fontSize: 14, 
+                    fontWeight: 500, 
+                    color: 'white', 
+                    margin: 0, 
+                    lineHeight: 1.4,
+                    letterSpacing: '-0.01em'
+                  }}>
+                    {t.message}
+                  </p>
+                </div>
+
+                <button 
+                  onClick={() => removeToast(t.id)} 
+                  style={{ 
+                    background: 'none', 
+                    border: 'none', 
+                    color: 'rgba(255,255,255,0.2)', 
+                    cursor: 'pointer',
+                    padding: 4,
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    transition: 'color 0.2s ease'
+                  }}
+                  onMouseOver={(e) => e.currentTarget.style.color = 'white'}
+                  onMouseOut={(e) => e.currentTarget.style.color = 'rgba(255,255,255,0.2)'}
+                >
                   <X size={14} />
                 </button>
               </div>

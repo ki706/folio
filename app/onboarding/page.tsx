@@ -56,8 +56,8 @@ export default function OnboardingPage() {
       
       success('Neural identity synchronized. Welcome to Emitto.');
       router.push('/dashboard');
-    } catch (e) {
-      toastError('Calibration failed. Please try again.');
+    } catch (e: any) {
+      toastError(e.message || 'Calibration failed. Please try again.');
       setSaving(false);
     }
   };
