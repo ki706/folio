@@ -19,29 +19,39 @@ const NAV_ITEMS = [
   { label: 'Settings',  icon: Settings,   href: '/settings' },
 ];
 
-// 5 items shown in dock (most important)
-const DOCK_ITEMS = [
-  { label: 'Home',     icon: Home,      href: '/' },
-  { label: 'Projects', icon: Briefcase, href: '/projects' },
-  { label: 'Generate', icon: Sparkles,  href: '/generate' },
-  { label: 'Trends',   icon: Radio,     href: '/trends' },
-  { label: 'Settings', icon: Settings,  href: '/settings' },
-];
+// 5 items shown in dock (REMOVED - consolidating to one hamburger)
+// const DOCK_ITEMS = [ ... ];
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
-  const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [drawerOpen, setDrawerOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
   const [userSettings, setUserSettings] = useState<UserSettings | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [drawerOpen, setDrawerOpen] = useState(false);
+
+  // Initialize demo state synchronously to avoid flicker and lint errors
+  const [userEmail, setUserEmail] = useState<string | null>(() => {
+    if (typeof document !== 'undefined') {
+      const demoCookie = document.cookie.split('; ').find(row => row.startsWith('emitto_demo_mode='));
+      if (demoCookie?.split('=')[1] === 'true') return 'demo@emitto.dev';
+    }
+    return null;
+  });
+
+  const [loading, setLoading] = useState(() => {
+    if (typeof document !== 'undefined') {
+      const demoCookie = document.cookie.split('; ').find(row => row.startsWith('emitto_demo_mode='));
+      if (demoCookie?.split('=')[1] === 'true') return false;
+    }
+    return true;
+  });
 
   // Close drawer on route change
   useEffect(() => { 
     if (drawerOpen) {
-      const t = setTimeout(() => setDrawerOpen(false), 0);
-      return () => clearTimeout(t);
+      // Use requestAnimationFrame or setTimeout to avoid cascading render warning
+      const id = requestAnimationFrame(() => setDrawerOpen(false));
+      return () => cancelAnimationFrame(id);
     }
   }, [pathname, drawerOpen]);
 
@@ -70,13 +80,6 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   }, [pathname, router]);
 
   useEffect(() => {
-    // Check for demo mode cookie synchronously to avoid flicker
-    const demoCookie = document.cookie.split('; ').find(row => row.startsWith('emitto_demo_mode='));
-    if (demoCookie?.split('=')[1] === 'true') {
-      setUserEmail('demo@emitto.dev');
-      setLoading(false);
-    }
-
     fetchData();
     const interval = setInterval(fetchData, 15000);
     return () => clearInterval(interval);
@@ -101,11 +104,13 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   // Don't render shell on auth pages
   if (pathname === '/login' || pathname === '/onboarding') return <>{children}</>;
 
-  // If loading and on root, show nothing or children to prevent layout shift
-  if (loading && pathname === '/') return <div style={{ background: '#050505', minHeight: '100vh' }}>{children}</div>;
-
   // On landing page (root with no user), skip shell
-  if (pathname === '/' && !userEmail && !isDemo) return <>{children}</>;
+  // We check for userEmail OR demo cookie
+  const hasUser = !!userEmail || isDemo;
+  if (pathname === '/' && !hasUser && !loading) return <>{children}</>;
+
+  // If loading, we still show the shell structure if we suspect we're logged in
+  // but for now, we'll just let the data flow.
 
   return (
     <div className="app-container">
@@ -119,7 +124,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         {drawerOpen ? <X size={18} /> : <Menu size={18} />}
       </button>
 
-      {/* ── Sidebar backdrop (mobile) ── */}
+      {/* ── Sidebar backdrop (mobile only) ── */}
       {drawerOpen && (
         <div
           className="sidebar-backdrop"
@@ -129,7 +134,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       )}
 
       {/* ── Sidebar ── */}
-      <aside className={`sidebar${drawerOpen ? ' drawer-open' : ''}`}>
+      <aside className={`sidebar ${drawerOpen ? 'drawer-open' : 'drawer-closed'}`}>
         {/* Logo */}
         <div style={{ padding: '0 14px', marginBottom: 36, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div>
@@ -138,23 +143,6 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
               BROADCAST ENGINE
             </p>
           </div>
-          {/* Close button inside drawer on mobile */}
-          <button
-            onClick={() => setDrawerOpen(false)}
-            style={{
-              display: 'none',
-              width: 32, height: 32, borderRadius: 8,
-              background: 'rgba(255,255,255,0.05)',
-              border: '1px solid var(--border)',
-              color: 'var(--muted)',
-              cursor: 'pointer',
-              alignItems: 'center', justifyContent: 'center',
-            }}
-            className="drawer-close-btn"
-            aria-label="Close menu"
-          >
-            <X size={16} />
-          </button>
         </div>
 
         {/* Nav */}
@@ -229,41 +217,9 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         {children}
       </main>
 
-      {/* ── Mobile Dock ── */}
-      <nav className="mobile-dock" aria-label="Mobile navigation">
-        {DOCK_ITEMS.map((item) => {
-          const Icon = item.icon;
-          const isActive = pathname === item.href;
-          return (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={`dock-item${isActive ? ' active' : ''}`}
-              aria-label={item.label}
-            >
-              <div style={{ position: 'relative' }}>
-                <Icon size={22} strokeWidth={isActive ? 2.5 : 2} />
-                {item.label === 'Home' && unreadCount > 0 && (
-                  <div style={{
-                    position: 'absolute', top: -2, right: -2,
-                    width: 7, height: 7, borderRadius: '50%',
-                    background: 'var(--green)',
-                    border: '1.5px solid #080808',
-                  }} />
-                )}
-              </div>
-              <span className="dock-label">{item.label}</span>
-            </Link>
-          );
-        })}
-      </nav>
+      {/* ── Mobile Dock REMOVED in favor of One Hamburger ── */}
 
-      {/* Inline style to show drawer close btn on mobile */}
-      <style>{`
-        @media (max-width: 1023px) {
-          .drawer-close-btn { display: flex !important; }
-        }
-      `}</style>
+      {/* ── Mobile Dock REMOVED in favor of One Hamburger ── */}
     </div>
   );
 }

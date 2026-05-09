@@ -277,13 +277,21 @@ h1, h2, h3, h4, .font-heading {
   top: 0;
   background: #050505;
   border-right: 1px solid var(--border);
-  padding: 48px 24px 100px 24px; /* Added 100px bottom padding for dock clearance */
+  padding: 48px 24px 100px 24px;
   display: flex;
   flex-direction: column;
-  z-index: 120; /* Higher than mobile dock (100) */
-  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  z-index: 120;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
   overflow-y: auto;
   scrollbar-width: none;
+}
+
+.sidebar.drawer-closed {
+  transform: translateX(-100%);
+}
+
+.sidebar.drawer-open {
+  transform: translateX(0);
 }
 
 .sidebar::-webkit-scrollbar {
@@ -325,16 +333,17 @@ h1, h2, h3, h4, .font-heading {
 
 .main-content {
   flex: 1;
-  margin-left: var(--sidebar-width);
+  margin-left: 0; /* Reset margin since sidebar is now toggleable */
   padding: clamp(24px, 5vw, 64px);
+  padding-top: 100px; /* Space for fixed hamburger */
   min-height: 100vh;
   background: radial-gradient(circle at 50% 0%, rgba(0, 255, 136, 0.04) 0%, transparent 60%);
+  transition: padding 0.3s ease;
 }
 
 /* ── MOBILE NAV OVERRIDES ── */
 @media (max-width: 1023px) {
   .sidebar {
-    transform: translateX(-100%);
     width: min(320px, 85vw);
     background: #080808;
     padding-top: 100px;
@@ -349,11 +358,12 @@ h1, h2, h3, h4, .font-heading {
     margin-left: 0;
     padding: clamp(16px, 4vw, 24px);
     padding-top: 90px;
-    padding-bottom: calc(var(--dock-height) + env(safe-area-inset-bottom) + 32px);
+    /* Reclaimed dock space */
+    padding-bottom: clamp(32px, 8vw, 64px);
   }
   
   .sidebar-toggle {
-    display: flex !important;
+    display: flex; /* Always flex on mobile */
   }
 
   .page-header {
@@ -379,7 +389,7 @@ h1, h2, h3, h4, .font-heading {
   .main-content {
     padding: 16px;
     padding-top: 84px;
-    padding-bottom: calc(var(--dock-height) + env(safe-area-inset-bottom) + 24px);
+    padding-bottom: 40px;
   }
 
   .page-header {
@@ -414,7 +424,7 @@ h1, h2, h3, h4, .font-heading {
   .main-content {
     padding: 28px 32px;
     padding-top: 96px;
-    padding-bottom: calc(var(--dock-height) + env(safe-area-inset-bottom) + 40px);
+    padding-bottom: 64px;
   }
 
   .dashboard-grid {
@@ -423,22 +433,32 @@ h1, h2, h3, h4, .font-heading {
 }
 
 .sidebar-toggle {
-  display: none;
+  display: flex; /* Show on all devices */
   position: fixed;
-  top: 24px;
-  left: 24px;
-  width: 48px;
-  height: 48px;
-  border-radius: 16px;
-  background: rgba(10, 10, 10, 0.8);
-  backdrop-filter: blur(20px);
+  top: 20px;
+  left: 20px;
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: #000000;
   border: 1px solid var(--border);
   color: var(--white);
-  z-index: 110;
+  z-index: 130; /* Higher than sidebar (120) and backdrop (115) */
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.8);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.sidebar-toggle:hover {
+  background: var(--bg-subtle);
+  border-color: var(--accent);
+  transform: scale(1.05);
+}
+
+.sidebar-toggle:active {
+  transform: scale(0.95);
 }
 
 .sidebar-backdrop {
