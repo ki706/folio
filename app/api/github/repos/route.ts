@@ -19,14 +19,26 @@ export async function GET() {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const { data: settings } = await supabase
+    const { data: settings, error: settingsError } = await supabase
       .from('EmittoSettings')
-      .select('github_token')
+      .select('github_token, user_id')
       .eq('user_id', user.id)
       .single();
 
-    if (!settings || !settings.github_token) {
-      return NextResponse.json({ error: 'GitHub token not found in settings.' }, { status: 401 });
+    if (settingsError || !settings) {
+      console.error('API REPOS: Settings fetch failed:', {
+        userId: user.id,
+        error: settingsError
+      });
+      return NextResponse.json({ 
+        error: 'GitHub token not found. Please ensure your account is connected in Settings.',
+        details: settingsError?.message 
+      }, { status: 401 });
+    }
+
+    if (!settings.github_token) {
+      console.error('API REPOS: Token missing in settings for user:', user.id);
+      return NextResponse.json({ error: 'GitHub token is empty in your settings.' }, { status: 401 });
     }
 
     const res = await fetch('https://api.github.com/user/repos?sort=updated&per_page=100', {
