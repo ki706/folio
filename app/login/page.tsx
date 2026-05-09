@@ -1,6 +1,6 @@
 'use client';
 import { useState, useEffect, useCallback, Suspense } from 'react';
-import { supabase } from '@/lib/supabase';
+import { supabase, getURL } from '@/lib/supabase';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useToast } from '@/components/ui/Toast';
 import { Zap, ShieldCheck, Code, ArrowRight } from 'lucide-react';
@@ -58,9 +58,7 @@ function LoginContent() {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'github',
       options: {
-        redirectTo: process.env.NODE_ENV === 'production' 
-          ? 'https://folio-post.vercel.app/auth/callback'
-          : 'http://localhost:3000/auth/callback',
+        redirectTo: `${getURL()}auth/callback`,
         scopes: 'repo read:user user:email',
       },
     });
