@@ -47,9 +47,10 @@ export default function OnboardingClient({ initialSettings }: { initialSettings:
 
   const steps = [
     { id: 1, label: 'Identity' },
-    { id: 2, label: 'Signals' },
-    { id: 3, label: 'Persona' },
-    { id: 4, label: 'Deploy' }
+    { id: 2, label: 'Mission' },
+    { id: 3, label: 'Tone' },
+    { id: 4, label: 'Intelligence' },
+    { id: 5, label: 'Deploy' }
   ];
 
   return (
@@ -117,12 +118,29 @@ export default function OnboardingClient({ initialSettings }: { initialSettings:
                 </div>
                 <div style={{ display: 'flex', gap: 12, marginTop: 40 }}>
                   <button onClick={handleBack} style={{ flex: 1, height: 64, background: 'transparent', color: '#444', fontWeight: 800, border: '1px solid rgba(255,255,255,0.1)' }}>BACK</button>
-                  <button onClick={handleNext} disabled={!settings.voice_description} style={{ flex: 2, height: 64, background: 'white', color: 'black', fontWeight: 900, border: 'none', opacity: !settings.voice_description ? 0.3 : 1 }}>FINALIZE</button>
+                  <button onClick={handleNext} disabled={!settings.voice_description} style={{ flex: 2, height: 64, background: 'white', color: 'black', fontWeight: 900, border: 'none', opacity: !settings.voice_description ? 0.3 : 1 }}>CONTINUE</button>
                 </div>
               </motion.div>
             )}
             {step === 4 && (
-              <motion.div key="4" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} style={{ display: 'flex', flexDirection: 'column', flex: 1, alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
+              <motion.div key="4" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
+                <h2 style={{ fontSize: 32, fontWeight: 900, letterSpacing: '-0.04em', marginBottom: 8 }}>Intelligence.</h2>
+                <p style={{ color: '#666', fontSize: 15, marginBottom: 40 }}>Establish the secure link to your GitHub repositories.</p>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 28, flex: 1 }}>
+                  <div>
+                    <label style={{ fontSize: 10, fontWeight: 800, color: '#444', textTransform: 'uppercase', letterSpacing: '0.2em', marginBottom: 12, display: 'block' }}>Access Token (Optional)</label>
+                    <input type="password" style={{ width: '100%', background: '#050505', border: '1px solid rgba(255,255,255,0.1)', padding: '16px 20px', color: 'white', outline: 'none' }} placeholder="ghp_xxxxxxxxxxxxxxxxxxxx" value={settings.github_token || ''} onChange={e => setSettings({ ...settings, github_token: e.target.value })} />
+                    <p style={{ fontSize: 11, color: '#444', marginTop: 12, lineHeight: 1.5 }}>Provide a PAT with <b style={{ color: '#666' }}>repo</b> scope to enable automated commit tracking. You can skip this and configure it later in Settings.</p>
+                  </div>
+                </div>
+                <div style={{ display: 'flex', gap: 12, marginTop: 40 }}>
+                  <button onClick={handleBack} style={{ flex: 1, height: 64, background: 'transparent', color: '#444', fontWeight: 800, border: '1px solid rgba(255,255,255,0.1)' }}>BACK</button>
+                  <button onClick={handleNext} style={{ flex: 2, height: 64, background: 'white', color: 'black', fontWeight: 900, border: 'none' }}>FINALIZE</button>
+                </div>
+              </motion.div>
+            )}
+            {step === 5 && (
+              <motion.div key="5" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} style={{ display: 'flex', flexDirection: 'column', flex: 1, alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
                 {saving ? (
                   <>
                     <motion.div animate={{ rotate: 360 }} transition={{ duration: 2, repeat: Infinity, ease: "linear" }} style={{ marginBottom: 32, color: '#00FF88' }}><Cpu size={64} /></motion.div>
