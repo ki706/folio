@@ -58,7 +58,9 @@ function LoginContent() {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'github',
       options: {
-        redirectTo: `${window.location.origin}/auth/callback`,
+        redirectTo: process.env.NODE_ENV === 'production' 
+          ? 'https://folio-post.vercel.app/auth/callback'
+          : 'http://localhost:3000/auth/callback',
         scopes: 'repo read:user user:email',
       },
     });
