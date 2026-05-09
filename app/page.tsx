@@ -1,7 +1,7 @@
 import { createServerClient } from '@supabase/ssr';
 import { cookies } from 'next/headers';
-import LandingPage from './landing/page';
-import DashboardPage from './dashboard/page'; // We'll move the old home to here
+import { redirect } from 'next/navigation';
+import LandingPage from '@/components/landing/LandingPage';
 
 export default async function Page() {
   const cookieStore = await cookies();
@@ -19,11 +19,11 @@ export default async function Page() {
   );
 
   const { data: { user } } = await supabase.auth.getUser();
-  const isDemo = (await cookies()).get('emitto_demo_mode')?.value === 'true';
+  const isDemo = cookieStore.get('emitto_demo_mode')?.value === 'true';
 
-  if (!user && !isDemo) {
-    return <LandingPage />;
+  if (user || isDemo) {
+    redirect('/dashboard');
   }
 
-  return <DashboardPage />;
+  return <LandingPage />;
 }

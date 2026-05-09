@@ -286,12 +286,30 @@ h1, h2, h3, h4, .font-heading {
   scrollbar-width: none;
 }
 
-.sidebar.drawer-closed {
-  transform: translateX(-100%);
+/* ── DESKTOP: Sidebar always visible, no transform ── */
+@media (min-width: 1024px) {
+  .sidebar {
+    transform: translateX(0) !important;
+  }
+
+  .sidebar-toggle {
+    display: none !important; /* Hidden on desktop */
+  }
+
+  .sidebar-backdrop {
+    display: none !important;
+  }
 }
 
-.sidebar.drawer-open {
-  transform: translateX(0);
+/* ── MOBILE: Drawer behavior ── */
+@media (max-width: 1023px) {
+  .sidebar.drawer-closed {
+    transform: translateX(-100%);
+  }
+
+  .sidebar.drawer-open {
+    transform: translateX(0);
+  }
 }
 
 .sidebar::-webkit-scrollbar {
@@ -333,37 +351,39 @@ h1, h2, h3, h4, .font-heading {
 
 .main-content {
   flex: 1;
-  margin-left: 0; /* Reset margin since sidebar is now toggleable */
+  margin-left: 0;
   padding: clamp(24px, 5vw, 64px);
-  padding-top: 100px; /* Space for fixed hamburger */
+  padding-top: 100px; /* Space for fixed hamburger on mobile */
   min-height: 100vh;
   background: radial-gradient(circle at 50% 0%, rgba(0, 255, 136, 0.04) 0%, transparent 60%);
-  transition: padding 0.3s ease;
+  transition: margin-left 0.4s cubic-bezier(0.16, 1, 0.3, 1), padding 0.3s ease;
 }
 
-/* ── MOBILE NAV OVERRIDES ── */
+/* ── DESKTOP: main-content shifts right to account for permanent sidebar ── */
+@media (min-width: 1024px) {
+  .main-content {
+    margin-left: var(--sidebar-width);
+    padding-top: clamp(40px, 5vw, 64px); /* No hamburger offset on desktop */
+  }
+}
+
+/* ── MOBILE NAV OVERRIDES (< 1024px) ── */
 @media (max-width: 1023px) {
   .sidebar {
-    width: min(320px, 85vw);
+    width: min(300px, 85vw);
     background: #080808;
-    padding-top: 100px;
+    padding-top: 80px; /* Space below the hamburger button */
   }
   
   .sidebar.drawer-open {
-    transform: translateX(0);
     box-shadow: 20px 0 100px rgba(0, 0, 0, 0.95);
   }
   
   .main-content {
     margin-left: 0;
     padding: clamp(16px, 4vw, 24px);
-    padding-top: 90px;
-    /* Reclaimed dock space */
+    padding-top: 80px; /* Space for the fixed hamburger button */
     padding-bottom: clamp(32px, 8vw, 64px);
-  }
-  
-  .sidebar-toggle {
-    display: flex; /* Always flex on mobile */
   }
 
   .page-header {
@@ -423,7 +443,7 @@ h1, h2, h3, h4, .font-heading {
 @media (min-width: 768px) and (max-width: 1023px) {
   .main-content {
     padding: 28px 32px;
-    padding-top: 96px;
+    padding-top: 80px; /* Matches hamburger position */
     padding-bottom: 64px;
   }
 
@@ -432,15 +452,16 @@ h1, h2, h3, h4, .font-heading {
   }
 }
 
+/* ── HAMBURGER BUTTON (mobile/tablet only) ── */
 .sidebar-toggle {
-  display: flex; /* Show on all devices */
+  display: none; /* Hidden by default; shown on mobile via media query */
   position: fixed;
-  top: 20px;
-  left: 20px;
-  width: 44px;
-  height: 44px;
+  top: 18px;
+  left: 18px;
+  width: 46px;
+  height: 46px;
   border-radius: 12px;
-  background: #000000;
+  background: rgba(5, 5, 5, 0.9);
   border: 1px solid var(--border);
   color: var(--white);
   z-index: 130; /* Higher than sidebar (120) and backdrop (115) */
@@ -449,16 +470,24 @@ h1, h2, h3, h4, .font-heading {
   cursor: pointer;
   box-shadow: 0 8px 32px rgba(0,0,0,0.8);
   transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+}
+
+@media (max-width: 1023px) {
+  .sidebar-toggle {
+    display: flex; /* Only show on mobile/tablet */
+  }
 }
 
 .sidebar-toggle:hover {
   background: var(--bg-subtle);
   border-color: var(--accent);
-  transform: scale(1.05);
+  box-shadow: 0 0 0 2px var(--green-border), 0 8px 32px rgba(0,0,0,0.8);
 }
 
 .sidebar-toggle:active {
-  transform: scale(0.95);
+  transform: scale(0.94);
 }
 
 .sidebar-backdrop {
@@ -466,29 +495,18 @@ h1, h2, h3, h4, .font-heading {
   inset: 0;
   background: rgba(0, 0, 0, 0.75);
   backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   z-index: 115;
 }
 
 /* ── MOBILE DOCK ── */
 .mobile-dock {
-  display: none;
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: calc(var(--dock-height) + env(safe-area-inset-bottom));
-  background: rgba(5, 5, 5, 0.85);
-  backdrop-filter: blur(32px);
-  border-top: 1px solid var(--border);
-  z-index: 100;
-  padding: 0 16px;
-  padding-bottom: env(safe-area-inset-bottom);
-  justify-content: space-around;
-  align-items: center;
+  display: flex;
 }
-
-@media (max-width: 1023px) {
-  .mobile-dock { display: flex; }
+@media (min-width: 768px) {
+  .mobile-dock {
+    display: none !important;
+  }
 }
 
 .dock-item {

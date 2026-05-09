@@ -2,12 +2,10 @@ import { createServerClient, type CookieOptions } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
 
 export async function proxy(request: NextRequest) {
-  // Nuclear OAuth Redirect: If any request contains a 'code' parameter (usually from Supabase/GitHub),
-  // immediately intercept and force a redirect to the callback handler.
+  // OAuth redirect: forward ?code= to the callback handler
   const code = request.nextUrl.searchParams.get('code');
   if (code) {
     const callbackUrl = new URL('/auth/callback', request.url);
-    // Forward all search params to the callback handler
     request.nextUrl.searchParams.forEach((value, key) => {
       callbackUrl.searchParams.set(key, value);
     });
@@ -15,11 +13,10 @@ export async function proxy(request: NextRequest) {
   }
 
   let response = NextResponse.next({
-    request: {
-      headers: request.headers,
-    },
+    request: { headers: request.headers },
   });
 
+  // Refresh the Supabase session cookie so it doesn't expire mid-session
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -29,60 +26,42 @@ export async function proxy(request: NextRequest) {
           return request.cookies.get(name)?.value;
         },
         set(name: string, value: string, options: CookieOptions) {
-          request.cookies.set({
-            name,
-            value,
-            ...options,
-          });
-          response = NextResponse.next({
-            request: {
-              headers: request.headers,
-            },
-          });
-          response.cookies.set({
-            name,
-            value,
-            ...options,
-          });
+          request.cookies.set({ name, value, ...options });
+          response = NextResponse.next({ request: { headers: request.headers } });
+          response.cookies.set({ name, value, ...options });
         },
         remove(name: string, options: CookieOptions) {
-          request.cookies.set({
-            name,
-            value: '',
-            ...options,
-          });
-          response = NextResponse.next({
-            request: {
-              headers: request.headers,
-            },
-          });
-          response.cookies.set({
-            name,
-            value: '',
-            ...options,
-          });
+          request.cookies.set({ name, value: '', ...options });
+          response = NextResponse.next({ request: { headers: request.headers } });
+          response.cookies.set({ name, value: '', ...options });
         },
       },
     }
   );
 
-  const { data: { user } } = await supabase.auth.getUser();
   const isDemo = request.cookies.get('emitto_demo_mode')?.value === 'true';
 
-  const isPublicPath = 
-    request.nextUrl.pathname === '/' || 
-    request.nextUrl.pathname.startsWith('/login') || 
+  const isPublicPath =
+    request.nextUrl.pathname === '/' ||
+    request.nextUrl.pathname.startsWith('/login') ||
     request.nextUrl.pathname.startsWith('/api') ||
-    request.nextUrl.pathname.startsWith('/landing');
+    request.nextUrl.pathname.startsWith('/landing') ||
+    request.nextUrl.pathname.startsWith('/auth');
 
-  // Redirect to login if not authenticated and trying to access private route
-  if (!user && !isDemo && !isPublicPath) {
-    return NextResponse.redirect(new URL('/login', request.url));
+  if (!isDemo && !isPublicPath) {
+    // Use getSession (cookie-based, no network round-trip) instead of getUser
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      return NextResponse.redirect(new URL('/login', request.url));
+    }
   }
 
-  // Redirect to home if logged in and trying to access login page
-  if ((user || isDemo) && request.nextUrl.pathname.startsWith('/login')) {
-    return NextResponse.redirect(new URL('/', request.url));
+  // Redirect logged-in users away from /login
+  if (request.nextUrl.pathname.startsWith('/login')) {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session || isDemo) {
+      return NextResponse.redirect(new URL('/', request.url));
+    }
   }
 
   return response;

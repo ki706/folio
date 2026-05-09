@@ -44,7 +44,7 @@ export default function LandingNavbar() {
         borderBottom: scrolled ? '1px solid rgba(255,255,255,0.05)' : '1px solid transparent',
       }}>
         <div style={{
-          width: '100%', maxWidth: 1200,
+          width: '100%', maxWidth: 1200, margin: '0 auto',
           padding: '0 24px',
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         }}>

@@ -82,7 +82,7 @@ function LoginContent() {
         .login-right-panel { width: 100%; }
       `}</style>
 
-      {/* LEFT PANEL — Brand Architecture (desktop only) */}
+      {/* LEFT PANEL | Brand Architecture (desktop only) */}
       <div
         className="login-left-panel"
         style={{ width: '50%', position: 'relative', flexDirection: 'column', justifyContent: 'space-between', padding: 'clamp(40px, 6vw, 64px)', borderRight: '1px solid rgba(255,255,255,0.05)', background: '#0A0A0A' }}
@@ -105,9 +105,9 @@ function LoginContent() {
         <div style={{ position: 'relative', zIndex: 1, maxWidth: 480, marginTop: 40 }}>
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }}>
             <h1 style={{ fontSize: 'clamp(36px, 4vw, 60px)', fontWeight: 900, letterSpacing: '-0.04em', lineHeight: 1.08, color: 'white', marginBottom: 24 }}>
-              The world&apos;s first{' '}<br />
+              The definitive{' '}<br />
               <span style={{ background: 'linear-gradient(90deg, #00CCFF, #00FF88)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
-                commit-to-content
+                commit to content
               </span>{' '}engine.
             </h1>
           </motion.div>
@@ -130,7 +130,7 @@ function LoginContent() {
               ))}
             </div>
             <div style={{ fontSize: 13, fontWeight: 600, color: '#666' }}>
-              <span style={{ color: 'white' }}>10,000+</span> commits synthesized today
+              <span style={{ color: 'white' }}>Active</span> commit synchronization
             </div>
           </motion.div>
         </div>
@@ -142,7 +142,7 @@ function LoginContent() {
         </div>
       </div>
 
-      {/* RIGHT PANEL — Auth Console */}
+      {/* RIGHT PANEL | Auth Console */}
       <div
         className="login-right-panel"
         style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 'clamp(24px, 6vw, 64px) clamp(20px, 5vw, 48px)', minHeight: '100dvh', position: 'relative' }}

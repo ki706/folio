@@ -9,6 +9,23 @@ import {
 import { getNotifications, getSettings, Settings as UserSettings } from '@/lib/store';
 import { supabase } from '@/lib/supabase';
 
+/** Returns true when viewport is >= 1024px */
+function useIsDesktop() {
+  const [isDesktop, setIsDesktop] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return window.matchMedia('(min-width: 1024px)').matches;
+    }
+    return false;
+  });
+  useEffect(() => {
+    const mq = window.matchMedia('(min-width: 1024px)');
+    const handler = (e: MediaQueryListEvent) => setIsDesktop(e.matches);
+    mq.addEventListener('change', handler);
+    return () => mq.removeEventListener('change', handler);
+  }, []);
+  return isDesktop;
+}
+
 const NAV_ITEMS = [
   { label: 'Home',      icon: Home,       href: '/' },
   { label: 'Projects',  icon: Briefcase,  href: '/projects' },
@@ -19,17 +36,35 @@ const NAV_ITEMS = [
   { label: 'Settings',  icon: Settings,   href: '/settings' },
 ];
 
-// 5 items shown in dock (REMOVED - consolidating to one hamburger)
-// const DOCK_ITEMS = [ ... ];
+// 5 items shown in dock
+const DOCK_ITEMS = [
+  { label: 'Home',     icon: Home,       href: '/' },
+  { label: 'Generate', icon: Sparkles,   href: '/generate' },
+  { label: 'Trends',   icon: Radio,      href: '/trends' },
+  { label: 'Projects', icon: Briefcase,  href: '/projects' },
+  { label: 'Settings', icon: Settings,   href: '/settings' },
+];
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
+  const isDesktop = useIsDesktop();
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
   const [userSettings, setUserSettings] = useState<UserSettings | null>(null);
 
-  // Initialize demo state synchronously to avoid flicker and lint errors
+  // ── Synchronous session detection (no network, no flash) ──
+  // Reads cookies immediately to decide whether to show the app shell.
+  // Supabase SSR stores the token as sb-[ref]-auth-token in cookies.
+  const [hasSessionCookie] = useState<boolean>(() => {
+    if (typeof document !== 'undefined') {
+      const isDemo = document.cookie.includes('emitto_demo_mode=true');
+      const hasToken = document.cookie.includes('-auth-token');
+      return isDemo || hasToken;
+    }
+    return false; // SSR default: don't show shell (server handles routing)
+  });
+
   const [userEmail, setUserEmail] = useState<string | null>(() => {
     if (typeof document !== 'undefined') {
       const demoCookie = document.cookie.split('; ').find(row => row.startsWith('emitto_demo_mode='));
@@ -46,21 +81,21 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
     return true;
   });
 
-  // Close drawer on route change
+  // Close drawer on route change (mobile only)
   useEffect(() => { 
-    if (drawerOpen) {
-      // Use requestAnimationFrame or setTimeout to avoid cascading render warning
+    if (!isDesktop && drawerOpen) {
       const id = requestAnimationFrame(() => setDrawerOpen(false));
       return () => cancelAnimationFrame(id);
     }
-  }, [pathname, drawerOpen]);
+  }, [pathname, drawerOpen, isDesktop]);
 
-  // Close drawer on ESC
+  // Close drawer on ESC (mobile only)
   useEffect(() => {
+    if (isDesktop) return;
     const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setDrawerOpen(false); };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, []);
+  }, [isDesktop]);
 
   const fetchData = useCallback(async () => {
     try {
@@ -81,7 +116,8 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     fetchData();
-    const interval = setInterval(fetchData, 15000);
+    // Poll every 60s — not 15s. Reduces Supabase calls by 4x in dev.
+    const interval = setInterval(fetchData, 60_000);
     return () => clearInterval(interval);
   }, [fetchData]);
 
@@ -101,13 +137,49 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
   const isDemo = userEmail === 'demo@emitto.dev';
 
-  // Don't render shell on auth pages
-  if (pathname === '/login' || pathname === '/onboarding') return <>{children}</>;
-
-  // On landing page (root with no user), skip shell
-  // We check for userEmail OR demo cookie
-  const hasUser = !!userEmail || isDemo;
-  if (pathname === '/' && !hasUser && !loading) return <>{children}</>;
+  // ── Shell guard ──
+  // 1. Never show shell on auth/onboarding/landing pages
+  if (
+    pathname === '/login' || 
+    pathname === '/onboarding' || 
+    pathname === '/' || 
+    pathname.startsWith('/landing')
+  ) {
+    return (
+      <>
+        {children}
+        {/* Render Mobile Dock for unauthenticated/landing pages too */}
+        <nav className="mobile-dock md:hidden" style={{
+          position: 'fixed',
+          bottom: 0, left: 0, right: 0,
+          height: 'var(--dock-height)',
+          background: '#0A0A0A',
+          borderTop: '1px solid var(--border)',
+          justifyContent: 'space-around',
+          alignItems: 'center',
+          paddingBottom: 'env(safe-area-inset-bottom)',
+          zIndex: 110,
+        }}>
+          {DOCK_ITEMS.map(item => {
+            const Icon = item.icon;
+            const isActive = pathname === item.href;
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`dock-item ${isActive ? 'active' : ''}`}
+              >
+                <div style={{ position: 'relative' }}>
+                  <Icon size={22} strokeWidth={isActive ? 2.5 : 2} />
+                </div>
+                <span className="dock-label">{item.label}</span>
+              </Link>
+            );
+          })}
+        </nav>
+      </>
+    );
+  }
 
   // If loading, we still show the shell structure if we suspect we're logged in
   // but for now, we'll just let the data flow.
@@ -115,17 +187,20 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="app-container">
 
-      {/* ── Hamburger toggle (mobile only) ── */}
-      <button
-        className="sidebar-toggle"
-        onClick={() => setDrawerOpen(o => !o)}
-        aria-label="Toggle navigation"
-      >
-        {drawerOpen ? <X size={18} /> : <Menu size={18} />}
-      </button>
+      {/* ── Hamburger toggle (mobile/tablet only) ── */}
+      {!isDesktop && (
+        <button
+          className="sidebar-toggle"
+          onClick={() => setDrawerOpen(o => !o)}
+          aria-label="Toggle navigation"
+          aria-expanded={drawerOpen}
+        >
+          {drawerOpen ? <X size={18} /> : <Menu size={18} />}
+        </button>
+      )}
 
-      {/* ── Sidebar backdrop (mobile only) ── */}
-      {drawerOpen && (
+      {/* ── Sidebar backdrop (mobile only, when drawer is open) ── */}
+      {!isDesktop && drawerOpen && (
         <div
           className="sidebar-backdrop"
           onClick={() => setDrawerOpen(false)}
@@ -134,7 +209,8 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       )}
 
       {/* ── Sidebar ── */}
-      <aside className={`sidebar ${drawerOpen ? 'drawer-open' : 'drawer-closed'}`}>
+      {/* On desktop: no class needed (always visible via CSS). On mobile: drawer-open/closed controls it. */}
+      <aside className={`sidebar${!isDesktop ? (drawerOpen ? ' drawer-open' : ' drawer-closed') : ''}`}>
         {/* Logo */}
         <div style={{ padding: '0 14px', marginBottom: 36, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <div>
@@ -197,7 +273,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
                   {isDemo ? 'Demo Account' : (userSettings?.name || 'Studio User')}
                 </p>
                 <p style={{ fontSize: 11, color: 'var(--muted)' }}>
-                  {isDemo ? 'Read-only Access' : 'Pro Member'}
+                  {isDemo ? 'Read-only Access' : 'Developer'}
                 </p>
               </div>
             </div>
@@ -217,9 +293,43 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
         {children}
       </main>
 
-      {/* ── Mobile Dock REMOVED in favor of One Hamburger ── */}
-
-      {/* ── Mobile Dock REMOVED in favor of One Hamburger ── */}
+      {/* ── Mobile Dock (Restored) ── */}
+      <nav className="mobile-dock md:hidden" style={{
+        position: 'fixed',
+        bottom: 0, left: 0, right: 0,
+        height: 'var(--dock-height)',
+        background: '#0A0A0A',
+        borderTop: '1px solid var(--border)',
+        justifyContent: 'space-around',
+        alignItems: 'center',
+        paddingBottom: 'env(safe-area-inset-bottom)',
+        zIndex: 110,
+      }}>
+        {DOCK_ITEMS.map(item => {
+          const Icon = item.icon;
+          const isActive = pathname === item.href;
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              className={`dock-item ${isActive ? 'active' : ''}`}
+            >
+              <div style={{ position: 'relative' }}>
+                <Icon size={22} strokeWidth={isActive ? 2.5 : 2} />
+                {item.label === 'Home' && unreadCount > 0 && (
+                  <span style={{
+                    position: 'absolute', top: -2, right: -2,
+                    width: 8, height: 8, borderRadius: '50%',
+                    background: 'var(--green)',
+                    boxShadow: '0 0 8px var(--green-glow)',
+                  }} />
+                )}
+              </div>
+              <span className="dock-label">{item.label}</span>
+            </Link>
+          );
+        })}
+      </nav>
     </div>
   );
 }

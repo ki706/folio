@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import {
   Project,
   Post,
@@ -47,7 +47,7 @@ export default function DashboardClient({
   const total = savedPosts.length;
   const avgPerWeek = total > 0 ? Math.round((total / 4) * 10) / 10 : 0;
 
-  const fetchSuggestions = async () => {
+  const fetchSuggestions = useCallback(async (signal?: AbortSignal) => {
     setLoadingSuggestions(true);
     try {
       const res = await fetch('/api/suggest', {
@@ -58,21 +58,29 @@ export default function DashboardClient({
           settings: initialSettings,
           recentPosts: initialPosts.slice(0, 5),
         }),
+        signal,
       });
-      const data = await res.json();
-      setSuggestions(data.suggestions || []);
-    } catch (err) {
+      if (res.ok) {
+        const data = await res.json();
+        setSuggestions(data.suggestions || []);
+      }
+    } catch (err: unknown) {
+      if (err instanceof Error && err.name === 'AbortError') return; // ignore cancelled
       console.error('Suggestions failed');
       toastError('Intelligence node sync failed. Strategy hooks unavailable.');
     } finally {
       setLoadingSuggestions(false);
     }
-  };
+  }, [initialProjects, initialSettings, initialPosts, toastError]);
 
-  // Fetch suggestions on client side if not already there
-  useState(() => {
-    fetchSuggestions();
-  });
+  // Fetch suggestions once on mount — NOT inside useState
+  useEffect(() => {
+    const controller = new AbortController();
+    void (async () => {
+      await fetchSuggestions(controller.signal);
+    })();
+    return () => controller.abort();
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div className="animate-fade-in mx-auto" style={{ maxWidth: 'var(--max-width-page)' }}>

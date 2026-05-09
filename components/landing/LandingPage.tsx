@@ -19,10 +19,10 @@ export default function LandingPage() {
       <AmbientBackground />
       <LandingNavbar />
 
-      <main className="relative z-10 pb-[100px] px-4 sm:px-6" style={{ paddingTop: 'clamp(100px, 18vw, 160px)' }}>
+      <main className="relative z-10 pb-[100px] px-6 sm:px-12 md:px-16" style={{ paddingTop: 'clamp(100px, 18vw, 160px)' }}>
 
         {/* ── Hero ── */}
-        <section className="flex flex-col items-center text-center max-w-[960px] mx-auto">
+        <section className="flex flex-col items-center text-center" style={{ maxWidth: 960, margin: '0 auto' }}>
 
           {/* Badge */}
           <motion.div
@@ -70,7 +70,7 @@ export default function LandingPage() {
               lineHeight: 1.65,
             }}
           >
-            The world&apos;s first commit-to-content engine. Automatically transform your
+            The definitive commit to content engine. Automatically transform your
             pushes into high-resonance LinkedIn and X threads with zero friction.
           </motion.p>
 
@@ -79,20 +79,27 @@ export default function LandingPage() {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.38 }}
-            style={{ width: '100%' }}
-            className="flex flex-col sm:flex-row max-w-[420px] sm:max-w-[500px] gap-3 sm:gap-4 mx-auto"
+            className="cta-container flex flex-col justify-center gap-4 mx-auto w-full"
+            style={{ margin: '0 auto' }}
           >
+            <style>{`
+              .cta-container { max-width: 340px; }
+              @media (min-width: 640px) { 
+                .cta-container { flex-direction: row; max-width: 540px; } 
+                .cta-btn { flex: 1; }
+              }
+            `}</style>
             <button
               onClick={() => router.push('/login')}
-              className="btn-premium"
-              style={{ height: 56, fontSize: 15, width: '100%' }}
+              className="btn-premium hover-glow cta-btn"
+              style={{ width: '100%', height: 52, fontSize: 15, fontWeight: 800, letterSpacing: '0.02em', borderRadius: 16, boxShadow: '0 0 32px rgba(0,255,136,0.25)' }}
             >
               Deploy to Production <ArrowRight size={18} />
             </button>
             <button
               onClick={() => router.push('/login?demo=true')}
-              className="btn-ghost-premium"
-              style={{ height: 56, fontSize: 15, width: '100%' }}
+              className="btn-ghost-premium cta-btn"
+              style={{ width: '100%', height: 52, fontSize: 15, fontWeight: 800, letterSpacing: '0.02em', borderRadius: 16, border: '1px solid rgba(255,255,255,0.15)', background: 'rgba(255,255,255,0.02)', backdropFilter: 'blur(10px)' }}
             >
               View Live Demo
             </button>
@@ -100,48 +107,75 @@ export default function LandingPage() {
 
           {/* Social proof */}
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.75, duration: 1 }}
             style={{
-              marginTop: 60,
-              paddingTop: 32,
-              borderTop: '1px solid rgba(255,255,255,0.05)',
+              marginTop: 'clamp(30px, 4vw, 50px)',
+              marginLeft: 'auto',
+              marginRight: 'auto',
+              padding: 'clamp(24px, 4vw, 32px) clamp(16px, 5vw, 48px)',
               width: '100%',
-              maxWidth: 540,
+              maxWidth: 640,
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'center',
-              gap: 20,
+              gap: 24,
+              position: 'relative',
             }}
           >
-            <span style={{ fontSize: 10, fontWeight: 800, color: '#444', letterSpacing: '0.2em', textTransform: 'uppercase' }}>
+            {/* Premium Glowing Border for Social Proof */}
+            <div style={{
+              position: 'absolute', inset: 0,
+              borderTop: '1px solid rgba(255,255,255,0.1)',
+              background: 'linear-gradient(180deg, rgba(255,255,255,0.02) 0%, transparent 100%)',
+              borderRadius: '24px 24px 0 0',
+              pointerEvents: 'none',
+            }}>
+              <div style={{
+                position: 'absolute', top: -1, left: '20%', right: '20%', height: 1,
+                background: 'linear-gradient(90deg, transparent, rgba(0,255,136,0.5), transparent)',
+                boxShadow: '0 -4px 12px rgba(0,255,136,0.3)',
+              }} />
+            </div>
+
+            <span style={{ 
+              fontSize: 11, fontWeight: 800, color: '#A1A1AA', 
+              letterSpacing: '0.25em', textTransform: 'uppercase',
+              position: 'relative', zIndex: 1 
+            }}>
               Trusted by engineers at
             </span>
             <div style={{
               display: 'flex',
-              gap: 'clamp(16px, 4vw, 40px)',
+              gap: 'clamp(24px, 5vw, 48px)',
               alignItems: 'center',
               justifyContent: 'center',
-              opacity: 0.35,
-              filter: 'grayscale(1)',
+              opacity: 0.6,
+              filter: 'grayscale(1) brightness(1.5)',
               flexWrap: 'wrap',
+              position: 'relative', zIndex: 1
             }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontWeight: 800, fontSize: 'clamp(14px, 2.5vw, 18px)' }}>
-                <GitMerge size={20} /> Acme Corp
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontWeight: 800, fontSize: 'clamp(14px, 2.5vw, 18px)' }}>
-                <Zap size={20} /> Linear
-              </div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontWeight: 800, fontSize: 'clamp(14px, 2.5vw, 18px)' }}>
-                <Globe size={20} /> Vercel
-              </div>
+              <motion.div animate={{ y: [0, -4, 0] }} transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }} style={{ display: 'flex', alignItems: 'center', gap: 8, fontWeight: 800, fontSize: 'clamp(15px, 2.5vw, 18px)' }}>
+                <GitMerge size={20} className="text-white" /> Acme Corp
+              </motion.div>
+              <motion.div animate={{ y: [0, -4, 0] }} transition={{ repeat: Infinity, duration: 4.5, delay: 0.5, ease: "easeInOut" }} style={{ display: 'flex', alignItems: 'center', gap: 8, fontWeight: 800, fontSize: 'clamp(15px, 2.5vw, 18px)' }}>
+                <Zap size={20} className="text-white" /> Linear
+              </motion.div>
+              <motion.div animate={{ y: [0, -4, 0] }} transition={{ repeat: Infinity, duration: 5, delay: 1, ease: "easeInOut" }} style={{ display: 'flex', alignItems: 'center', gap: 8, fontWeight: 800, fontSize: 'clamp(15px, 2.5vw, 18px)' }}>
+                <Globe size={20} className="text-white" /> Vercel
+              </motion.div>
             </div>
           </motion.div>
         </section>
 
         {/* ── Bento Grid ── */}
-        <section className="mt-[100px] sm:mt-[140px] max-w-[1200px] mx-auto">
+        <section style={{ 
+          marginTop: 'clamp(60px, 8vw, 100px)', 
+          maxWidth: 1200, 
+          marginLeft: 'auto', 
+          marginRight: 'auto' 
+        }}>
           <motion.div
             initial="hidden"
             whileInView="show"
@@ -180,7 +214,7 @@ export default function LandingPage() {
                 <Zap size={28} />
               </div>
               <WebhookMockup />
-              <div style={{ position: 'relative', zIndex: 10, marginTop: 'auto', paddingTop: 220 }}>
+              <div style={{ position: 'relative', zIndex: 10, marginTop: 'clamp(140px, 40vw, 220px)', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'flex-end' }}>
                 <h3 style={{ fontSize: 'clamp(20px, 3vw, 28px)', fontWeight: 800, marginBottom: 10, letterSpacing: '-0.03em' }}>
                   Zero-Config Pipeline
                 </h3>

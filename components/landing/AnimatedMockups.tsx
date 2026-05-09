@@ -11,19 +11,36 @@ export function WebhookMockup() {
   
   useEffect(() => {
     let i = 0;
-    const interval = setInterval(() => {
-      setDisplayedText(payloadStr.slice(0, i));
-      i++;
-      if (i > payloadStr.length) {
-        clearInterval(interval);
-        setTimeout(() => { i = 0; }, 3000); // Loop
-      }
-    }, 50);
-    return () => clearInterval(interval);
+    let interval: ReturnType<typeof setInterval>;
+    let timeout: ReturnType<typeof setTimeout>;
+
+    const startTyping = () => {
+      interval = setInterval(() => {
+        setDisplayedText(payloadStr.slice(0, i));
+        i++;
+        if (i > payloadStr.length) {
+          clearInterval(interval);
+          timeout = setTimeout(() => { 
+            i = 0; 
+            startTyping(); 
+          }, 3000);
+        }
+      }, 50);
+    };
+
+    startTyping();
+
+    return () => {
+      clearInterval(interval);
+      clearTimeout(timeout);
+    };
   }, [payloadStr]);
 
   return (
-    <div className="absolute inset-x-8 top-20 bottom-8 rounded-xl border border-[rgba(255,255,255,0.05)] bg-[rgba(0,0,0,0.4)] backdrop-blur-md overflow-hidden font-mono text-xs flex flex-col">
+    <div 
+      className="absolute inset-x-8 top-20 rounded-xl border border-[rgba(255,255,255,0.05)] bg-[rgba(0,0,0,0.4)] backdrop-blur-md overflow-hidden font-mono text-xs flex flex-col"
+      style={{ bottom: 'clamp(140px, 35vw, 180px)' }}
+    >
       <div className="flex items-center gap-2 px-4 py-2 border-b border-[rgba(255,255,255,0.05)] bg-[rgba(255,255,255,0.02)]">
         <div className="flex gap-1.5">
           <div className="w-2.5 h-2.5 rounded-full bg-[#ff5f56]" />
