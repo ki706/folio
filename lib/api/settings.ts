@@ -75,10 +75,16 @@ export async function saveSettings(settings: Partial<Settings>): Promise<void> {
   const user = await getCurrentUser();
   if (!user) throw new Error('Identity verification required.');
   
-  const { error } = await supabase.from('EmittoSettings').upsert({ ...settings, user_id: user.id });
+  const { data, error } = await supabase.from('EmittoSettings').upsert({ ...settings, user_id: user.id }).select();
   if (error) {
-    console.error('Save Settings Error:', error);
+    console.error('Save Settings Error Details:', {
+      code: error.code,
+      message: error.message,
+      details: error.details,
+      hint: error.hint
+    });
     if (error.code === 'PGRST116') throw new Error('Database structure mismatch.');
-    throw new Error('Signal synchronization interrupted. Please try again.');
+    throw new Error(`Signal synchronization interrupted: ${error.message}`);
   }
+  console.log('Settings successfully synchronized for user:', user.id);
 }

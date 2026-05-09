@@ -1,6 +1,6 @@
 import { createServerClient, type CookieOptions } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
-export async function proxy(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   // 1. OAuth code forwarding (Magic for Zero-Config)
   const code = request.nextUrl.searchParams.get('code');
   const isCallbackRoute = request.nextUrl.pathname.startsWith('/auth/callback');
