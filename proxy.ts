@@ -1,7 +1,7 @@
 import { createServerClient, type CookieOptions } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
 export async function proxy(request: NextRequest) {
-  // OAuth redirect: forward ?code= to the callback handler ONLY if not already there
+  // 1. OAuth code forwarding (Magic for Zero-Config)
   const code = request.nextUrl.searchParams.get('code');
   const isCallbackRoute = request.nextUrl.pathname.startsWith('/auth/callback');
   
@@ -17,7 +17,7 @@ export async function proxy(request: NextRequest) {
     request: { headers: request.headers },
   });
 
-  // Refresh the Supabase session cookie so it doesn't expire mid-session
+  // 2. Simple session refresh (required for Supabase SSR)
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
@@ -40,30 +40,7 @@ export async function proxy(request: NextRequest) {
     }
   );
 
-  const isDemo = request.cookies.get('emitto_demo_mode')?.value === 'true';
-
-  const isPublicPath =
-    request.nextUrl.pathname === '/' ||
-    request.nextUrl.pathname.startsWith('/login') ||
-    request.nextUrl.pathname.startsWith('/api') ||
-    request.nextUrl.pathname.startsWith('/landing') ||
-    request.nextUrl.pathname.startsWith('/auth');
-
-  if (!isDemo && !isPublicPath) {
-    // Use getSession (cookie-based, no network round-trip) instead of getUser
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session) {
-      return NextResponse.redirect(new URL('/login', request.url));
-    }
-  }
-
-  // Redirect logged-in users away from /login
-  if (request.nextUrl.pathname.startsWith('/login')) {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (session || isDemo) {
-      return NextResponse.redirect(new URL('/', request.url));
-    }
-  }
+  await supabase.auth.getSession();
 
   return response;
 }
