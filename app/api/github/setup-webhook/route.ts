@@ -1,17 +1,35 @@
 import { NextResponse } from 'next/server';
-import { getSettings, saveSettings } from '@/lib/store';
+import { createClient } from '@/lib/supabase-server';
+import { cookies } from 'next/headers';
 
 export async function POST(req: Request) {
   try {
     const { repoFullName } = await req.json();
-    const settings = await getSettings();
-    const origin = new URL(req.url).origin;
+    const cookieStore = await cookies();
+    const isDemo = cookieStore.get('emitto_demo_mode')?.value === 'true';
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
 
-    if (!settings || !settings.github_token) {
-      return NextResponse.json({ error: 'GitHub token not found.' }, { status: 401 });
+    if (isDemo || user?.email === 'demo@emitto.dev') {
+      return NextResponse.json({ success: true, demo: true });
     }
 
-    const webhookUrl = `${origin}/api/github/webhook?uid=${settings.user_id}`;
+    if (!user) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const { data: settings, error: settingsError } = await supabase
+      .from('EmittoSettings')
+      .select('*')
+      .eq('user_id', user.id)
+      .single();
+
+    if (settingsError || !settings || !settings.github_token) {
+      return NextResponse.json({ error: 'GitHub token not found. Please connect your account in Settings.' }, { status: 401 });
+    }
+
+    const origin = new URL(req.url).origin;
+    const webhookUrl = `${origin}/api/github/webhook?uid=${user.id}`;
 
     // Register webhook via GitHub API
     const res = await fetch(`https://api.github.com/repos/${repoFullName}/hooks`, {
@@ -40,9 +58,12 @@ export async function POST(req: Request) {
     // Add to tracked repos if not already there
     const currentTracked = settings.tracked_repos || [];
     if (!currentTracked.includes(repoFullName)) {
-      await saveSettings({
-        tracked_repos: [...currentTracked, repoFullName]
-      });
+      await supabase
+        .from('EmittoSettings')
+        .update({
+          tracked_repos: [...currentTracked, repoFullName]
+        })
+        .eq('user_id', user.id);
     }
 
     return NextResponse.json({ success: true });
