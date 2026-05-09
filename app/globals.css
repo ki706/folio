@@ -383,7 +383,7 @@ h1, h2, h3, h4, .font-heading {
     margin-left: 0;
     padding: clamp(16px, 4vw, 24px);
     padding-top: 80px; /* Space for the fixed hamburger button */
-    padding-bottom: clamp(32px, 8vw, 64px);
+    padding-bottom: calc(var(--dock-height) + 32px);
   }
 
   .page-header {
@@ -409,7 +409,7 @@ h1, h2, h3, h4, .font-heading {
   .main-content {
     padding: 16px;
     padding-top: 84px;
-    padding-bottom: 40px;
+    padding-bottom: calc(var(--dock-height) + 24px);
   }
 
   .page-header {
@@ -444,7 +444,7 @@ h1, h2, h3, h4, .font-heading {
   .main-content {
     padding: 28px 32px;
     padding-top: 80px; /* Matches hamburger position */
-    padding-bottom: 64px;
+    padding-bottom: calc(var(--dock-height) + 32px);
   }
 
   .dashboard-grid {

@@ -3,7 +3,13 @@ import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import LandingPage from '@/components/landing/LandingPage';
 
-export default async function Page() {
+type SearchParams = Promise<{ [key: string]: string | string[] | undefined }>;
+
+export default async function Page(props: { searchParams: SearchParams }) {
+  const searchParams = await props.searchParams;
+  if (searchParams?.code) {
+    redirect(`/auth/callback?code=${searchParams.code}`);
+  }
   const cookieStore = await cookies();
 
   const supabase = createServerClient(

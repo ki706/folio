@@ -83,11 +83,11 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
   // Close drawer on route change (mobile only)
   useEffect(() => { 
-    if (!isDesktop && drawerOpen) {
+    if (!isDesktop) {
       const id = requestAnimationFrame(() => setDrawerOpen(false));
       return () => cancelAnimationFrame(id);
     }
-  }, [pathname, drawerOpen, isDesktop]);
+  }, [pathname, isDesktop]);
 
   // Close drawer on ESC (mobile only)
   useEffect(() => {
