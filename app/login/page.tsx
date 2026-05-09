@@ -23,21 +23,6 @@ export default async function LoginPage() {
   const { data: { user } } = await supabase.auth.getUser();
 
   if (user || isDemo) {
-    if (isDemo) {
-      redirect('/dashboard');
-    }
-
-    // Check onboarding status on server to avoid client-side jump
-    const { data: settings } = await supabase
-      .from('EmittoSettings')
-      .select('onboarding_completed')
-      .eq('user_id', user?.id)
-      .single();
-
-    if (settings && settings.onboarding_completed === false) {
-      redirect('/onboarding');
-    }
-
     redirect('/dashboard');
   }
 
