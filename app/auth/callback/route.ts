@@ -37,39 +37,43 @@ export async function GET(request: Request) {
       
       // Auto-sync GitHub token if it exists
       if (provider_token) {
-        // First check if settings exist
-        const { data: existing } = await supabase
-          .from('settings_portemitto')
-          .select('id')
-          .eq('user_id', user.id)
-          .single();
+        try {
+          // First check if settings exist
+          const { data: existing } = await supabase
+            .from('EmittoSettings')
+            .select('id')
+            .eq('user_id', user.id)
+            .single();
 
-        if (existing) {
-          // Update only GitHub specific fields
-          await supabase
-            .from('settings_portemitto')
-            .update({ 
-              github_token: provider_token,
-              github_url: `https://github.com/${user.user_metadata.user_name || ''}`
-            })
-            .eq('user_id', user.id);
-        } else {
-          // New user: create full record with defaults
-          await supabase
-            .from('settings_portemitto')
-            .insert({ 
-              user_id: user.id, 
-              github_token: provider_token,
-              github_url: `https://github.com/${user.user_metadata.user_name || ''}`,
-              name: user.user_metadata.full_name || user.user_metadata.user_name || 'Engineer',
-              title: 'Technical Founder',
-              voice_description: 'Direct, technical, and high-resonance.',
-              goal: 'both',
-              inactivity_days: 3,
-              proactive_trending: true,
-              proactive_new_project: true,
-              proactive_inactivity: true
-            });
+          if (existing) {
+            // Update only GitHub specific fields
+            await supabase
+              .from('EmittoSettings')
+              .update({ 
+                github_token: provider_token,
+                github_url: `https://github.com/${user.user_metadata.user_name || ''}`
+              })
+              .eq('user_id', user.id);
+          } else {
+            // New user: create full record with defaults
+            await supabase
+              .from('EmittoSettings')
+              .insert({ 
+                user_id: user.id, 
+                github_token: provider_token,
+                github_url: `https://github.com/${user.user_metadata.user_name || ''}`,
+                name: user.user_metadata.full_name || user.user_metadata.user_name || 'Engineer',
+                title: 'Technical Founder',
+                voice_description: 'Direct, technical, and high-resonance.',
+                goal: 'both',
+                inactivity_days: 3,
+                proactive_trending: true,
+                proactive_new_project: true,
+                proactive_inactivity: true
+              });
+          }
+        } catch (syncError) {
+          console.error('Identity sync failed, continuing to dashboard:', syncError);
         }
       }
 

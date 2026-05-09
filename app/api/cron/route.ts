@@ -22,7 +22,7 @@ export async function GET(req: Request) {
 
     // 1. Fetch users who have proactive_trending enabled
     const { data: users, error } = await supabase
-      .from('settings_portemitto')
+      .from('EmittoSettings')
       .select('user_id, proactive_trending, proactive_inactivity, inactivity_days');
 
     if (error || !users) {
@@ -57,7 +57,7 @@ export async function GET(req: Request) {
     }
 
     if (notificationsToInsert.length > 0) {
-      await supabase.from('notifications_portemitto').insert(notificationsToInsert);
+      await supabase.from('EmittoNotifications').insert(notificationsToInsert);
     }
 
     return NextResponse.json({ 

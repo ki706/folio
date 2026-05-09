@@ -20,7 +20,7 @@ export async function GET() {
     }
 
     const { data: settings } = await supabase
-      .from('settings_portemitto')
+      .from('EmittoSettings')
       .select('github_token')
       .eq('user_id', user.id)
       .single();

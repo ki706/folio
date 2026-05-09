@@ -19,7 +19,7 @@ export async function POST(req: Request) {
 
     // 1. Fetch user settings to get the secret
     const { data: settings, error: sError } = await supabase
-      .from('settings_portemitto')
+      .from('EmittoSettings')
       .select('*')
       .eq('user_id', uid)
       .single();
@@ -61,7 +61,7 @@ export async function POST(req: Request) {
 
       // 4. Match repo to project context
       const { data: projects } = await supabase
-        .from('projects_portemitto')
+        .from('EmittoProjects')
         .select('*')
         .eq('user_id', uid);
 
@@ -73,7 +73,7 @@ export async function POST(req: Request) {
 
       // 5. Generate AI Draft
       const { data: lastPosts } = await supabase
-        .from('posts_portemitto')
+        .from('EmittoPosts')
         .select('*')
         .eq('user_id', uid)
         .order('created_at', { ascending: false })
@@ -131,7 +131,7 @@ export async function POST(req: Request) {
 
       // 6. Save Draft & Create Notification
       const { data: savedPost } = await supabase
-        .from('posts_portemitto')
+        .from('EmittoPosts')
         .insert({
           user_id: uid,
           content_linkedin: aiResult.linkedin,
@@ -143,7 +143,7 @@ export async function POST(req: Request) {
         .select()
         .single();
 
-      await supabase.from('notifications_portemitto').insert({
+      await supabase.from('EmittoNotifications').insert({
         user_id: uid,
         type: 'commit',
         message: `⌥ New commit detected: "${commit.message}"\nI've drafted a post for you.`,

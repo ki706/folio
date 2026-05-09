@@ -51,9 +51,9 @@ export async function POST(req: NextRequest) {
        recentPosts = [] as any;
     } else {
       const [sRes, pRes, rRes] = await Promise.all([
-        supabase.from('settings_portemitto').select('*').eq('user_id', uid).single(),
-        supabase.from('projects_portemitto').select('*').eq('user_id', uid),
-        supabase.from('posts_portemitto').select('*').eq('user_id', uid).order('created_at', { ascending: false }).limit(5)
+        supabase.from('EmittoSettings').select('*').eq('user_id', uid).single(),
+        supabase.from('EmittoProjects').select('*').eq('user_id', uid),
+        supabase.from('EmittoPosts').select('*').eq('user_id', uid).order('created_at', { ascending: false }).limit(5)
       ]);
       settings = sRes.data;
       projects = pRes.data || [];
