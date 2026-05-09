@@ -5,6 +5,7 @@ import Toggle from '@/components/ui/Toggle';
 import TagInput from '@/components/ui/TagInput';
 import { EyeOff, ChevronDown, User, Zap, Code, Share2, Terminal } from 'lucide-react';
 import GitHubSection from '@/components/settings/GitHubSection';
+import { useRouter } from 'next/navigation';
 
 const GOAL_OPTIONS = [
   { value: 'hired',     label: 'Full-time Career' },
@@ -53,13 +54,21 @@ export default function SettingsPage() {
   const [showVault, setShowVault] = useState(false);
   const [writingSample, setWritingSample] = useState('');
 
+  const [loading, setLoading] = useState(true);
+  const router = useRouter();
+
   const load = useCallback(async () => {
+    setLoading(true);
     const s = await getSettings();
+    if (!s && typeof window !== 'undefined' && !document.cookie.includes('emitto_demo_mode=true')) {
+      router.push('/login');
+      return;
+    }
     setSettings(s);
-  }, []);
+    setLoading(false);
+  }, [router]);
 
   useEffect(() => {
-    // eslint-disable-next-line react-hooks/set-state-in-effect
     load();
   }, [load]);
 
@@ -87,6 +96,14 @@ export default function SettingsPage() {
       set({ writing_samples: settings.writing_samples.filter((_, idx) => idx !== i) });
     }
   };
+
+  if (loading) {
+    return (
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minHeight: '60vh' }}>
+        <div className="animate-spin" style={{ width: 40, height: 40, border: '3px solid var(--border)', borderTopColor: 'var(--green)', borderRadius: '50%' }} />
+      </div>
+    );
+  }
 
   if (!settings) return null;
 

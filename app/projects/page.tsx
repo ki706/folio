@@ -57,28 +57,28 @@ export default function ProjectsPage() {
       `}</style>
 
       {/* Page Header */}
-      <div className="page-header" style={{ marginBottom: 64 }}>
-        <div>
+      <div className="page-header" style={{ marginBottom: 64, flexWrap: 'wrap', gap: 24 }}>
+        <div style={{ flex: '1 1 300px' }}>
           <div className="section-title-premium" style={{ color: 'var(--green)', marginBottom: 12 }}>
             <Briefcase size={13} /> FLEET COMMAND
           </div>
-          <h1 style={{ fontSize: 'clamp(36px, 6vw, 64px)', fontWeight: 900, letterSpacing: '-0.06em', lineHeight: 0.95, color: 'var(--white)' }}>
+          <h1 style={{ fontSize: 'clamp(32px, 5vw, 56px)', fontWeight: 900, letterSpacing: '-0.06em', lineHeight: 0.95, color: 'var(--white)' }}>
             Your <span className="text-gradient">Architectural Nodes.</span>
           </h1>
         </div>
-        <div style={{ display: 'flex', gap: 12 }}>
+        <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', width: '100%', maxWidth: 'fit-content' }}>
           <button
             className="btn-ghost-premium"
             onClick={() => router.push('/settings')}
-            style={{ height: 48, padding: '0 24px', fontSize: 13, flexShrink: 0 }}
+            style={{ height: 48, padding: '0 20px', fontSize: 13, flex: '1 1 auto', minWidth: 160 }}
           >
-            <Zap size={18} />
+            <Zap size={16} />
             GitHub Intelligence
           </button>
           <button
             className="btn-premium hover-glow"
             onClick={() => setIsSheetOpen(true)}
-            style={{ height: 48, padding: '0 24px', fontSize: 13, flexShrink: 0 }}
+            style={{ height: 48, padding: '0 24px', fontSize: 13, flex: '1 1 auto', minWidth: 140 }}
           >
             <Plus size={18} />
             Add Project
