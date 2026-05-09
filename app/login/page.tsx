@@ -58,9 +58,8 @@ function LoginContent() {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'github',
       options: {
-        redirectTo: `${getURL()}auth/callback`,
         scopes: 'repo read:user user:email',
-      },
+      }
     });
     if (error) {
       toastError(error.message || 'Identity verification failed.');
