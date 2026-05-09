@@ -135,12 +135,10 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
 
   // ── Shell guard ──
   // 1. Never show shell on auth/onboarding/landing pages
-  if (
-    pathname === '/login' || 
-    pathname === '/onboarding' || 
-    pathname === '/' || 
-    pathname.startsWith('/landing')
-  ) {
+  // 2. BUT: if we have a session cookie, we SHOULD show the app shell to prevent the blink
+  const isAuthPage = pathname === '/login' || pathname === '/onboarding' || pathname === '/' || pathname.startsWith('/landing');
+  
+  if (isAuthPage && !hasSessionCookie) {
     return (
       <>
         {children}

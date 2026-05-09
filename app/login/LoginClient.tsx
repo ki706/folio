@@ -147,6 +147,33 @@ export default function LoginClient() {
           </div>
         </motion.div>
       </div>
+
+      {/* FULL SCREEN TRANSITION OVERLAY */}
+      {loading && (
+        <motion.div 
+          initial={{ opacity: 0 }} 
+          animate={{ opacity: 1 }}
+          style={{
+            position: 'fixed',
+            inset: 0,
+            background: '#030303',
+            zIndex: 1000,
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 24
+          }}
+        >
+          <div className="animate-pulse" style={{ width: 64, height: 64, borderRadius: 16, background: 'linear-gradient(135deg, #00CCFF, #00FF88)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 0 40px rgba(0,255,136,0.3)' }}>
+            <Code size={32} color="#000" strokeWidth={3} />
+          </div>
+          <div style={{ textAlign: 'center' }}>
+            <p style={{ fontSize: 11, fontWeight: 900, color: 'var(--green)', letterSpacing: '0.3em', textTransform: 'uppercase', marginBottom: 8 }}>Neural Sync In Progress</p>
+            <p style={{ fontSize: 14, color: '#555', fontWeight: 500 }}>Calibrating broadast environment...</p>
+          </div>
+        </motion.div>
+      )}
     </div>
   );
 }
