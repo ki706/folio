@@ -1,6 +1,6 @@
 import { createServerClient, type CookieOptions } from '@supabase/ssr';
 import { NextResponse, type NextRequest } from 'next/server';
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   // OAuth redirect: forward ?code= to the callback handler ONLY if not already there
   const code = request.nextUrl.searchParams.get('code');
   const isCallbackRoute = request.nextUrl.pathname.startsWith('/auth/callback');
