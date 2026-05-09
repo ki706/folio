@@ -32,7 +32,18 @@ export default function OnboardingPage() {
 
   const handleFinish = async () => {
     setSaving(true);
-    await saveSettings({ ...settings, onboarding_completed: true });
+    
+    // Auto-extract GitHub URL from session metadata
+    const { data: { user } } = await (await import('@/lib/supabase')).supabase.auth.getUser();
+    const githubUrl = user?.user_metadata?.full_name 
+      ? `https://github.com/${user.user_metadata.preferred_username}` 
+      : settings.github_url;
+
+    await saveSettings({ 
+      ...settings, 
+      github_url: githubUrl,
+      onboarding_completed: true 
+    });
     
     setTimeout(() => {
       success('Neural identity synchronized. Welcome to Emitto.');
@@ -155,32 +166,24 @@ export default function OnboardingPage() {
 
             {step === 2 && (
               <motion.div key="2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
-                <h2 style={{ fontSize: 32, fontWeight: 900, letterSpacing: '-0.04em', marginBottom: 8 }}>Source Signal.</h2>
-                <p style={{ color: '#666', fontSize: 15, marginBottom: 40, fontWeight: 500 }}>Where should we ingest your engineering data from?</p>
+                <h2 style={{ fontSize: 32, fontWeight: 900, letterSpacing: '-0.04em', marginBottom: 8 }}>Mission Goal.</h2>
+                <p style={{ color: '#666', fontSize: 15, marginBottom: 40, fontWeight: 500 }}>What is the primary objective for your brand engine?</p>
                 
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 28, flex: 1 }}>
                   <div>
-                    <label style={{ fontSize: 10, fontWeight: 800, color: '#444', textTransform: 'uppercase', letterSpacing: '0.2em', marginBottom: 12, display: 'flex', alignItems: 'center', gap: 8 }}>
-                      <GitMerge size={14} color="#00FF88" /> GitHub Repository Hub
-                    </label>
-                    <input 
-                      type="text" 
-                      style={{ width: '100%', background: '#050505', border: '1px solid rgba(255,255,255,0.1)', padding: '16px 20px', color: 'white', fontSize: 16, outline: 'none', borderRadius: 0 }}
-                      placeholder="https://github.com/username" 
-                      value={settings.github_url || ''} 
-                      onChange={e => setSettings({...settings, github_url: e.target.value})} 
-                    />
-                  </div>
-                  <div>
                     <label style={{ fontSize: 10, fontWeight: 800, color: '#444', textTransform: 'uppercase', letterSpacing: '0.2em', marginBottom: 12, display: 'block' }}>Deployment Objective</label>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
-                      {['hired', 'freelance'].map(g => (
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+                      {[
+                        { id: 'hired', label: 'ELITE RECRUITMENT', desc: 'Optimize content to attract FAANG & high-growth startups.' },
+                        { id: 'freelance', label: 'CLIENT ACQUISITION', desc: 'Focus on authority and social proof for high-ticket consulting.' }
+                      ].map(g => (
                         <button 
-                          key={g} 
-                          onClick={() => setSettings({...settings, goal: g as any})} 
-                          style={{ padding: 16, border: '1px solid', borderColor: settings.goal === g ? '#00FF88' : 'rgba(255,255,255,0.05)', background: settings.goal === g ? 'rgba(0,255,136,0.05)' : '#050505', color: settings.goal === g ? '#00FF88' : '#444', fontWeight: 800, textTransform: 'uppercase', fontSize: 11, letterSpacing: '0.1em', cursor: 'pointer' }}
+                          key={g.id} 
+                          onClick={() => setSettings({...settings, goal: g.id as any})} 
+                          style={{ padding: 24, border: '1px solid', textAlign: 'left', borderColor: settings.goal === g.id ? '#00FF88' : 'rgba(255,255,255,0.05)', background: settings.goal === g.id ? 'rgba(0,255,136,0.05)' : '#050505', color: settings.goal === g.id ? '#00FF88' : '#444', cursor: 'pointer' }}
                         >
-                          {g} MODE
+                          <div style={{ fontSize: 11, fontWeight: 900, color: settings.goal === g.id ? '#00FF88' : 'white', marginBottom: 4 }}>{g.label}</div>
+                          <div style={{ fontSize: 12, color: '#555', fontWeight: 500 }}>{g.desc}</div>
                         </button>
                       ))}
                     </div>
@@ -189,7 +192,7 @@ export default function OnboardingPage() {
 
                 <div style={{ display: 'flex', gap: 12, marginTop: 40 }}>
                   <button onClick={handleBack} style={{ flex: 1, height: 64, background: 'transparent', color: '#444', fontWeight: 800, border: '1px solid rgba(255,255,255,0.1)', cursor: 'pointer', textTransform: 'uppercase', letterSpacing: '0.1em' }}>BACK</button>
-                  <button onClick={handleNext} style={{ flex: 2, height: 64, background: 'white', color: 'black', fontWeight: 900, border: 'none', cursor: 'pointer', textTransform: 'uppercase', letterSpacing: '0.1em' }}>CONTINUE</button>
+                  <button onClick={handleNext} disabled={!settings.goal} style={{ flex: 2, height: 64, background: 'white', color: 'black', fontWeight: 900, border: 'none', cursor: 'pointer', textTransform: 'uppercase', letterSpacing: '0.1em', opacity: !settings.goal ? 0.3 : 1 }}>CONTINUE</button>
                 </div>
               </motion.div>
             )}

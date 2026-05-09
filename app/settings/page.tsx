@@ -98,7 +98,6 @@ Goal: ${settings.goal}
 Stack: ${settings.stack.join(', ')}
 LinkedIn: ${settings.linkedin_url || 'Not set'}
 X/Twitter: ${settings.x_handle || 'Not set'}
-GitHub: ${settings.github_url || 'Not set'}
 
 Voice:
 ${settings.voice_description}
@@ -219,9 +218,6 @@ Writing Samples: ${settings.writing_samples.length} added`;
             </Field>
             <Field label="X Handle">
               <input className="input-premium" value={settings.x_handle} onChange={(e) => set({ x_handle: e.target.value })} placeholder="@yourhandle" />
-            </Field>
-            <Field label="GitHub URL">
-              <input className="input-premium" value={settings.github_url} onChange={(e) => set({ github_url: e.target.value })} placeholder="github.com/..." />
             </Field>
           </div>
         </Section>
