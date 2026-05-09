@@ -90,24 +90,47 @@ export default function GitHubSection({ settings, onRefresh }: GitHubSectionProp
       </div>
 
       <div style={{ marginBottom: 40 }}>
-        <label className="section-title-premium">Access Credentials</label>
-        <div style={{ display: 'flex', gap: 12 }}>
-          <input
-            type="password"
-            className="input-premium"
-            value={token}
-            onChange={(e) => setToken(e.target.value)}
-            placeholder="ghp_xxxxxxxxxxxxxxxxxxxx"
-            style={{ fontFamily: 'Geist Mono', fontSize: 13 }}
-          />
-          <button className="btn-premium" onClick={handleSaveToken} style={{ height: 48, padding: '0 24px' }}>
-            {settings.github_token ? 'Update' : 'Connect'}
-          </button>
-        </div>
-        <p style={{ marginTop: 12, fontSize: 11, color: '#444', lineHeight: 1.5 }}>
-          Emitto uses a Personal Access Token to register webhooks on your behalf.
-          <a href="https://github.com/settings/tokens" target="_blank" style={{ color: 'var(--green)', marginLeft: 4 }}>Generate one here</a> (select <b>repo</b> scope).
-        </p>
+        {settings.github_token ? (
+          <div className="glass-card" style={{ padding: '24px 28px', background: 'rgba(0,255,136,0.02)', border: '1px solid rgba(0,255,136,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+              <div style={{ width: 44, height: 44, borderRadius: '50%', background: 'rgba(0,255,136,0.1)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <ShieldCheck size={22} className="text-green" />
+              </div>
+              <div>
+                <p style={{ fontSize: 11, fontWeight: 800, color: 'var(--green)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 4 }}>Identity Synchronized</p>
+                <p style={{ fontSize: 14, color: 'var(--white)', fontWeight: 600 }}>Your GitHub Studio connection is active.</p>
+              </div>
+            </div>
+            <button 
+              onClick={() => setToken('')} 
+              className="btn-ghost-premium" 
+              style={{ height: 36, padding: '0 16px', fontSize: 10, borderColor: 'rgba(255,255,255,0.05)' }}
+            >
+              Rotate Token
+            </button>
+          </div>
+        ) : (
+          <>
+            <label className="section-title-premium">Access Credentials</label>
+            <div style={{ display: 'flex', gap: 12 }}>
+              <input
+                type="password"
+                className="input-premium"
+                value={token}
+                onChange={(e) => setToken(e.target.value)}
+                placeholder="ghp_xxxxxxxxxxxxxxxxxxxx"
+                style={{ fontFamily: 'Geist Mono', fontSize: 13 }}
+              />
+              <button className="btn-premium" onClick={handleSaveToken} style={{ height: 48, padding: '0 24px' }}>
+                Connect
+              </button>
+            </div>
+            <p style={{ marginTop: 12, fontSize: 11, color: '#444', lineHeight: 1.5 }}>
+              Emitto uses a Personal Access Token to register webhooks on your behalf.
+              <a href="https://github.com/settings/tokens" target="_blank" style={{ color: 'var(--green)', marginLeft: 4 }}>Generate one here</a> (select <b>repo</b> scope).
+            </p>
+          </>
+        )}
       </div>
 
       {settings.github_token && (
