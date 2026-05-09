@@ -5,16 +5,16 @@ import { cookies } from 'next/headers';
 export async function GET() {
   try {
     const isDemo = (await cookies()).get('emitto_demo_mode')?.value === 'true';
-    if (isDemo) {
+    const supabase = await createClient();
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (isDemo || user?.email === 'demo@emitto.dev') {
       return NextResponse.json([
         { id: 1, name: 'emitto-broadcast-engine', full_name: 'engineer/emitto-broadcast-engine', description: 'Autonomous content synthesis engine.', language: 'TypeScript', url: '#' },
         { id: 2, name: 'supabase-ssr-layer', full_name: 'engineer/supabase-ssr-layer', description: 'Global session persistence layer.', language: 'TypeScript', url: '#' }
       ]);
     }
 
-    const supabase = await createClient();
-    const { data: { user } } = await supabase.auth.getUser();
-    
     if (!user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }

@@ -7,6 +7,7 @@ import { Code, RefreshCw, ShieldCheck } from 'lucide-react';
 interface GitHubSectionProps {
   settings: Settings;
   onRefresh: () => void;
+  onUpdate: (patch: Partial<Settings>) => void;
 }
 
 interface Repo {
@@ -17,7 +18,7 @@ interface Repo {
   url: string;
 }
 
-export default function GitHubSection({ settings, onRefresh }: GitHubSectionProps) {
+export default function GitHubSection({ settings, onRefresh, onUpdate }: GitHubSectionProps) {
   const { success, error: toastError } = useToast();
   const [token, setToken] = useState(settings.github_token || '');
   const [repos, setRepos] = useState<Repo[]>([]);

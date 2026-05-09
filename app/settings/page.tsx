@@ -181,7 +181,7 @@ Writing Samples: ${settings.writing_samples.length} added`;
           </Field>
         </Section>
 
-        <GitHubSection settings={settings} onRefresh={load} />
+        <GitHubSection settings={settings} onRefresh={load} onUpdate={(patch) => set(patch)} />
 
         {/* Your Voice */}
         <Section title="Voice Architecture" icon={Zap}>

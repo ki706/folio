@@ -50,8 +50,15 @@ export async function getSettings(customClient?: any): Promise<Settings | null> 
       } as Settings;
     }
 
-    const { data: { user } } = await client.auth.getUser();
-    if (!user) return null;
+    const userRes = await client.auth.getUser();
+    const user = userRes.data?.user;
+    
+    if (!user) {
+      console.warn('getSettings: No user session detected.');
+      return null;
+    }
+
+    console.log('getSettings: Fetching settings for user:', user.id);
 
     const { data, error } = await client
       .from('EmittoSettings')
@@ -59,10 +66,26 @@ export async function getSettings(customClient?: any): Promise<Settings | null> 
       .eq('user_id', user.id)
       .single();
 
-    if (error || !data) {
-      // Prevent race conditions by returning defaults in-memory
+    if (error) {
+      console.error('getSettings: Supabase error:', {
+        code: error.code,
+        message: error.message,
+        userId: user.id
+      });
+      // If row not found (PGRST116), return defaults
+      if (error.code === 'PGRST116') {
+        console.log('getSettings: No settings row found, returning defaults.');
+        return DEFAULT_SETTINGS(user.id) as Settings;
+      }
+      return null;
+    }
+    
+    if (!data) {
+      console.warn('getSettings: No data returned for user:', user.id);
       return DEFAULT_SETTINGS(user.id) as Settings;
     }
+
+    console.log('getSettings: Successfully retrieved token status:', !!data.github_token);
     return data;
   } catch (err) {
     console.error('getSettings Exception:', err);
@@ -75,16 +98,32 @@ export async function saveSettings(settings: Partial<Settings>): Promise<void> {
   const user = await getCurrentUser();
   if (!user) throw new Error('Identity verification required.');
   
-  const { data, error } = await supabase.from('EmittoSettings').upsert({ ...settings, user_id: user.id }, { onConflict: 'user_id' }).select();
-  if (error) {
+  // Check existence first to avoid upsert edge cases with RLS
+  const { data: existing } = await supabase
+    .from('EmittoSettings')
+    .select('id')
+    .eq('user_id', user.id)
+    .single();
+
+  let result;
+  if (existing) {
+    result = await supabase
+      .from('EmittoSettings')
+      .update({ ...settings, updated_at: new Date().toISOString() })
+      .eq('user_id', user.id);
+  } else {
+    result = await supabase
+      .from('EmittoSettings')
+      .insert({ ...settings, user_id: user.id });
+  }
+
+  if (result.error) {
     console.error('Save Settings Error Details:', {
-      code: error.code,
-      message: error.message,
-      details: error.details,
-      hint: error.hint
+      code: result.error.code,
+      message: result.error.message,
+      userId: user.id
     });
-    if (error.code === 'PGRST116') throw new Error('Database structure mismatch.');
-    throw new Error(`Signal synchronization interrupted: ${error.message}`);
+    throw new Error(`Signal synchronization interrupted: ${result.error.message}`);
   }
   console.log('Settings successfully synchronized for user:', user.id);
 }
