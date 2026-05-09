@@ -4,12 +4,13 @@ import { getProjects } from '../api/projects';
 import { getPosts } from '../api/posts';
 
 export async function calculateResonanceScore(
-  providedData?: { streak?: number; projects?: Project[]; posts?: Post[] }
+  providedData?: { streak?: number; projects?: Project[]; posts?: Post[] },
+  customClient?: any
 ): Promise<number> {
   try {
-    const streak = providedData?.streak ?? await getPostingStreak();
-    const projects = providedData?.projects ?? await getProjects();
-    const posts = providedData?.posts ?? await getPosts();
+    const streak = providedData?.streak ?? await getPostingStreak(undefined, customClient);
+    const projects = providedData?.projects ?? await getProjects(customClient);
+    const posts = providedData?.posts ?? await getPosts(customClient);
 
     const savedPosts = posts.filter(p => p.is_saved);
     const projectDepth = projects.length * 10;
@@ -23,9 +24,9 @@ export async function calculateResonanceScore(
   }
 }
 
-export async function getPostingStreak(providedPosts?: Post[]): Promise<number> {
+export async function getPostingStreak(providedPosts?: Post[], customClient?: any): Promise<number> {
   try {
-    const posts = providedPosts ?? await getPosts();
+    const posts = providedPosts ?? await getPosts(customClient);
     const saved = posts.filter(p => p.is_saved);
     if (saved.length === 0) return 0;
     
@@ -45,9 +46,9 @@ export async function getPostingStreak(providedPosts?: Post[]): Promise<number> 
   }
 }
 
-export async function getWeekActivity(): Promise<boolean[]> {
+export async function getWeekActivity(customClient?: any): Promise<boolean[]> {
   try {
-    const posts = await getPosts();
+    const posts = await getPosts(customClient);
     const saved = posts.filter(p => p.is_saved);
     
     const postDays = new Set(saved.map(p => new Date(p.created_at).toDateString()));
@@ -65,9 +66,9 @@ export async function getWeekActivity(): Promise<boolean[]> {
   }
 }
 
-export async function getDaysSinceLastPost(): Promise<number | null> {
+export async function getDaysSinceLastPost(customClient?: any): Promise<number | null> {
   try {
-    const posts = await getPosts();
+    const posts = await getPosts(customClient);
     const saved = posts.filter(p => p.is_saved);
     if (saved.length === 0) return null;
     

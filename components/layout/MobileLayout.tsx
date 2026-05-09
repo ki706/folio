@@ -45,7 +45,13 @@ const DOCK_ITEMS = [
   { label: 'Settings', icon: Settings,   href: '/settings' },
 ];
 
-export default function AppLayout({ children }: { children: React.ReactNode }) {
+export default function AppLayout({ 
+  children,
+  serverSession
+}: { 
+  children: React.ReactNode,
+  serverSession?: { isDemo: boolean; hasToken: boolean }
+}) {
   const pathname = usePathname();
   const router = useRouter();
   const isDesktop = useIsDesktop();
@@ -54,18 +60,19 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   const [userSettings, setUserSettings] = useState<UserSettings | null>(null);
 
   // ── Synchronous session detection (no network, no flash) ──
-  // Reads cookies immediately to decide whether to show the app shell.
-  // Supabase SSR stores the token as sb-[ref]-auth-token in cookies.
+  // Trust the server's word first, then fallback to local cookies if needed.
   const [hasSessionCookie] = useState<boolean>(() => {
+    if (serverSession) return serverSession.isDemo || serverSession.hasToken;
     if (typeof document !== 'undefined') {
       const isDemo = document.cookie.includes('emitto_demo_mode=true');
       const hasToken = document.cookie.includes('-auth-token');
       return isDemo || hasToken;
     }
-    return false; // SSR default: don't show shell (server handles routing)
+    return false;
   });
 
   const [userEmail, setUserEmail] = useState<string | null>(() => {
+    if (serverSession?.isDemo) return 'demo@emitto.dev';
     if (typeof document !== 'undefined') {
       const demoCookie = document.cookie.split('; ').find(row => row.startsWith('emitto_demo_mode='));
       if (demoCookie?.split('=')[1] === 'true') return 'demo@emitto.dev';
@@ -74,6 +81,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   });
 
   const [loading, setLoading] = useState(() => {
+    if (serverSession?.isDemo) return false;
     if (typeof document !== 'undefined') {
       const demoCookie = document.cookie.split('; ').find(row => row.startsWith('emitto_demo_mode='));
       if (demoCookie?.split('=')[1] === 'true') return false;

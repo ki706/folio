@@ -1,10 +1,12 @@
 // lib/api/projects.ts
-import { supabase } from '../supabase';
+import { supabase as browserClient } from '../supabase';
 import { Project } from '../types';
 import { isDemoMode, getCurrentUser } from '../auth-helpers';
 
-export async function getProjects(): Promise<Project[]> {
+export async function getProjects(customClient?: any): Promise<Project[]> {
   try {
+    const client = customClient || browserClient;
+    
     if (await isDemoMode()) {
       return [
         {
@@ -21,10 +23,11 @@ export async function getProjects(): Promise<Project[]> {
         }
       ] as any[];
     }
-    const user = await getCurrentUser();
+    
+    const { data: { user } } = await client.auth.getUser();
     if (!user) return [];
 
-    const { data, error } = await supabase
+    const { data, error } = await client
       .from('EmittoProjects')
       .select('*')
       .eq('user_id', user.id)
@@ -41,17 +44,18 @@ export async function getProjects(): Promise<Project[]> {
   }
 }
 
-export async function saveProject(project: Partial<Project>): Promise<void> {
+export async function saveProject(project: Partial<Project>, customClient?: any): Promise<void> {
   if (await isDemoMode()) return;
-  const user = await getCurrentUser();
+  const client = customClient || browserClient;
+  const { data: { user } } = await client.auth.getUser();
   if (!user) throw new Error('Identity verification required.');
 
   const { id, ...rest } = project;
   let result;
   if (id) {
-    result = await supabase.from('EmittoProjects').update({ ...rest, updated_at: new Date().toISOString() }).eq('id', id).eq('user_id', user.id);
+    result = await client.from('EmittoProjects').update({ ...rest, updated_at: new Date().toISOString() }).eq('id', id).eq('user_id', user.id);
   } else {
-    result = await supabase.from('EmittoProjects').insert({ ...rest, user_id: user.id });
+    result = await client.from('EmittoProjects').insert({ ...rest, user_id: user.id });
   }
   if (result.error) {
     console.error('Save Project Error:', result.error);
@@ -59,12 +63,13 @@ export async function saveProject(project: Partial<Project>): Promise<void> {
   }
 }
 
-export async function deleteProject(id: string): Promise<void> {
+export async function deleteProject(id: string, customClient?: any): Promise<void> {
   if (await isDemoMode()) return;
-  const user = await getCurrentUser();
+  const client = customClient || browserClient;
+  const { data: { user } } = await client.auth.getUser();
   if (!user) throw new Error('Identity verification required.');
 
-  const { error } = await supabase.from('EmittoProjects').delete().eq('id', id).eq('user_id', user.id);
+  const { error } = await client.from('EmittoProjects').delete().eq('id', id).eq('user_id', user.id);
   if (error) {
     console.error('Delete Project Error:', error);
     throw new Error('Erasure protocol failed.');

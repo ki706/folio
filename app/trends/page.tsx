@@ -9,12 +9,23 @@ export default function TrendsPage() {
   const router = useRouter();
   const [loadingTrends, setLoadingTrends] = useState(true);
   const [posts, setPosts] = useState<Post[]>([]);
+  const [simulatedTrends, setSimulatedTrends] = useState<any[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
       setLoadingTrends(true);
       const allPosts = await getPosts();
+      const isDemo = typeof document !== 'undefined' && document.cookie.includes('emitto_demo_mode=true');
+      
       setPosts(allPosts.filter(p => !p.is_saved)); // Only drafts
+      
+      if (isDemo) {
+        setSimulatedTrends([
+          { type: 'GitHub', tag: 'Next.js 15.1 Stable', volume: 'Trending in Repos', hot: true },
+          { type: 'X', tag: 'AI Coding Agents', volume: '24k broadcasts', hot: true },
+          { type: 'Technical', tag: 'Zero-Flicker UX', volume: 'Rising Search', hot: false }
+        ]);
+      }
       setLoadingTrends(false);
     };
     fetchData();
@@ -58,15 +69,30 @@ export default function TrendsPage() {
           <h2 className="section-title-premium">
             <Zap size={16} style={{ color: 'var(--green)' }} /> Discovery Node
           </h2>
-          <div className="glass-card" style={{ padding: '32px 24px', textAlign: 'center', minHeight: 200, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-            <div className="animate-pulse" style={{ width: 40, height: 40, borderRadius: '50%', background: 'rgba(0,255,136,0.1)', border: '1px solid var(--green)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 16 }}>
-               <Radio size={20} style={{ color: 'var(--green)' }} />
+          {simulatedTrends.length === 0 ? (
+            <div className="glass-card" style={{ padding: '32px 24px', textAlign: 'center', minHeight: 200, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+              <div className="animate-pulse" style={{ width: 40, height: 40, borderRadius: '50%', background: 'rgba(0,255,136,0.1)', border: '1px solid var(--green)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 16 }}>
+                 <Radio size={20} style={{ color: 'var(--green)' }} />
+              </div>
+              <p style={{ fontSize: 13, color: 'var(--white)', fontWeight: 600, marginBottom: 8 }}>Scanning Tech Clusters</p>
+              <p style={{ fontSize: 11, color: '#555', lineHeight: 1.5 }}>
+                Neural engine is monitoring your active projects for new commit signals and cross-referencing with global technical trends.
+              </p>
             </div>
-            <p style={{ fontSize: 13, color: 'var(--white)', fontWeight: 600, marginBottom: 8 }}>Scanning Tech Clusters</p>
-            <p style={{ fontSize: 11, color: '#555', lineHeight: 1.5 }}>
-              Neural engine is monitoring your active projects for new commit signals and cross-referencing with global technical trends.
-            </p>
-          </div>
+          ) : (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+              {simulatedTrends.map((trend, i) => (
+                <div key={i} className="glass-card" style={{ padding: '20px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'rgba(255,255,255,0.01)' }}>
+                  <div>
+                    <div style={{ fontSize: 9, fontWeight: 800, color: '#666', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: 4 }}>{trend.type}</div>
+                    <div style={{ fontSize: 15, fontWeight: 900, color: 'var(--white)', letterSpacing: '-0.02em' }}>{trend.tag}</div>
+                    <div style={{ fontSize: 11, color: '#444', marginTop: 4, fontFamily: 'JetBrains Mono, monospace' }}>{trend.volume}</div>
+                  </div>
+                  {trend.hot && <div style={{ width: 8, height: 8, borderRadius: '50%', background: 'var(--green)', boxShadow: '0 0 10px var(--green)' }} />}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Holding Queue Column */}

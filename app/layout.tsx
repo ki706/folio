@@ -18,13 +18,18 @@ export const metadata: Metadata = {
 };
 
 import { ToastProvider } from '@/components/ui/Toast';
+import { cookies } from 'next/headers';
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const cookieStore = await cookies();
+  const isDemo = cookieStore.get('emitto_demo_mode')?.value === 'true';
+  const hasToken = cookieStore.getAll().some(c => c.name.includes('-auth-token'));
+
   return (
     <html lang="en">
       <body>
         <ToastProvider>
-          <MobileLayout>{children}</MobileLayout>
+          <MobileLayout serverSession={{ isDemo, hasToken }}>{children}</MobileLayout>
         </ToastProvider>
       </body>
     </html>

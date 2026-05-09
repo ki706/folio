@@ -25,13 +25,13 @@ export default async function DashboardPage() {
     redirect('/onboarding');
   }
 
-  // Fetch all data on the server
+  // Fetch all data on the server with the correct session client
   const [allNotifs, allProjects, allPosts, week, daysSince] = await Promise.all([
-    getNotifications(),
-    getProjects(),
-    getPosts(),
-    getWeekActivity(),
-    getDaysSinceLastPost(),
+    getNotifications(supabase),
+    getProjects(supabase),
+    getPosts(supabase),
+    getWeekActivity(supabase),
+    getDaysSinceLastPost(supabase),
   ]);
 
   const currentStreak = await getPostingStreak(allPosts);

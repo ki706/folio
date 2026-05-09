@@ -29,10 +29,9 @@ export const DEFAULT_SETTINGS = (userId: string): Partial<Settings> => ({
 export async function getSettings(customClient?: any): Promise<Settings | null> {
   try {
     const client = customClient || supabase;
-    const { data: { user } } = await client.auth.getUser();
-    if (!user) return null;
-
-    if (await isDemoMode() || user.id === 'demo-user-uuid') {
+    
+    // Check demo mode FIRST
+    if (await isDemoMode()) {
       return {
         ...DEFAULT_SETTINGS('demo-user-uuid'),
         name: 'Demo Account',
@@ -50,6 +49,9 @@ export async function getSettings(customClient?: any): Promise<Settings | null> 
         webhook_secret: 'demo-secret'
       } as Settings;
     }
+
+    const { data: { user } } = await client.auth.getUser();
+    if (!user) return null;
 
     const { data, error } = await client
       .from('EmittoSettings')

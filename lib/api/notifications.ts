@@ -1,10 +1,12 @@
 // lib/api/notifications.ts
-import { supabase } from '../supabase';
+import { supabase as browserClient } from '../supabase';
 import { Notification } from '../types';
 import { isDemoMode, getCurrentUser } from '../auth-helpers';
 
-export async function getNotifications(): Promise<Notification[]> {
+export async function getNotifications(customClient?: any): Promise<Notification[]> {
   try {
+    const client = customClient || browserClient;
+    
     if (await isDemoMode()) {
       return [
         {
@@ -17,10 +19,11 @@ export async function getNotifications(): Promise<Notification[]> {
         }
       ] as any[];
     }
-    const user = await getCurrentUser();
+    
+    const { data: { user } } = await client.auth.getUser();
     if (!user) return [];
 
-    const { data, error } = await supabase
+    const { data, error } = await client
       .from('EmittoNotifications')
       .select('*')
       .eq('user_id', user.id)
@@ -37,11 +40,12 @@ export async function getNotifications(): Promise<Notification[]> {
   }
 }
 
-export async function addNotification(n: Omit<Notification, 'id' | 'created_at' | 'user_id'>): Promise<void> {
+export async function addNotification(n: Omit<Notification, 'id' | 'created_at' | 'user_id'>, customClient?: any): Promise<void> {
   try {
-    const user = await getCurrentUser();
+    const client = customClient || browserClient;
+    const { data: { user } } = await client.auth.getUser();
     if (!user) return;
-    const { error } = await supabase.from('EmittoNotifications').insert([{ ...n, user_id: user.id }]);
+    const { error } = await client.from('EmittoNotifications').insert([{ ...n, user_id: user.id }]);
     if (error) {
       console.error('Add Notification Error:', error);
       throw new Error('Alert delivery failed.');
@@ -51,11 +55,12 @@ export async function addNotification(n: Omit<Notification, 'id' | 'created_at' 
   }
 }
 
-export async function markNotificationRead(id: string): Promise<void> {
+export async function markNotificationRead(id: string, customClient?: any): Promise<void> {
   try {
-    const user = await getCurrentUser();
+    const client = customClient || browserClient;
+    const { data: { user } } = await client.auth.getUser();
     if (!user) return;
-    const { error } = await supabase.from('EmittoNotifications').update({ is_read: true }).eq('id', id).eq('user_id', user.id);
+    const { error } = await client.from('EmittoNotifications').update({ is_read: true }).eq('id', id).eq('user_id', user.id);
     if (error) {
       console.error('Mark Notification Read Error:', error);
       throw new Error('Signal status update failed.');
@@ -65,11 +70,12 @@ export async function markNotificationRead(id: string): Promise<void> {
   }
 }
 
-export async function dismissNotification(id: string): Promise<void> {
+export async function dismissNotification(id: string, customClient?: any): Promise<void> {
   try {
-    const user = await getCurrentUser();
+    const client = customClient || browserClient;
+    const { data: { user } } = await client.auth.getUser();
     if (!user) return;
-    const { error } = await supabase.from('EmittoNotifications').delete().eq('id', id).eq('user_id', user.id);
+    const { error } = await client.from('EmittoNotifications').delete().eq('id', id).eq('user_id', user.id);
     if (error) {
       console.error('Dismiss Notification Error:', error);
       throw new Error('Alert erasure protocol failed.');

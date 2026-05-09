@@ -83,7 +83,7 @@ export default function DashboardClient({
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <div className="animate-fade-in mx-auto" style={{ maxWidth: 'var(--max-width-page)' }}>
+    <div className="mx-auto" style={{ maxWidth: 'var(--max-width-page)' }}>
       <div className="page-header">
         <div className="flex-1 min-w-0">
           <div className="section-title-premium" style={{ color: 'var(--green)', marginBottom: 12 }}>
