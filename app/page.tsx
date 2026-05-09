@@ -35,6 +35,22 @@ export default async function Page({
   const isDemo = cookieStore.get('emitto_demo_mode')?.value === 'true';
 
   if (user || isDemo) {
+    // Demo users go straight to dashboard
+    if (isDemo) {
+      redirect('/dashboard');
+    }
+
+    // Auth users check onboarding status
+    const { data: settings } = await supabase
+      .from('EmittoSettings')
+      .select('onboarding_completed')
+      .eq('user_id', user?.id)
+      .single();
+
+    if (settings && settings.onboarding_completed === false) {
+      redirect('/onboarding');
+    }
+
     redirect('/dashboard');
   }
 

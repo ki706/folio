@@ -19,6 +19,10 @@ export default async function DashboardPage() {
     redirect('/login');
   }
 
+  if (settings.onboarding_completed === false) {
+    redirect('/onboarding');
+  }
+
   // Fetch all data on the server
   const [allNotifs, allProjects, allPosts, week, daysSince] = await Promise.all([
     getNotifications(),
