@@ -26,18 +26,22 @@ export default function GitHubSection({ settings, onRefresh }: GitHubSectionProp
   const [error, setError] = useState<string | null>(null);
   const [search, setSearch] = useState('');
 
-  const fetchRepos = async () => {
+  const fetchRepos = async (manualToken?: string) => {
+    const activeToken = manualToken || settings.github_token;
+    if (!activeToken) {
+      setRepos([]);
+      return;
+    }
+
     setLoadingRepos(true);
     setError(null);
     try {
-      const res = await fetch('/api/github/repos', {
-        headers: { Authorization: `Bearer ${settings.github_token}` },
-      });
+      const res = await fetch('/api/github/repos');
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Failed to fetch repos');
-      setRepos(data.repos || data || []);
+      setRepos(Array.isArray(data) ? data : data.repos || []);
     } catch (err: any) {
-      toastError(err.message || 'Node sync failed. Discovery offline.');
+      setError(err.message || 'Node sync failed. Discovery offline.');
     } finally {
       setLoadingRepos(false);
     }
@@ -52,9 +56,15 @@ export default function GitHubSection({ settings, onRefresh }: GitHubSectionProp
   }, [settings.github_token]);
 
   const handleSaveToken = async () => {
-    await saveSettings({ github_token: token });
-    success('Identity link updated.');
-    onRefresh();
+    if (!token.trim()) return;
+    try {
+      await saveSettings({ github_token: token });
+      success('Identity link updated.');
+      onRefresh();
+      fetchRepos(token); // Trigger immediate fetch with the new token
+    } catch (err: any) {
+      toastError('Identity synchronization failed.');
+    }
   };
 
   const handleTrackRepo = async (repoFullName: string) => {
