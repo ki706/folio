@@ -10,11 +10,12 @@ export default function TrendsPage() {
   const [loadingTrends, setLoadingTrends] = useState(true);
   const [posts, setPosts] = useState<Post[]>([]);
   const [simulatedTrends, setSimulatedTrends] = useState<any[]>([]);
+  const [userProjects, setUserProjects] = useState<any[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
       setLoadingTrends(true);
-      const allPosts = await getPosts();
+      const [allPosts, allProjects] = await Promise.all([getPosts(), getSettings().then(s => s?.tracked_repos || [])]);
       const isDemo = typeof document !== 'undefined' && document.cookie.includes('emitto_demo_mode=true');
       
       setPosts(allPosts.filter(p => !p.is_saved)); // Only drafts
@@ -25,6 +26,14 @@ export default function TrendsPage() {
           { type: 'X', tag: 'AI Coding Agents', volume: '24k broadcasts', hot: true },
           { type: 'Technical', tag: 'Zero-Flicker UX', volume: 'Rising Search', hot: false }
         ]);
+      } else {
+        // Show real project listening status
+        setUserProjects(allProjects.map((repo: string) => ({
+          type: 'Repo Monitor',
+          tag: repo.split('/')[1] || repo,
+          volume: 'Listening for Commits',
+          hot: false
+        })));
       }
       setLoadingTrends(false);
     };
@@ -69,7 +78,7 @@ export default function TrendsPage() {
           <h2 className="section-title-premium">
             <Zap size={16} style={{ color: 'var(--green)' }} /> Discovery Node
           </h2>
-          {simulatedTrends.length === 0 ? (
+          {(simulatedTrends.length === 0 && userProjects.length === 0) ? (
             <div className="glass-card" style={{ padding: '32px 24px', textAlign: 'center', minHeight: 200, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
               <div className="animate-pulse" style={{ width: 40, height: 40, borderRadius: '50%', background: 'rgba(0,255,136,0.1)', border: '1px solid var(--green)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 16 }}>
                  <Radio size={20} style={{ color: 'var(--green)' }} />
@@ -81,7 +90,7 @@ export default function TrendsPage() {
             </div>
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
-              {simulatedTrends.map((trend, i) => (
+              {(simulatedTrends.length > 0 ? simulatedTrends : userProjects).map((trend, i) => (
                 <div key={i} className="glass-card" style={{ padding: '20px 24px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', background: 'rgba(255,255,255,0.01)' }}>
                   <div>
                     <div style={{ fontSize: 9, fontWeight: 800, color: '#666', letterSpacing: '0.2em', textTransform: 'uppercase', marginBottom: 4 }}>{trend.type}</div>

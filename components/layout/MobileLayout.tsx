@@ -59,9 +59,12 @@ export default function AppLayout({
   const [unreadCount, setUnreadCount] = useState(0);
   const [userSettings, setUserSettings] = useState<UserSettings | null>(null);
 
+  const [loggedOut, setLoggedOut] = useState(false);
+
   // ── Synchronous session detection (no network, no flash) ──
   // Trust the server's word first, then fallback to local cookies if needed.
   const [hasSessionCookie] = useState<boolean>(() => {
+    if (loggedOut) return false;
     if (serverSession) return serverSession.isDemo || serverSession.hasToken;
     if (typeof document !== 'undefined') {
       const isDemo = document.cookie.includes('emitto_demo_mode=true');
@@ -70,6 +73,8 @@ export default function AppLayout({
     }
     return false;
   });
+
+  const sessionActive = hasSessionCookie && !loggedOut;
 
   const [userEmail, setUserEmail] = useState<string | null>(() => {
     if (serverSession?.isDemo) return 'demo@emitto.dev';
@@ -126,6 +131,7 @@ export default function AppLayout({
   }, [fetchData]);
 
   const handleSignOut = async () => {
+    setLoggedOut(true);
     // Clear Demo state explicitly
     document.cookie = "emitto_demo_mode=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT";
     localStorage.removeItem('emitto_demo_mode');
@@ -146,7 +152,7 @@ export default function AppLayout({
   // 2. BUT: if we have a session cookie, we SHOULD show the app shell to prevent the blink
   const isAuthPage = pathname === '/login' || pathname === '/onboarding' || pathname === '/' || pathname.startsWith('/landing');
   
-  if (isAuthPage && !hasSessionCookie) {
+  if (isAuthPage && !sessionActive) {
     return (
       <>
         {children}
