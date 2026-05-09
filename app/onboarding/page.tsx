@@ -4,8 +4,7 @@ import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { getSettings, saveSettings, Settings } from '@/lib/store';
 import { useToast } from '@/components/ui/Toast';
-import { ArrowRight, CheckCircle, GitMerge, Sparkles, Terminal } from 'lucide-react';
-import AmbientBackground from '@/components/landing/AmbientBackground';
+import { ArrowRight, CheckCircle, GitMerge, Sparkles, Terminal, Code, Cpu } from 'lucide-react';
 
 export default function OnboardingPage() {
   const router = useRouter();
@@ -35,7 +34,6 @@ export default function OnboardingPage() {
     setSaving(true);
     await saveSettings({ ...settings, onboarding_completed: true });
     
-    // Simulate some neural network calibration time for the "Aha" feeling
     setTimeout(() => {
       success('Neural identity synchronized. Welcome to Emitto.');
       router.push('/dashboard');
@@ -44,132 +42,229 @@ export default function OnboardingPage() {
 
   if (loading) return null;
 
-  return (
-    <div className="min-h-screen bg-black text-white relative flex flex-col items-center justify-center p-6 selection:bg-[#00FF88] selection:text-black">
-      <AmbientBackground />
+  const steps = [
+    { id: 1, label: 'Identity' },
+    { id: 2, label: 'Signals' },
+    { id: 3, label: 'Persona' },
+    { id: 4, label: 'Deploy' }
+  ];
 
-      <div className="w-full max-w-xl relative z-10">
+  return (
+    <div style={{ 
+      minHeight: '100dvh', 
+      background: '#050505', 
+      color: 'white', 
+      display: 'flex', 
+      flexDirection: 'column', 
+      alignItems: 'center', 
+      justifyContent: 'center',
+      padding: 'clamp(20px, 5vw, 40px)',
+      position: 'relative',
+      overflow: 'hidden',
+      fontFamily: 'Inter, system-ui, sans-serif'
+    }}>
+      {/* Architectural Background */}
+      <div style={{ 
+        position: 'absolute', 
+        inset: 0, 
+        backgroundImage: 'radial-gradient(circle at 2px 2px, rgba(255,255,255,0.03) 1px, transparent 0)',
+        backgroundSize: '40px 40px',
+        pointerEvents: 'none'
+      }} />
+
+      <div style={{ width: '100%', maxWidth: 520, position: 'relative', zIndex: 10 }}>
         
-        {/* Progress Bar */}
-        <div className="flex items-center gap-2 mb-12">
-           {[1, 2, 3, 4].map(i => (
-             <div key={i} className={`h-1.5 rounded-full flex-1 transition-all duration-500 ${step >= i ? 'bg-[#00FF88] shadow-[0_0_10px_rgba(0,255,136,0.3)]' : 'bg-[rgba(255,255,255,0.1)]'}`} />
-           ))}
+        {/* Progress System */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 48, gap: 12 }}>
+          {steps.map((s, i) => (
+            <div key={s.id} style={{ flex: 1, position: 'relative' }}>
+              <div style={{ 
+                height: 3, 
+                background: step >= s.id ? '#00FF88' : 'rgba(255,255,255,0.05)', 
+                borderRadius: 2,
+                transition: 'all 0.6s cubic-bezier(0.16, 1, 0.3, 1)',
+                boxShadow: step >= s.id ? '0 0 15px rgba(0,255,136,0.3)' : 'none'
+              }} />
+              <div style={{ 
+                marginTop: 10, 
+                fontSize: 9, 
+                fontWeight: 900, 
+                textTransform: 'uppercase', 
+                letterSpacing: '0.15em',
+                color: step >= s.id ? '#00FF88' : '#333',
+                transition: 'color 0.4s ease'
+              }}>
+                {s.label}
+              </div>
+            </div>
+          ))}
         </div>
 
-        <div className="glass-card p-10 min-h-[400px] flex flex-col relative overflow-hidden bg-[rgba(10,10,10,0.6)]">
+        <div style={{ 
+          background: '#0A0A0A', 
+          border: '1px solid rgba(255,255,255,0.05)', 
+          padding: 'clamp(32px, 6vw, 56px)', 
+          borderRadius: 2,
+          position: 'relative',
+          minHeight: 480,
+          display: 'flex',
+          flexDirection: 'column',
+          boxShadow: '0 40px 100px rgba(0,0,0,0.5)'
+        }}>
+          {/* Decorative Corner */}
+          <div style={{ position: 'absolute', top: -1, right: -1, width: 40, height: 40, borderTop: '1px solid #00FF88', borderRight: '1px solid #00FF88', pointerEvents: 'none' }} />
+
           <AnimatePresence mode="wait">
-            
             {step === 1 && (
-              <motion.div key="1" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="flex flex-col flex-1">
-                <h2 className="text-3xl font-bold mb-2">Initialize Persona.</h2>
-                <p className="text-[#888] mb-8">Let&apos;s define the core identity of your brand engine.</p>
+              <motion.div key="1" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
+                <h2 style={{ fontSize: 32, fontWeight: 900, letterSpacing: '-0.04em', marginBottom: 8 }}>Initialize Identity.</h2>
+                <p style={{ color: '#666', fontSize: 15, marginBottom: 40, fontWeight: 500 }}>Define the core signal of your developer persona.</p>
                 
-                <div className="flex flex-col gap-5 flex-1">
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 28, flex: 1 }}>
                   <div>
-                    <label className="text-xs font-bold text-[#888] uppercase tracking-widest mb-2 block">Developer Name</label>
-                    <input type="text" className="input-premium" placeholder="e.g. Satoshi Nakamoto" 
-                      value={settings.name || ''} onChange={e => setSettings({...settings, name: e.target.value})} 
+                    <label style={{ fontSize: 10, fontWeight: 800, color: '#444', textTransform: 'uppercase', letterSpacing: '0.2em', marginBottom: 12, display: 'block' }}>Legal Handle</label>
+                    <input 
+                      type="text" 
+                      style={{ width: '100%', background: '#050505', border: '1px solid rgba(255,255,255,0.1)', padding: '16px 20px', color: 'white', fontSize: 16, outline: 'none', borderRadius: 0, fontFamily: 'inherit' }}
+                      placeholder="e.g. Satoshi Nakamoto" 
+                      value={settings.name || ''} 
+                      onChange={e => setSettings({...settings, name: e.target.value})} 
                     />
                   </div>
                   <div>
-                    <label className="text-xs font-bold text-[#888] uppercase tracking-widest mb-2 block">Primary Title</label>
-                    <input type="text" className="input-premium" placeholder="e.g. Senior Frontend Engineer" 
-                      value={settings.title || ''} onChange={e => setSettings({...settings, title: e.target.value})} 
+                    <label style={{ fontSize: 10, fontWeight: 800, color: '#444', textTransform: 'uppercase', letterSpacing: '0.2em', marginBottom: 12, display: 'block' }}>Primary Designation</label>
+                    <input 
+                      type="text" 
+                      style={{ width: '100%', background: '#050505', border: '1px solid rgba(255,255,255,0.1)', padding: '16px 20px', color: 'white', fontSize: 16, outline: 'none', borderRadius: 0, fontFamily: 'inherit' }}
+                      placeholder="e.g. Neural Architecture Lead" 
+                      value={settings.title || ''} 
+                      onChange={e => setSettings({...settings, title: e.target.value})} 
                     />
                   </div>
                 </div>
 
-                <button onClick={handleNext} disabled={!settings.name || !settings.title} className="btn-premium w-full mt-8 h-12">
-                  Continue <ArrowRight size={16} />
+                <button 
+                  onClick={handleNext} 
+                  disabled={!settings.name || !settings.title} 
+                  style={{ width: '100%', height: 64, background: 'white', color: 'black', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.1em', cursor: 'pointer', border: 'none', marginTop: 40, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12, transition: 'all 0.2s ease', opacity: (!settings.name || !settings.title) ? 0.3 : 1 }}
+                >
+                  NEXT PHASE <ArrowRight size={18} />
                 </button>
               </motion.div>
             )}
 
             {step === 2 && (
-              <motion.div key="2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="flex flex-col flex-1">
-                <div className="absolute top-0 right-0 p-8 text-[#00CCFF] opacity-20"><GitMerge size={100} /></div>
-                <h2 className="text-3xl font-bold mb-2">Connect Output.</h2>
-                <p className="text-[#888] mb-8 relative z-10">Where should we route your synthesized content?</p>
+              <motion.div key="2" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
+                <h2 style={{ fontSize: 32, fontWeight: 900, letterSpacing: '-0.04em', marginBottom: 8 }}>Source Signal.</h2>
+                <p style={{ color: '#666', fontSize: 15, marginBottom: 40, fontWeight: 500 }}>Where should we ingest your engineering data from?</p>
                 
-                <div className="flex flex-col gap-5 flex-1 relative z-10">
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 28, flex: 1 }}>
                   <div>
-                    <label className="text-xs font-bold text-[#888] uppercase tracking-widest mb-2 flex items-center gap-2"><GitMerge size={14}/> GitHub URL</label>
-                    <input type="text" className="input-premium" placeholder="https://github.com/username" 
-                      value={settings.github_url || ''} onChange={e => setSettings({...settings, github_url: e.target.value})} 
+                    <label style={{ fontSize: 10, fontWeight: 800, color: '#444', textTransform: 'uppercase', letterSpacing: '0.2em', marginBottom: 12, display: 'flex', alignItems: 'center', gap: 8 }}>
+                      <GitMerge size={14} color="#00FF88" /> GitHub Repository Hub
+                    </label>
+                    <input 
+                      type="text" 
+                      style={{ width: '100%', background: '#050505', border: '1px solid rgba(255,255,255,0.1)', padding: '16px 20px', color: 'white', fontSize: 16, outline: 'none', borderRadius: 0 }}
+                      placeholder="https://github.com/username" 
+                      value={settings.github_url || ''} 
+                      onChange={e => setSettings({...settings, github_url: e.target.value})} 
                     />
                   </div>
                   <div>
-                    <label className="text-xs font-bold text-[#888] uppercase tracking-widest mb-2 block">Primary Goal</label>
-                    <div className="grid grid-cols-2 gap-3">
+                    <label style={{ fontSize: 10, fontWeight: 800, color: '#444', textTransform: 'uppercase', letterSpacing: '0.2em', marginBottom: 12, display: 'block' }}>Deployment Objective</label>
+                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
                       {['hired', 'freelance'].map(g => (
-                        <button key={g} onClick={() => setSettings({...settings, goal: g as any})} className={`p-4 rounded-xl border text-sm font-bold uppercase tracking-widest transition-all ${settings.goal === g ? 'border-[#00CCFF] bg-[rgba(0,204,255,0.1)] text-[#00CCFF]' : 'border-[rgba(255,255,255,0.1)] bg-[rgba(255,255,255,0.02)] text-[#888]'}`}>
-                          Get {g}
+                        <button 
+                          key={g} 
+                          onClick={() => setSettings({...settings, goal: g as any})} 
+                          style={{ padding: 16, border: '1px solid', borderColor: settings.goal === g ? '#00FF88' : 'rgba(255,255,255,0.05)', background: settings.goal === g ? 'rgba(0,255,136,0.05)' : '#050505', color: settings.goal === g ? '#00FF88' : '#444', fontWeight: 800, textTransform: 'uppercase', fontSize: 11, letterSpacing: '0.1em', cursor: 'pointer' }}
+                        >
+                          {g} MODE
                         </button>
                       ))}
                     </div>
                   </div>
                 </div>
 
-                <div className="flex gap-3 mt-8 relative z-10">
-                  <button onClick={handleBack} className="btn-ghost-premium px-6 h-12">Back</button>
-                  <button onClick={handleNext} className="btn-premium flex-1 h-12">Connect <ArrowRight size={16} /></button>
+                <div style={{ display: 'flex', gap: 12, marginTop: 40 }}>
+                  <button onClick={handleBack} style={{ flex: 1, height: 64, background: 'transparent', color: '#444', fontWeight: 800, border: '1px solid rgba(255,255,255,0.1)', cursor: 'pointer', textTransform: 'uppercase', letterSpacing: '0.1em' }}>BACK</button>
+                  <button onClick={handleNext} style={{ flex: 2, height: 64, background: 'white', color: 'black', fontWeight: 900, border: 'none', cursor: 'pointer', textTransform: 'uppercase', letterSpacing: '0.1em' }}>CONTINUE</button>
                 </div>
               </motion.div>
             )}
 
             {step === 3 && (
-              <motion.div key="3" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="flex flex-col flex-1">
-                <h2 className="text-3xl font-bold mb-2">Define Voice.</h2>
-                <p className="text-[#888] mb-8">How should the neural engine sound when it speaks for you?</p>
+              <motion.div key="3" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} style={{ display: 'flex', flexDirection: 'column', flex: 1 }}>
+                <h2 style={{ fontSize: 32, fontWeight: 900, letterSpacing: '-0.04em', marginBottom: 8 }}>Neural Tone.</h2>
+                <p style={{ color: '#666', fontSize: 15, marginBottom: 40, fontWeight: 500 }}>Calibrate the voice of your brand synthesizer.</p>
                 
-                <div className="flex flex-col gap-4 flex-1">
-                  <div className="grid grid-cols-1 gap-3">
-                    {[
-                      { id: 'Technical & Direct (The Builder)', desc: 'No fluff. Code snippets, architecture, hard facts.' },
-                      { id: 'Provocative & Bold (The Hot Take)', desc: 'Contrarian opinions, calling out bad engineering practices.' },
-                    ].map(v => (
-                      <div key={v.id} onClick={() => setSettings({...settings, voice_description: v.id})} className={`p-4 rounded-xl border cursor-pointer transition-all ${settings.voice_description === v.id ? 'border-[#F59E0B] bg-[rgba(245,158,11,0.1)]' : 'border-[rgba(255,255,255,0.1)] bg-[rgba(255,255,255,0.02)]'}`}>
-                        <div className={`font-bold text-sm ${settings.voice_description === v.id ? 'text-[#F59E0B]' : 'text-white'}`}>{v.id}</div>
-                        <div className="text-xs text-[#888] mt-1">{v.desc}</div>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 12, flex: 1 }}>
+                  {[
+                    { id: 'Technical & Direct', label: 'THE ARCHITECT', desc: 'Minimalist, data-driven, hard facts.' },
+                    { id: 'Provocative & Bold', label: 'THE DISRUPTOR', desc: 'Contrarian, high-energy, opinionated.' },
+                  ].map(v => (
+                    <div 
+                      key={v.id} 
+                      onClick={() => setSettings({...settings, voice_description: v.id})} 
+                      style={{ padding: 24, border: '1px solid', borderColor: settings.voice_description === v.id ? '#00FF88' : 'rgba(255,255,255,0.05)', background: settings.voice_description === v.id ? 'rgba(0,255,136,0.05)' : '#050505', cursor: 'pointer', transition: 'all 0.2s ease' }}
+                    >
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 4 }}>
+                        <span style={{ fontSize: 11, fontWeight: 900, color: settings.voice_description === v.id ? '#00FF88' : 'white', letterSpacing: '0.1em' }}>{v.label}</span>
+                        {settings.voice_description === v.id && <CheckCircle size={14} color="#00FF88" />}
                       </div>
-                    ))}
-                  </div>
+                      <div style={{ fontSize: 13, color: '#555', fontWeight: 500 }}>{v.desc}</div>
+                    </div>
+                  ))}
                 </div>
 
-                <div className="flex gap-3 mt-8">
-                  <button onClick={handleBack} className="btn-ghost-premium px-6 h-12">Back</button>
-                  <button onClick={handleNext} disabled={!settings.voice_description} className="btn-premium flex-1 h-12">Finalize <ArrowRight size={16} /></button>
+                <div style={{ display: 'flex', gap: 12, marginTop: 40 }}>
+                  <button onClick={handleBack} style={{ flex: 1, height: 64, background: 'transparent', color: '#444', fontWeight: 800, border: '1px solid rgba(255,255,255,0.1)', cursor: 'pointer', textTransform: 'uppercase', letterSpacing: '0.1em' }}>BACK</button>
+                  <button onClick={handleNext} disabled={!settings.voice_description} style={{ flex: 2, height: 64, background: 'white', color: 'black', fontWeight: 900, border: 'none', cursor: 'pointer', textTransform: 'uppercase', letterSpacing: '0.1em', opacity: !settings.voice_description ? 0.3 : 1 }}>FINALIZE</button>
                 </div>
               </motion.div>
             )}
 
             {step === 4 && (
-              <motion.div key="4" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} className="flex flex-col flex-1 items-center justify-center text-center">
+              <motion.div key="4" initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} style={{ display: 'flex', flexDirection: 'column', flex: 1, alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
                 {saving ? (
                    <>
-                     <motion.div animate={{ rotate: 360 }} transition={{ duration: 2, repeat: Infinity, ease: "linear" }} className="mb-6 text-[#00FF88]">
-                       <Terminal size={48} />
+                     <motion.div animate={{ rotate: 360 }} transition={{ duration: 2, repeat: Infinity, ease: "linear" }} style={{ marginBottom: 32, color: '#00FF88' }}>
+                       <Cpu size={64} strokeWidth={1} />
                      </motion.div>
-                     <h2 className="text-2xl font-bold mb-2">Synthesizing Profile...</h2>
-                     <p className="text-[#00FF88] text-sm font-mono animate-pulse">Initializing neural weights & connecting webhooks</p>
+                     <h2 style={{ fontSize: 24, fontWeight: 900, letterSpacing: '-0.02em', marginBottom: 8 }}>Synchronizing.</h2>
+                     <p style={{ color: '#00FF88', fontSize: 11, fontWeight: 800, fontFamily: 'monospace', letterSpacing: '0.1em', textTransform: 'uppercase' }}>Building neural weights...</p>
                    </>
                 ) : (
                    <>
-                     <div className="mb-6 text-[#00FF88]"><CheckCircle size={64} /></div>
-                     <h2 className="text-3xl font-bold mb-4">Systems Online.</h2>
-                     <p className="text-[#888] mb-8 max-w-[280px]">Your brand engine is fully initialized and ready to deploy.</p>
-                     <button onClick={handleFinish} className="btn-premium w-full h-14 text-base shadow-[0_0_30px_rgba(0,255,136,0.2)]">
-                       <Sparkles size={18} /> Enter Dashboard
+                     <div style={{ marginBottom: 32, color: '#00FF88' }}><CheckCircle size={80} strokeWidth={1} /></div>
+                     <h2 style={{ fontSize: 36, fontWeight: 900, letterSpacing: '-0.06em', marginBottom: 12 }}>Systems Ready.</h2>
+                     <p style={{ color: '#666', fontSize: 16, marginBottom: 40, maxWidth: 320, lineHeight: 1.6 }}>Your brand engine has been calibrated. You are now authorized to deploy.</p>
+                     <button 
+                      onClick={handleFinish} 
+                      style={{ width: '100%', height: 72, background: '#00FF88', color: 'black', fontWeight: 900, textTransform: 'uppercase', letterSpacing: '0.1em', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12, boxShadow: '0 0 40px rgba(0,255,136,0.2)' }}
+                     >
+                       <Sparkles size={20} /> ENTER CONTROL CENTER
                      </button>
                    </>
                 )}
               </motion.div>
             )}
-
           </AnimatePresence>
+        </div>
+
+        {/* Console Metadata */}
+        <div style={{ marginTop: 32, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 8px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+            <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#00FF88', boxShadow: '0 0 10px #00FF88' }} />
+            <span style={{ fontSize: 10, fontWeight: 800, color: '#333', textTransform: 'uppercase', letterSpacing: '0.2em' }}>Auth Verified</span>
+          </div>
+          <div style={{ fontSize: 10, fontWeight: 800, color: '#222', textTransform: 'uppercase', letterSpacing: '0.2em' }}>
+            ID: {settings.name?.substring(0, 8) || 'GUEST'}_OS_2026
+          </div>
         </div>
       </div>
     </div>
   );
 }
+
