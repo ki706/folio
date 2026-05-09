@@ -3,7 +3,20 @@ import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import LandingPage from '@/components/landing/LandingPage';
 
-export default async function Page() {
+export default async function Page({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
+  const params = await searchParams;
+  const code = params.code as string | undefined;
+
+  // If we land on the home page with an OAuth code (e.g. Supabase default fallback),
+  // immediately forward it to the callback handler to exchange it for a session.
+  if (code) {
+    redirect(`/auth/callback?code=${code}`);
+  }
+
   const cookieStore = await cookies();
 
   const supabase = createServerClient(
