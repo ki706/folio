@@ -3,9 +3,11 @@ import { useEffect, useState, useCallback } from 'react';
 import { getProjects, Project } from '@/lib/store';
 import ProjectCard from '@/components/projects/ProjectCard';
 import AddProjectSheet from '@/components/projects/AddProjectSheet';
-import { Plus, Briefcase } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { Plus, Briefcase, Zap } from 'lucide-react';
 
 export default function ProjectsPage() {
+  const router = useRouter();
   const [projects, setProjects] = useState<Project[]>([]);
   const [isSheetOpen, setIsSheetOpen] = useState(false);
   const [editingProject, setEditingProject] = useState<Project | null>(null);

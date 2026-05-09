@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Radio, Flame, CheckCircle, Clock, Loader2, Zap, Terminal } from 'lucide-react';
-import { getPosts, Post } from '@/lib/store';
+import { getPosts, getSettings, Post } from '@/lib/store';
 import { useRouter } from 'next/navigation';
 
 export default function TrendsPage() {
