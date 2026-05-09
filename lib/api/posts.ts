@@ -42,7 +42,7 @@ export async function getPosts(): Promise<Post[]> {
 export async function savePost(post: Partial<Post>): Promise<void> {
   if (await isDemoMode()) return;
   const user = await getCurrentUser();
-  if (!user) throw new Error('Unauthorized');
+  if (!user) throw new Error('Identity verification required.');
 
   const { id, ...rest } = post;
   let result;
@@ -53,18 +53,18 @@ export async function savePost(post: Partial<Post>): Promise<void> {
   }
   if (result.error) {
     console.error('Save Post Error:', result.error);
-    throw new Error(result.error.message);
+    throw new Error('Narrative storage failure.');
   }
 }
 
 export async function deletePost(id: string): Promise<void> {
   if (await isDemoMode()) return;
   const user = await getCurrentUser();
-  if (!user) throw new Error('Unauthorized');
+  if (!user) throw new Error('Identity verification required.');
   
   const { error } = await supabase.from('posts_portemitto').delete().eq('id', id).eq('user_id', user.id);
   if (error) {
     console.error('Delete Post Error:', error);
-    throw new Error(error.message);
+    throw new Error('Signal erasure protocol interrupted.');
   }
 }

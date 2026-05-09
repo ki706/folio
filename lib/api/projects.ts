@@ -8,7 +8,7 @@ export async function getProjects(): Promise<Project[]> {
     if (await isDemoMode()) {
       return [
         {
-          id: '1', name: 'Emitto Engine', status: 'active', stack: ['Next.js', 'AI'], 
+          id: '1', name: 'Emitto Engine', status: 'active', stack: ['Next.js', 'AI'],
           description: 'Autonomous content synthesis engine for developers.',
           learned: 'Scaling LLM context windows efficiently.', achievement: '1.2k Stars on GitHub',
           user_id: 'demo', created_at: new Date().toISOString(), updated_at: new Date().toISOString(), draft_generated: true
@@ -29,7 +29,7 @@ export async function getProjects(): Promise<Project[]> {
       .select('*')
       .eq('user_id', user.id)
       .order('created_at', { ascending: false });
-    
+
     if (error) {
       console.error('getProjects Error:', error);
       return [];
@@ -44,8 +44,8 @@ export async function getProjects(): Promise<Project[]> {
 export async function saveProject(project: Partial<Project>): Promise<void> {
   if (await isDemoMode()) return;
   const user = await getCurrentUser();
-  if (!user) throw new Error('Unauthorized');
-  
+  if (!user) throw new Error('Identity verification required.');
+
   const { id, ...rest } = project;
   let result;
   if (id) {
@@ -55,18 +55,18 @@ export async function saveProject(project: Partial<Project>): Promise<void> {
   }
   if (result.error) {
     console.error('Save Project Error:', result.error);
-    throw new Error(result.error.message);
+    throw new Error('Project persistence failed. Check system connection.');
   }
 }
 
 export async function deleteProject(id: string): Promise<void> {
   if (await isDemoMode()) return;
   const user = await getCurrentUser();
-  if (!user) throw new Error('Unauthorized');
-  
+  if (!user) throw new Error('Identity verification required.');
+
   const { error } = await supabase.from('projects_portemitto').delete().eq('id', id).eq('user_id', user.id);
   if (error) {
     console.error('Delete Project Error:', error);
-    throw new Error(error.message);
+    throw new Error('Erasure protocol failed.');
   }
 }

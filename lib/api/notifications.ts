@@ -42,7 +42,10 @@ export async function addNotification(n: Omit<Notification, 'id' | 'created_at' 
     const user = await getCurrentUser();
     if (!user) return;
     const { error } = await supabase.from('notifications_portemitto').insert([{ ...n, user_id: user.id }]);
-    if (error) console.error('Add Notification Error:', error);
+    if (error) {
+      console.error('Add Notification Error:', error);
+      throw new Error('Alert delivery failed.');
+    }
   } catch (err) {
     console.error('addNotification Exception:', err);
   }
@@ -53,7 +56,10 @@ export async function markNotificationRead(id: string): Promise<void> {
     const user = await getCurrentUser();
     if (!user) return;
     const { error } = await supabase.from('notifications_portemitto').update({ is_read: true }).eq('id', id).eq('user_id', user.id);
-    if (error) console.error('Mark Notification Read Error:', error);
+    if (error) {
+      console.error('Mark Notification Read Error:', error);
+      throw new Error('Signal status update failed.');
+    }
   } catch (err) {
     console.error('markNotificationRead Exception:', err);
   }
@@ -64,7 +70,10 @@ export async function dismissNotification(id: string): Promise<void> {
     const user = await getCurrentUser();
     if (!user) return;
     const { error } = await supabase.from('notifications_portemitto').delete().eq('id', id).eq('user_id', user.id);
-    if (error) console.error('Dismiss Notification Error:', error);
+    if (error) {
+      console.error('Dismiss Notification Error:', error);
+      throw new Error('Alert erasure protocol failed.');
+    }
   } catch (err) {
     console.error('dismissNotification Exception:', err);
   }

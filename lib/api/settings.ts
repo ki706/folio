@@ -71,11 +71,12 @@ export async function getSettings(): Promise<Settings | null> {
 export async function saveSettings(settings: Partial<Settings>): Promise<void> {
   if (await isDemoMode()) return;
   const user = await getCurrentUser();
-  if (!user) throw new Error('Unauthorized');
+  if (!user) throw new Error('Identity verification required.');
   
   const { error } = await supabase.from('settings_portemitto').upsert({ ...settings, user_id: user.id });
   if (error) {
     console.error('Save Settings Error:', error);
-    throw new Error(error.message);
+    if (error.code === 'PGRST116') throw new Error('Database structure mismatch.');
+    throw new Error('Signal synchronization interrupted. Please try again.');
   }
 }
