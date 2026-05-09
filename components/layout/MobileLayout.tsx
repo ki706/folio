@@ -121,7 +121,7 @@ export default function AppLayout({
     } finally {
       setLoading(false);
     }
-  }, [pathname, router]);
+  }, []);
 
   useEffect(() => {
     fetchData();

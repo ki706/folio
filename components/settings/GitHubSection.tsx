@@ -156,7 +156,7 @@ export default function GitHubSection({ settings, onRefresh }: GitHubSectionProp
                 onChange={(e) => setSearch(e.target.value)}
                 style={{ height: 36, fontSize: 12, padding: '0 16px', maxWidth: 240 }}
               />
-              <button onClick={fetchRepos} className="btn-ghost-premium" style={{ height: 36, padding: '0 16px', fontSize: 11, flexShrink: 0 }}>
+              <button onClick={() => fetchRepos()} className="btn-ghost-premium" style={{ height: 36, padding: '0 16px', fontSize: 11, flexShrink: 0 }}>
                 <RefreshCw size={14} className={loadingRepos ? 'animate-spin' : ''} style={{ marginRight: 8 }} /> Refresh
               </button>
             </div>
