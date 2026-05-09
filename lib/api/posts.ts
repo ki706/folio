@@ -23,7 +23,7 @@ export async function getPosts(): Promise<Post[]> {
     if (!user) return [];
 
     const { data, error } = await supabase
-      .from('posts_portemitto')
+      .from('EmittoPosts')
       .select('*')
       .eq('user_id', user.id)
       .order('created_at', { ascending: false });
@@ -47,9 +47,9 @@ export async function savePost(post: Partial<Post>): Promise<void> {
   const { id, ...rest } = post;
   let result;
   if (id) {
-    result = await supabase.from('posts_portemitto').upsert({ id, ...rest, user_id: user.id });
+    result = await supabase.from('EmittoPosts').upsert({ id, ...rest, user_id: user.id });
   } else {
-    result = await supabase.from('posts_portemitto').insert({ ...rest, user_id: user.id });
+    result = await supabase.from('EmittoPosts').insert({ ...rest, user_id: user.id });
   }
   if (result.error) {
     console.error('Save Post Error:', result.error);
@@ -62,7 +62,7 @@ export async function deletePost(id: string): Promise<void> {
   const user = await getCurrentUser();
   if (!user) throw new Error('Identity verification required.');
   
-  const { error } = await supabase.from('posts_portemitto').delete().eq('id', id).eq('user_id', user.id);
+  const { error } = await supabase.from('EmittoPosts').delete().eq('id', id).eq('user_id', user.id);
   if (error) {
     console.error('Delete Post Error:', error);
     throw new Error('Signal erasure protocol interrupted.');

@@ -25,7 +25,7 @@ export async function getProjects(): Promise<Project[]> {
     if (!user) return [];
 
     const { data, error } = await supabase
-      .from('projects_portemitto')
+      .from('EmittoProjects')
       .select('*')
       .eq('user_id', user.id)
       .order('created_at', { ascending: false });
@@ -49,9 +49,9 @@ export async function saveProject(project: Partial<Project>): Promise<void> {
   const { id, ...rest } = project;
   let result;
   if (id) {
-    result = await supabase.from('projects_portemitto').update({ ...rest, updated_at: new Date().toISOString() }).eq('id', id).eq('user_id', user.id);
+    result = await supabase.from('EmittoProjects').update({ ...rest, updated_at: new Date().toISOString() }).eq('id', id).eq('user_id', user.id);
   } else {
-    result = await supabase.from('projects_portemitto').insert({ ...rest, user_id: user.id });
+    result = await supabase.from('EmittoProjects').insert({ ...rest, user_id: user.id });
   }
   if (result.error) {
     console.error('Save Project Error:', result.error);
@@ -64,7 +64,7 @@ export async function deleteProject(id: string): Promise<void> {
   const user = await getCurrentUser();
   if (!user) throw new Error('Identity verification required.');
 
-  const { error } = await supabase.from('projects_portemitto').delete().eq('id', id).eq('user_id', user.id);
+  const { error } = await supabase.from('EmittoProjects').delete().eq('id', id).eq('user_id', user.id);
   if (error) {
     console.error('Delete Project Error:', error);
     throw new Error('Erasure protocol failed.');

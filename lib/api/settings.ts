@@ -51,7 +51,7 @@ export async function getSettings(): Promise<Settings | null> {
     }
 
     const { data, error } = await supabase
-      .from('settings_portemitto')
+      .from('EmittoSettings')
       .select('*')
       .eq('user_id', user.id)
       .single();
@@ -73,7 +73,7 @@ export async function saveSettings(settings: Partial<Settings>): Promise<void> {
   const user = await getCurrentUser();
   if (!user) throw new Error('Identity verification required.');
   
-  const { error } = await supabase.from('settings_portemitto').upsert({ ...settings, user_id: user.id });
+  const { error } = await supabase.from('EmittoSettings').upsert({ ...settings, user_id: user.id });
   if (error) {
     console.error('Save Settings Error:', error);
     if (error.code === 'PGRST116') throw new Error('Database structure mismatch.');

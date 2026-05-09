@@ -21,7 +21,7 @@ export async function getNotifications(): Promise<Notification[]> {
     if (!user) return [];
 
     const { data, error } = await supabase
-      .from('notifications_portemitto')
+      .from('EmittoNotifications')
       .select('*')
       .eq('user_id', user.id)
       .order('created_at', { ascending: false });
@@ -41,7 +41,7 @@ export async function addNotification(n: Omit<Notification, 'id' | 'created_at' 
   try {
     const user = await getCurrentUser();
     if (!user) return;
-    const { error } = await supabase.from('notifications_portemitto').insert([{ ...n, user_id: user.id }]);
+    const { error } = await supabase.from('EmittoNotifications').insert([{ ...n, user_id: user.id }]);
     if (error) {
       console.error('Add Notification Error:', error);
       throw new Error('Alert delivery failed.');
@@ -55,7 +55,7 @@ export async function markNotificationRead(id: string): Promise<void> {
   try {
     const user = await getCurrentUser();
     if (!user) return;
-    const { error } = await supabase.from('notifications_portemitto').update({ is_read: true }).eq('id', id).eq('user_id', user.id);
+    const { error } = await supabase.from('EmittoNotifications').update({ is_read: true }).eq('id', id).eq('user_id', user.id);
     if (error) {
       console.error('Mark Notification Read Error:', error);
       throw new Error('Signal status update failed.');
@@ -69,7 +69,7 @@ export async function dismissNotification(id: string): Promise<void> {
   try {
     const user = await getCurrentUser();
     if (!user) return;
-    const { error } = await supabase.from('notifications_portemitto').delete().eq('id', id).eq('user_id', user.id);
+    const { error } = await supabase.from('EmittoNotifications').delete().eq('id', id).eq('user_id', user.id);
     if (error) {
       console.error('Dismiss Notification Error:', error);
       throw new Error('Alert erasure protocol failed.');
