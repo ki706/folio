@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { getSettings, saveSettings, Settings } from '@/lib/store';
 import { useToast } from '@/components/ui/Toast';
 import { ArrowRight, CheckCircle, GitMerge, Sparkles, Terminal, Code, Cpu } from 'lucide-react';
+import { supabase } from '@/lib/supabase';
 
 export default function OnboardingPage() {
   const router = useRouter();
@@ -33,22 +34,32 @@ export default function OnboardingPage() {
   const handleFinish = async () => {
     setSaving(true);
     
-    // Auto-extract GitHub URL from session metadata
-    const { data: { user } } = await (await import('@/lib/supabase')).supabase.auth.getUser();
-    const githubUrl = user?.user_metadata?.full_name 
-      ? `https://github.com/${user.user_metadata.preferred_username}` 
-      : settings.github_url;
+    try {
+      // Auto-extract GitHub URL from session metadata
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (!user) {
+        toastError('Session expired. Please log in again.');
+        router.push('/login');
+        return;
+      }
 
-    await saveSettings({ 
-      ...settings, 
-      github_url: githubUrl,
-      onboarding_completed: true 
-    });
-    
-    setTimeout(() => {
+      const githubUrl = user?.user_metadata?.preferred_username 
+        ? `https://github.com/${user.user_metadata.preferred_username}` 
+        : settings.github_url;
+
+      await saveSettings({ 
+        ...settings, 
+        github_url: githubUrl,
+        onboarding_completed: true 
+      });
+      
       success('Neural identity synchronized. Welcome to Emitto.');
       router.push('/dashboard');
-    }, 2000);
+    } catch (e) {
+      toastError('Calibration failed. Please try again.');
+      setSaving(false);
+    }
   };
 
   if (loading) return null;
