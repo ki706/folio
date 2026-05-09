@@ -55,22 +55,22 @@ export default function ProjectsPage() {
       `}</style>
 
       {/* Page Header */}
-      <div className="page-header">
+      <div className="page-header" style={{ marginBottom: 64 }}>
         <div>
           <div className="section-title-premium" style={{ color: 'var(--green)', marginBottom: 12 }}>
-            <Briefcase size={13} /> Architecture
+            <Briefcase size={13} /> FLEET COMMAND
           </div>
-          <h1 style={{ fontSize: 'clamp(32px, 5vw, 56px)', fontWeight: 900, letterSpacing: '-0.05em', lineHeight: 1.1, color: 'var(--white)' }}>
-            Your <span className="text-gradient">Fleet.</span>
+          <h1 style={{ fontSize: 'clamp(36px, 6vw, 64px)', fontWeight: 900, letterSpacing: '-0.06em', lineHeight: 0.95, color: 'var(--white)' }}>
+            Your <span className="text-gradient">Architectural Nodes.</span>
           </h1>
         </div>
         <button
-          className="btn-premium"
+          className="btn-premium hover-glow"
           onClick={() => setIsSheetOpen(true)}
-          style={{ height: 48, padding: '0 24px', fontSize: 13, flexShrink: 0 }}
+          style={{ height: 64, padding: '0 32px', fontSize: 14, flexShrink: 0, borderRadius: 20 }}
         >
-          <Plus size={18} />
-          Add New Project
+          <Plus size={20} />
+          Initialize Node
         </button>
       </div>
 
@@ -78,54 +78,63 @@ export default function ProjectsPage() {
       {loading ? (
         <div className="projects-grid">
           {[1, 2, 3, 4].map(i => (
-            <div key={i} className="skeleton" style={{ height: 200, borderRadius: 20 }} />
+            <div key={i} className="skeleton" style={{ height: 280, borderRadius: 24 }} />
           ))}
         </div>
       ) : projects.length === 0 ? (
         <div
           className="glass-card"
-          style={{ padding: 'clamp(48px, 8vw, 96px) 40px', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', marginBottom: 80 }}
+          style={{ 
+            padding: 'clamp(64px, 12vw, 120px) 40px', 
+            display: 'flex', 
+            flexDirection: 'column', 
+            alignItems: 'center', 
+            textAlign: 'center', 
+            marginBottom: 80,
+            background: 'radial-gradient(circle at center, rgba(0,255,136,0.03) 0%, transparent 70%)',
+            border: '1px dashed var(--border)'
+          }}
         >
           {/* Animated icon */}
           <div
             onClick={() => setIsSheetOpen(true)}
-            style={{ position: 'relative', width: 160, height: 160, marginBottom: 40, cursor: 'pointer' }}
+            className="hover-glow"
+            style={{ position: 'relative', width: 200, height: 200, marginBottom: 48, cursor: 'pointer' }}
           >
             <div style={{
               position: 'absolute', inset: 0,
-              border: '1px solid rgba(0,255,136,0.2)',
-              borderRadius: '2.5rem',
+              border: '2px solid rgba(0,255,136,0.1)',
+              borderRadius: '3rem',
               background: '#0A0A0A',
-              transform: 'rotate(12deg)',
-              transition: 'transform 0.7s ease',
+              transform: 'rotate(15deg)',
             }} />
             <div style={{
               position: 'absolute', inset: 0,
               border: '1px solid var(--border)',
-              borderRadius: '2.5rem',
+              borderRadius: '3rem',
               background: 'rgba(255,255,255,0.02)',
-              backdropFilter: 'blur(12px)',
+              backdropFilter: 'blur(20px)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              transform: 'rotate(-6deg)',
-              transition: 'transform 0.7s ease',
+              transform: 'rotate(-5deg)',
+              boxShadow: '0 40px 100px rgba(0,0,0,0.8)'
             }}>
-              <Briefcase size={48} style={{ color: 'var(--green)' }} />
+              <Briefcase size={64} style={{ color: 'var(--green)' }} />
             </div>
           </div>
 
-          <h2 style={{ fontSize: 'clamp(24px, 4vw, 36px)', fontWeight: 900, color: 'var(--white)', letterSpacing: '-0.04em', marginBottom: 16 }}>
-            Initialize the Grid
+          <h2 style={{ fontSize: 'clamp(32px, 5vw, 48px)', fontWeight: 900, color: 'var(--white)', letterSpacing: '-0.05em', marginBottom: 20 }}>
+            Fleet Status: <span style={{ color: 'var(--muted-dark)' }}>Empty</span>
           </h2>
-          <p style={{ fontSize: 15, color: '#888', maxWidth: 460, lineHeight: 1.7, fontWeight: 500, marginBottom: 40 }}>
-            Your fleet is currently empty. Mount your active repositories to grant the neural engine structural context for content synthesis.
+          <p style={{ fontSize: 17, color: '#666', maxWidth: 540, lineHeight: 1.6, fontWeight: 500, marginBottom: 48 }}>
+            Initialize your first architectural node to begin synthesizing technical signals into high-resonance content.
           </p>
           <button
-            className="btn-premium"
+            className="btn-premium hover-glow"
             onClick={() => setIsSheetOpen(true)}
-            style={{ height: 56, padding: '0 40px', fontSize: 13 }}
+            style={{ height: 72, padding: '0 48px', fontSize: 16, borderRadius: 24 }}
           >
-            <Plus size={18} />
-            Mount First Project
+            <Plus size={24} />
+            Initialize First Node
           </button>
         </div>
       ) : (
