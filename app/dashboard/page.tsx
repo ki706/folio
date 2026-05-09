@@ -10,10 +10,12 @@ import {
   calculateResonanceScore,
 } from '@/lib/store';
 import { redirect } from 'next/navigation';
+import { createClient } from '@/lib/supabase-server';
 import DashboardClient from './DashboardClient';
 
 export default async function DashboardPage() {
-  const settings = await getSettings();
+  const supabase = await createClient();
+  const settings = await getSettings(supabase);
   
   if (!settings) {
     redirect('/login');

@@ -26,9 +26,10 @@ export const DEFAULT_SETTINGS = (userId: string): Partial<Settings> => ({
   onboarding_completed: false,
 });
 
-export async function getSettings(): Promise<Settings | null> {
+export async function getSettings(customClient?: any): Promise<Settings | null> {
   try {
-    const user = await getCurrentUser();
+    const client = customClient || supabase;
+    const { data: { user } } = await client.auth.getUser();
     if (!user) return null;
 
     if (await isDemoMode() || user.id === 'demo-user-uuid') {
@@ -50,7 +51,7 @@ export async function getSettings(): Promise<Settings | null> {
       } as Settings;
     }
 
-    const { data, error } = await supabase
+    const { data, error } = await client
       .from('EmittoSettings')
       .select('*')
       .eq('user_id', user.id)
@@ -58,7 +59,6 @@ export async function getSettings(): Promise<Settings | null> {
 
     if (error || !data) {
       // Prevent race conditions by returning defaults in-memory
-      // The row will be created when the user explicitly saves settings.
       return DEFAULT_SETTINGS(user.id) as Settings;
     }
     return data;

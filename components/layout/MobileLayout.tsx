@@ -105,10 +105,6 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
       const [notifs, settings] = await Promise.all([getNotifications(), getSettings()]);
       setUnreadCount(notifs.filter(n => !n.is_read).length);
       setUserSettings(settings);
-
-      if (settings && settings.onboarding_completed === false && pathname !== '/onboarding') {
-        router.push('/onboarding');
-      }
     } finally {
       setLoading(false);
     }
