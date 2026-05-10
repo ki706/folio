@@ -340,6 +340,29 @@ export default function LandingPage() {
         <p style={{ fontSize: 10, color: '#333', fontFamily: 'JetBrains Mono, monospace', letterSpacing: '0.2em', textTransform: 'uppercase' }}>
           © 2026 Emitto Broadcast Engine · All Rights Reserved
         </p>
+        <div style={{ marginTop: 12 }}>
+          <a 
+            href="https://addus-five.vercel.app/" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            style={{ 
+              fontSize: 10, 
+              fontWeight: 700, 
+              color: '#444', 
+              textDecoration: 'none',
+              letterSpacing: '0.08em',
+              textTransform: 'uppercase',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 6,
+              transition: 'color 0.2s ease'
+            }}
+            onMouseEnter={(e) => e.currentTarget.style.color = '#00FF88'}
+            onMouseLeave={(e) => e.currentTarget.style.color = '#444'}
+          >
+            Developed by <span style={{ color: '#666' }}>ADDUS</span>
+          </a>
+        </div>
       </footer>
 
       <style>{`
