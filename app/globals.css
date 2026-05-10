@@ -277,7 +277,7 @@ h1, h2, h3, h4, .font-heading {
   top: 0;
   background: #050505;
   border-right: 1px solid var(--border);
-  padding: 48px 24px 100px 24px;
+  padding: 48px 24px 48px 24px;
   display: flex;
   flex-direction: column;
   z-index: 120;
