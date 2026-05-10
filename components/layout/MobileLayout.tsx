@@ -293,8 +293,6 @@ export default function AppLayout({
               <LogOut size={13} /> Sign Out
             </button>
           </div>
-
-          </div>
         </div>
       </aside>
 
