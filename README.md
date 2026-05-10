@@ -114,3 +114,5 @@ This project is licensed under the MIT License.
 ---
 
 **Built by engineers, for engineers. Broadcast your journey with Emitto.**
+
+Developed by [ADDUS](https://addus-five.vercel.app/)
