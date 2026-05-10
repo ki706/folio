@@ -70,22 +70,14 @@ export async function POST(req: Request) {
 
     const data = JSON.parse((completion as any).choices[0].message.content || '{}');
     
-    // Fallback if AI fails or returns empty
-    const suggestions = data.suggestions || [
-      "The hidden cost of technical debt in early-stage startups.",
-      "Why I chose my current stack for 2026.",
-      "How to maintain shipping velocity while building solo."
-    ];
+    const suggestions = data.suggestions || [];
 
     return NextResponse.json({ suggestions });
   } catch (error) {
     console.error('Suggest API Error:', error);
     return NextResponse.json({ 
-      suggestions: [
-        "The shift from builder to founder mindset.",
-        "Shipping as the ultimate competitive advantage.",
-        "Why clean code is a distraction for pre-PMF startups."
-      ] 
+      suggestions: [],
+      error: 'Strategy nodes are currently recalibrating.'
     }, { status: 200 });
   }
 }

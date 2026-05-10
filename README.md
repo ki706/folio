@@ -67,7 +67,7 @@ Emitto is built with a state-of-the-art stack focused on speed, security, and de
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/yourusername/emitto.git
+   git clone https://github.com/miftah-ab/emitto.git
    cd emitto
    ```
 

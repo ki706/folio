@@ -16,7 +16,7 @@ export default function TrendsPage() {
     const fetchData = async () => {
       setLoadingTrends(true);
       const [allPosts, allProjects] = await Promise.all([getPosts(), getSettings().then(s => s?.tracked_repos || [])]);
-      const isDemo = typeof document !== 'undefined' && document.cookie.includes('emitto_demo_mode=true');
+      const isDemo = process.env.NEXT_PUBLIC_ALLOW_DEMO === 'true' && typeof document !== 'undefined' && document.cookie.includes('emitto_demo_mode=true');
       
       setPosts(allPosts.filter(p => !p.is_saved)); // Only drafts
       

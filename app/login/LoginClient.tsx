@@ -15,6 +15,10 @@ export default function LoginClient() {
   const router = useRouter();
 
   const handleDemoLogin = useCallback(async () => {
+    if (process.env.NEXT_PUBLIC_ALLOW_DEMO !== 'true') {
+      toastError('Demo mode is disabled in this environment.');
+      return;
+    }
     setLoading(true);
     setStatus(null);
     try {
@@ -140,10 +144,12 @@ export default function LoginClient() {
                 </>
               )}
             </button>
-            <button onClick={handleDemoLogin} disabled={loading} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12, width: '100%', height: 56, borderRadius: 14, background: '#111', color: 'white', fontWeight: 700, fontSize: 15, border: '1px solid rgba(255,255,255,0.08)', cursor: loading ? 'not-allowed' : 'pointer' }}>
-              <Zap size={17} style={{ color: '#00CCFF' }} />
-              Explore Demo Mode
-            </button>
+            {process.env.NEXT_PUBLIC_ALLOW_DEMO === 'true' && (
+              <button onClick={handleDemoLogin} disabled={loading} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 12, width: '100%', height: 56, borderRadius: 14, background: '#111', color: 'white', fontWeight: 700, fontSize: 15, border: '1px solid rgba(255,255,255,0.08)', cursor: loading ? 'not-allowed' : 'pointer' }}>
+                <Zap size={17} style={{ color: '#00CCFF' }} />
+                Explore Demo Mode
+              </button>
+            )}
           </div>
         </motion.div>
       </div>

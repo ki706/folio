@@ -4,7 +4,7 @@ import { cookies } from 'next/headers';
 
 export async function GET() {
   try {
-    const isDemo = (await cookies()).get('emitto_demo_mode')?.value === 'true';
+    const isDemo = process.env.NEXT_PUBLIC_ALLOW_DEMO === 'true' && (await cookies()).get('emitto_demo_mode')?.value === 'true';
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
 

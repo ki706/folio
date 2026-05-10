@@ -2,6 +2,9 @@
 import { supabase } from './supabase';
 
 export async function isDemoMode() {
+  const allowDemo = process.env.NEXT_PUBLIC_ALLOW_DEMO === 'true';
+  if (!allowDemo) return false;
+
   if (typeof window !== 'undefined') {
     return localStorage.getItem('emitto_demo_mode') === 'true' || document.cookie.includes('emitto_demo_mode=true');
   }
