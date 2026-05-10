@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { buildMasterPrompt } from '@/lib/ai/prompt';
 import { createClient } from '@/lib/supabase-server';
 import { cookies } from 'next/headers';
+import { isDemoMode } from '@/lib/auth-helpers';
 
 export const maxDuration = 60; // Extend Vercel limit to prevent 504 timeouts
 
@@ -9,7 +10,7 @@ export async function POST(req: NextRequest) {
   try {
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
-    const isDemo = process.env.NEXT_PUBLIC_ALLOW_DEMO === 'true' && (await cookies()).get('emitto_demo_mode')?.value === 'true';
+    const isDemo = await isDemoMode();
 
     if (!user && !isDemo) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });

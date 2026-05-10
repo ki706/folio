@@ -2,18 +2,20 @@
 import { supabase } from './supabase';
 
 export async function isDemoMode() {
-  const allowDemo = process.env.NEXT_PUBLIC_ALLOW_DEMO === 'true';
-  if (!allowDemo) return false;
+  // We allow demo mode if explicitly enabled OR if the user already has a demo session cookie
+  const envAllow = process.env.NEXT_PUBLIC_ALLOW_DEMO === 'true';
 
   if (typeof window !== 'undefined') {
-    return localStorage.getItem('emitto_demo_mode') === 'true' || document.cookie.includes('emitto_demo_mode=true');
+    const hasDemoCookie = localStorage.getItem('emitto_demo_mode') === 'true' || document.cookie.includes('emitto_demo_mode=true');
+    return envAllow || hasDemoCookie;
   }
   try {
     const { cookies } = await import('next/headers');
     const cookieStore = await cookies();
-    return cookieStore.get('emitto_demo_mode')?.value === 'true';
+    const hasDemoCookie = cookieStore.get('emitto_demo_mode')?.value === 'true';
+    return envAllow || hasDemoCookie;
   } catch {
-    return false;
+    return envAllow;
   }
 }
 

@@ -19,6 +19,7 @@ export const metadata: Metadata = {
 
 import { ToastProvider } from '@/components/ui/Toast';
 import { cookies } from 'next/headers';
+import { Analytics } from '@vercel/analytics/next';
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const cookieStore = await cookies();
@@ -31,6 +32,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <ToastProvider>
           <MobileLayout serverSession={{ isDemo, hasToken }}>{children}</MobileLayout>
         </ToastProvider>
+        <Analytics />
       </body>
     </html>
   );

@@ -1,10 +1,11 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase-server';
 import { cookies } from 'next/headers';
+import { isDemoMode } from '@/lib/auth-helpers';
 
 export async function GET() {
   try {
-    const isDemo = process.env.NEXT_PUBLIC_ALLOW_DEMO === 'true' && (await cookies()).get('emitto_demo_mode')?.value === 'true';
+    const isDemo = await isDemoMode();
     const supabase = await createClient();
     const { data: { user } } = await supabase.auth.getUser();
 

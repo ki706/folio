@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Radio, Flame, CheckCircle, Clock, Loader2, Zap, Terminal } from 'lucide-react';
 import { getPosts, getSettings, Post } from '@/lib/store';
+import { isDemoMode } from '@/lib/auth-helpers';
 import { useRouter } from 'next/navigation';
 
 export default function TrendsPage() {
@@ -15,8 +16,11 @@ export default function TrendsPage() {
   useEffect(() => {
     const fetchData = async () => {
       setLoadingTrends(true);
-      const [allPosts, allProjects] = await Promise.all([getPosts(), getSettings().then(s => s?.tracked_repos || [])]);
-      const isDemo = process.env.NEXT_PUBLIC_ALLOW_DEMO === 'true' && typeof document !== 'undefined' && document.cookie.includes('emitto_demo_mode=true');
+      const [allPosts, allProjects, isDemo] = await Promise.all([
+        getPosts(), 
+        getSettings().then(s => s?.tracked_repos || []),
+        isDemoMode()
+      ]);
       
       setPosts(allPosts.filter(p => !p.is_saved)); // Only drafts
       
