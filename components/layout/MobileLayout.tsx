@@ -294,38 +294,44 @@ export default function AppLayout({
             </button>
           </div>
 
-          {/* Attribution */}
-          <div style={{ marginTop: 16, textAlign: 'center' }}>
-            <a 
-              href="https://addus-five.vercel.app/" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              style={{ 
-                fontSize: 10, 
-                fontWeight: 700, 
-                color: 'var(--muted-dark)', 
-                textDecoration: 'none',
-                letterSpacing: '0.05em',
-                textTransform: 'uppercase',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                gap: 4,
-                opacity: 0.6,
-                transition: 'opacity 0.2s ease'
-              }}
-              onMouseEnter={(e) => e.currentTarget.style.opacity = '1'}
-              onMouseLeave={(e) => e.currentTarget.style.opacity = '0.6'}
-            >
-              Developed by <span style={{ color: 'var(--white)' }}>ADDUS</span>
-            </a>
           </div>
         </div>
       </aside>
 
       {/* ── Main content ── */}
-      <main className="main-content">
-        {children}
+      <main className="main-content" style={{ display: 'flex', flexDirection: 'column' }}>
+        <div style={{ flex: 1 }}>
+          {children}
+        </div>
+        
+        {/* Global Footer */}
+        <footer style={{ 
+          marginTop: 80, 
+          padding: '40px 0', 
+          borderTop: '1px solid var(--border)',
+          textAlign: 'center'
+        }}>
+          <a 
+            href="https://addus-five.vercel.app/" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            style={{ 
+              fontSize: 11, 
+              fontWeight: 700, 
+              color: 'var(--muted)', 
+              textDecoration: 'none',
+              letterSpacing: '0.1em',
+              textTransform: 'uppercase',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: 8,
+              transition: 'all 0.3s ease'
+            }}
+            className="hover-glow"
+          >
+            Developed by <span style={{ color: 'var(--white)', borderBottom: '1px solid var(--green)' }}>ADDUS</span>
+          </a>
+        </footer>
       </main>
 
       {/* ── Mobile Dock (Restored) ── */}
