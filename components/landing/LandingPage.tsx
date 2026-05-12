@@ -24,23 +24,7 @@ export default function LandingPage() {
         {/* ── Hero ── */}
         <section className="flex flex-col items-center text-center" style={{ maxWidth: 960, margin: '0 auto' }}>
 
-          {/* Badge */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.85 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.45 }}
-            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-7"
-            style={{
-              background: 'rgba(0,255,136,0.05)',
-              border: '1px solid rgba(0,255,136,0.12)',
-              fontSize: 10, fontWeight: 800,
-              color: '#00FF88',
-              letterSpacing: '0.18em',
-              fontFamily: 'JetBrains Mono, monospace',
-            }}
-          >
-            <Radio size={11} className="animate-pulse" /> Broadcasting Live from the Edge
-          </motion.div>
+
 
           {/* Headline */}
           <motion.h1
